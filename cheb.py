@@ -59,8 +59,11 @@ def cheb_deriv(y, nu, axis=0):
 		dy[first] = np.sum((k**4 - k**2)[s] * Y[middle], axis=axis)/(3*N) + (N/6)*(N**2 - 1) * Y[last]
 		dy[last] = np.sum(((k**4 - k**2)*np.power(-1, k))[s] * Y[middle], axis=axis)/(3*N) + (N/6)*(N**2 - 1)*(-1)**N * Y[last] 
 	elif nu == 3:
-		dy[first] = np.sum(((k**6)/15 - (k**4)/3 + 4*(k**2)/15)[s] * Y[middle], axis=axis)/N + N*((N**4)/30 - (N**2)/6 + 2/15)*Y[last]
-		dy[last] = -np.sum((((k**6)/15 - (k**4)/3 + 4*(k**2)/15)*np.power(-1, k))[s] * Y[middle], axis=axis)/N - N*((N**4)/30 - (N**2)/6 + 2/15)*(-1)**N * Y[last]
+		dy[first] = np.sum((k**6 - 5*k**4 + 4*k**2)[s] * Y[middle], axis=axis)/(15*N) + N*((N**4)/30 - (N**2)/6 + 2/15)*Y[last]
+		dy[last] = -np.sum(((k**6 - 5*k**4 + 4*k**2)*np.power(-1, k))[s] * Y[middle], axis=axis)/(15*N) - N*((N**4)/30 - (N**2)/6 + 2/15)*(-1)**N * Y[last]
+	elif nu == 4:
+		dy[first] = np.sum((k**8 - 14*k**6 + 49*k**4 - 36*k**2)[s] * Y[middle], axis=axis)/(105*N) + N*(N**6 - 14*N**4 + 49*N**2 - 36)/210 * Y[last]
+		dy[last] = np.sum(((k**8 - 14*k**6 + 49*k**4 - 36*k**2)*np.power(-1, k))[s] * Y[middle], axis=axis)/(105*N) + (N*(N**6 - 14*N**4 + 49*N**2 - 36)*(-1)**N)/210 * Y[last]
 	else: # For higher derivatives, leave the endpoints uncalculated
 		dy[first] = np.nan
 		dy[last] = np.nan
