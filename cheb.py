@@ -2,13 +2,15 @@ import numpy as np
 from numpy.polynomial import Polynomial as poly
 from scipy.fftpack import dct, dst
 from collections import deque
-from matplotlib import pyplot
 
 def cheb_deriv(y, nu, axis=0):
-	"""Evaluate derivatives with Chebyshev polynomials via discrete cosine and sine transforms
+	"""Evaluate derivatives with Chebyshev polynomials via discrete cosine and sine transforms. Caveats:
+	- Taking the 1st derivative twice with a discrete method like this is not exactly the same as taking the second derivative.
+	- For derivatives over the 4th, this method presently returns NaN at the edges of the domain. Be cautious if passing
+	  the result to another function.
 	:param y: Data to transform, representing a function at Chebyshev points in each dimension x_n = cos(pi * n /N)
 	:param nu: The order of derivative to take
-	:param axis: The dimension of along which to take the derivative
+	:param axis: The dimension along which to take the derivative, defaults to first dimension
 	:return dy: data representing the nu^th derivative of the function, sampled at points x_n
 	"""
 	N = y.shape[axis] - 1; M = 2*N # We only have to care about the number of points in the dimension we're differentiating
@@ -22,7 +24,7 @@ def cheb_deriv(y, nu, axis=0):
 	Y = dct(y, 1, axis=axis) # Transform to frequency domain using the 1st definition of the discrete cosine transform
 	k = np.arange(1, N) # [1, ... N-1], wavenumber iterator/indices
 
-	y_primes = [] # Store all derivatives in theta up to the nu^th, because we need them all for reconstruction
+	y_primes = [] # Store all derivatives in theta up to the nu^th, because we need them all for reconstruction.
 	for order in range(1, nu+1):
 		if order % 2: # odd derivative
 			Y_prime = (1j * k[s])**order * Y[middle] # Y_prime[k=0 and N] = 0 and so are not needed for the DST
@@ -69,100 +71,3 @@ def cheb_deriv(y, nu, axis=0):
 		dy[last] = np.nan
 
 	return dy
-
-N = 20
-x_n = np.cos(np.linspace(0, N, N+1) * np.pi / N)
-
-example = 1
-
-# 1D example
-if example == 1:
-	# Try it out on the function e^x sin(5x)
-	x = np.linspace(-1, 1, 100)
-
-	f = np.exp(x) * np.sin(5*x)
-	df = 5*np.exp(x) * np.cos(5*x) + f
-	d2f = 2*np.exp(x) * (5*np.cos(5*x) - 12*np.sin(5*x))
-	d3f = -2*np.exp(x) * (37*np.sin(5*x) + 55*np.cos(5*x))
-	d4f = 4*np.exp(x) * (119*np.sin(5*x) - 120*np.cos(5*x))
-	#d5f = 4*np.exp(x) * (719*np.sin(5*x) + 475*np.cos(5*x))
-	#d6f = 8*np.exp(x) * (2035*np.cos(5*x) - 828*np.sin(5*x))
-
-	pyplot.plot(x, f, 'k')
-	pyplot.plot(x, df, 'b')
-	pyplot.plot(x, d2f, 'r')
-	pyplot.plot(x, d3f, 'g')
-	pyplot.plot(x, d4f, 'm')
-	#pyplot.plot(x, d5f, 'c')
-	#pyplot.plot(x, d6f, 'y')
-
-	y = np.exp(x_n) * np.sin(5*x_n)
-	dy = cheb_deriv(y, 1)
-	d2y = cheb_deriv(y, 2)
-	d3y = cheb_deriv(y, 3)
-	d4y = cheb_deriv(y, 4)
-	#d5y = cheb_deriv(y, 5)
-	#d6y = cheb_deriv(y, 6)
-
-	pyplot.plot(x_n, y, 'k+')
-	pyplot.plot(x_n, dy, 'b+')
-	pyplot.plot(x_n, d2y, 'r+')
-	pyplot.plot(x_n, d3y, 'g+')
-	pyplot.plot(x_n, d4y, 'm+')
-	#pyplot.plot(x_n, d5y, 'c+')
-	#pyplot.plot(x_n, d6y, 'y+')
-
-	pyplot.show()
-
-if example == 2:
-	# 2D example
-	x = np.linspace(-1, 1, 100)
-	y = np.linspace(-1, 1, 100)
-	X, Y = np.meshgrid(x, y)
-
-	F = X**2 * np.sin(3/2*np.pi*Y)
-	dxdyF = 3*X*np.pi*np.cos(3/2*np.pi*Y) # d^2 / dx dy
-	Laplacian = 2*np.sin(3/2*np.pi*Y) - 9/4*np.pi**2 * X**2 * np.sin(3/2*np.pi*Y)
-
-	fig = pyplot.figure(figsize=(12, 5))
-	ax1 = fig.add_subplot(1, 3, 1, projection='3d')
-	ax1.plot_surface(X, Y, F, cmap='viridis', alpha=0.5)
-	ax1.set_title('original function')
-	ax1.set_xlabel('x')
-	ax1.set_ylabel('y')
-	ax2 = fig.add_subplot(1, 3, 2, projection='3d')
-	ax2.plot_surface(X, Y, dxdyF, cmap='viridis', alpha=0.5)
-	ax2.set_title(r'$\frac{d^2}{dxdy}$')
-	ax2.set_xlabel('x')
-	ax2.set_ylabel('y')
-	ax2.set_zlim((-8,8))
-	ax3 = fig.add_subplot(1, 3, 3, projection='3d')
-	ax3.plot_surface(X, Y, Laplacian, cmap='viridis', alpha=0.5)
-	ax3.set_title(r'$\frac{d^2}{dx^2} + \frac{d^2}{dy^2}$')
-	ax3.set_xlabel('x')
-	ax3.set_ylabel('y')
-	ax3.set_zlim((-20, 20))
-
-	X_n, Y_n = np.meshgrid(x_n, x_n) # same shapes as X and Y, but cosine spacing
-	F_n = X_n**2 * np.sin(3/2*np.pi*Y_n) # F sampled at the cosine-spaced points
-
-	#dF_n = np.zeros((N+1, N+1))
-	# for i in range(N+1): # iterate first dimension, taking derivatives along second dimension
-	# 	dF_n[i] = cheb_deriv(F_n[i], 1)
-	# for j in range(N+1): # iterate second dimension, taking derivatives along the first
-	# 	dF_n[:,j] = cheb_deriv(dF_n[:,j], 1)
-	dF_n = cheb_deriv(cheb_deriv(F_n, 1, axis=0), 1, axis=1) # One-lineable!
-
-	#Laplacian_n = np.zeros((N+1, N+1))
-	# for i in range(N+1): # iterate first dimension, taking derivatives along second dimension
-	# 	Laplacian_n[i] += cheb_deriv(F_n[i], 2)
-	# for j in range(N+1): # iterate second dimension, taking derivatives along the first 
-	# 	Laplacian_n[:,j] += cheb_deriv(F_n[:,j], 2)
-	Laplacian_n = cheb_deriv(F_n, 2, axis=0) + cheb_deriv(F_n, 2, axis=1) # One-lineable!
-
-	ax1.plot_wireframe(X_n, Y_n, F_n)
-	ax2.plot_wireframe(X_n, Y_n, dF_n)
-	ax3.plot_wireframe(X_n, Y_n, Laplacian_n)
-
-	pyplot.tight_layout()
-	pyplot.show()
