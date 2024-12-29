@@ -3,6 +3,7 @@ from numpy.polynomial import Polynomial as poly
 from scipy.fftpack import dct, dst
 from collections import deque
 
+
 def cheb_deriv(y, nu, axis=0):
 	"""Evaluate derivatives with Chebyshev polynomials via discrete cosine and sine transforms. Caveats:
 	- Taking the 1st derivative twice with a discrete method like this is not exactly the same as taking the second derivative.
@@ -71,3 +72,17 @@ def cheb_deriv(y, nu, axis=0):
 		dy[last] = np.nan
 
 	return dy
+
+
+def fourier_deriv(y, nu, axis):
+	"""For use with periodic functions"""
+	# No need to extend vectors; simply use FFT and IFFT?
+	# No worrying about conversion back from a variable transformation.
+	# No special treatment of boundaries.
+	# "true" multidimensional fftn and ifftn can be used without a problem
+	# Use DCT-II and DST-II for no-flux and pinned?
+	# The domain for these is [0, 2pi] rather than [-1, 1], correct?
+	pass
+
+
+

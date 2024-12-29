@@ -1,0 +1,28 @@
+[project]
+name = "spectral-derivatives"
+dynamic = ["version"]
+description = "Functions to take spectral derivatives with the Chebyshev and Fourier bases"
+readme = "README.md"
+authors = [
+	{name = "Pavel Komarov", email = "pvlkmrv@gmail.com"}
+]
+dependencies = [
+	'pytest',
+	'numpy',
+	'scipy',
+	'matplotlib'
+]
+license = {text = "BSD License"}
+
+[tool.spin]
+package = "specderiv"
+
+[tool.setuptools.dynamic]
+version = {attr = "specderiv.__version__"}
+
+[project.urls]
+Documentation = 'https://pavelkomarov.como/spectral-derivatives'
+Repository = 'https://github.com/pavelkomarov/spectral-derivatives'
+
+[build-system]
+requires = ["setuptools"]
