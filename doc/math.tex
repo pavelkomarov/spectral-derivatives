@@ -1,14 +1,8 @@
 \documentclass[10pt]{article}
 \usepackage[margin=0.7in]{geometry}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsfonts}
-\usepackage{hyperref}
-\usepackage{enumitem}
-\usepackage{enotez}
-\usepackage{tikz}
-\usepackage{pgfplots}
-\usetikzlibrary{matrix, arrows.meta, positioning}
+\usepackage{amsmath, amssymb, amsfonts, hyperref, enumitem, enotez, tikz, pgfplots, cancel, graphicx,
+caption, algorithm, algorithmic}
+\usetikzlibrary{matrix, arrows.meta, positioning, angles}
 \hypersetup{colorlinks=true, urlcolor=blue}
 \DeclareMathOperator*{\argmax}{argmax}
 
@@ -146,12 +140,12 @@ Part of what makes Fourier transforms confusing is the proliferation of differen
 \begin{center}
 \begin{tikzpicture}
 \matrix (m) [
-  matrix of nodes,
-  nodes={draw, align=center, text height=1.5ex, text depth=.25ex, anchor=center}, column sep=0pt, row sep=0pt,
-  cells={nodes={draw, minimum width=5cm, minimum height=4cm, outer sep=0pt}}
+	matrix of nodes,
+	nodes={draw, align=center, text height=1.5ex, text depth=.25ex, anchor=center}, column sep=0pt, row sep=0pt,
+	cells={nodes={draw, minimum width=5cm, minimum height=4cm, outer sep=0pt}}
 ] at (0, 0) {
-  \node (A) {}; & \node (B) {}; \\
-  \node (C) {}; & \node (D) {}; \\
+	\node (A) {}; & \node (B) {}; \\
+	\node (C) {}; & \node (D) {}; \\
 };
 
 \node[anchor=south] at (A.north) {Periodic};
@@ -183,9 +177,9 @@ Here FS stands for ``Fourier Series", which is the first situation covered above
 
 \textit{All} of these can be considered Fourier transforms, but often when people talk about \textit{the} canonical ``Fourier Transform", they are referring to the continuous, aperiodic case in the upper righthand cell.
 
-The notation of all these different functions and transforms is easy to mix up and made all the more confusing by the reuse of symbols. But it's important to keep straight which situation we're in. I can only apologize. For more on all these, see \cite{oppenheim}.
+The notation of all these different functions and transforms is easy to mix up and made all the more confusing by the reuse of symbols. But it's important to keep straight which situation we're in. \href{https://www.youtube.com/watch?v=6ITWKtTYlEI&t=69s}{I can only apologize.} For more on all these, see \cite{oppenheim}.
 
-\section{Taking Derivatives in the Fourier Domain}
+\section{Taking Derivatives in the Fourier Domain}\label{derivative}
 
 Let's \href{https://www.youtube.com/watch?v=d5d0ORQHNYs}{take a Fourier transform of the derivative of a function}\cite{brunton}:
 
@@ -197,7 +191,7 @@ $$\frac{d}{dx} f(x) = \frac{d}{dx} \frac{1}{2\pi} \int\limits_{-\infty}^{\infty}
 
 So a derivative in the $x$ domain can be accomplished by a \textit{multiplication} in the frequency domain. We can raise to higher derivatives simply by multiplying by $j \omega$ more times.
 
-This is great because taking derivatives in the spatial domain is actually pretty hard, especially if we're working with discrete samples of a signal, whereas taking the derivative this way in the frequency domain, the \textit{spectral derivative}, gives us much better fidelity.\cite{kutz} The cost is that we have to do a Fourier transform and inverse Fourier transform to sandwich the actual differentiation, but there is an $O(N \log N)$ algorithm to accompish the DFT (See \autoref{family}) for discrete signals called the Cooley-Tukey algorithm, also known as the Fast Fourier Transform (FFT)\cite{kutz}.
+This is great because taking derivatives in the spatial domain is actually pretty hard, especially if we're working with discrete samples of a signal, whereas taking the derivative this way in the frequency domain, the \textit{spectral derivative}, gives us much better fidelity.\cite{kutz} The cost is that we have to do a Fourier transform and inverse Fourier transform to sandwich the actual differentiation, but there is an $O(N \log N)$ algorithm to accompish the DFT (\autoref{family}, \autoref{dft}) for discrete signals called the Cooley-Tukey algorithm, also known as the Fast Fourier Transform (FFT)\cite{kutz}.
 
 \subsection{Taking Derivatives in the Discrete Case}
 
@@ -216,12 +210,12 @@ where
 \begin{itemize}[noitemsep, topsep=0pt, after=\newline]
 	\item $n$ iterates samples in the original domain (often spatial)
 	\item $k$ iterates samples in the frequency domain (wavenumbers)
-	\item $M$ is the number of samples in the signal, often given as $N$ by other sources\cite{numpy}, but I'll use $N$ for something else later and want to be consistent
+	\item $M$ is the number of samples in the signal, often given as $N$ by \href{https://numpy.org/doc/2.1/reference/routines.fft.html}{other sources}\cite{numpy}, but I'll use $N$ for something else later and want to be consistent
 	\item $y$ denotes the signal in its original domain
 	\item $Y$ denotes the signal in the frequency domain
 \end{itemize}
 
-For simplicity, we can collect $\frac{2\pi}{M}n$ as a single term, $\theta_n$, or $\frac{2\pi}{M}k$ as a single term, $\theta_k$. We then get $y_n = y(\theta_n)$ and $Y_k = Y(\theta_k)$. This may help highlight the fact the \href{https://dsp.stackexchange.com/a/18931/40873}{original signal and transformed signal live on a domain which maps to the unit circle}\cite{bristow} (hence periodicity and aliasing) and are being sampled at equally-spaced angles.
+For simplicity, we can collect $\frac{2\pi}{M}n$ as a single term, $\theta_n \in [0, 2\pi)$, or $\frac{2\pi}{M}k$ as a single term, $\theta_k$. We then get $y_n = y(\theta_n)$ and $Y_k = Y(\theta_k)$. This may help highlight the fact the \href{https://dsp.stackexchange.com/a/18931/40873}{original signal and transformed signal live on a domain which maps to the unit circle}\cite{bristow} (hence periodicity and aliasing) and are being sampled at equally-spaced angles.
 
 \subsubsection{Interpolation}
 
@@ -240,10 +234,10 @@ $$ y(\theta) = \frac{1}{M} \sum_{k=0}^{M-1} Y_k e^{j \theta (k + m_k M)} $$
 \end{quotation}
 
 \begin{align*}
-\frac{1}{M} \int\limits_{0}^{M} |y'(\theta)|^2 dx &= \frac{1}{M} \int\limits_{0}^{M} \Big|\frac{1}{M} \sum_{k=0}^{M-1} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big|^2 dx \\
-&= \frac{1}{M^3} \int\limits_{0}^{M} \Big( \sum_{k=0}^{M-1} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big) \overline{\Big( \sum_{k=0}^{M-1} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big)} dx \\
-&= \frac{1}{M^3} \int\limits_{0}^{M} \sum_{k=0}^{M-1} \sum_{k'=0}^{M-1} \Big( j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big) \overline{\Big( j(k' + m_{k'} M) Y_{k'} e^{j \theta (k' + m_{k'} M)} \Big)} dx \\
-&= \frac{1}{M^2} \sum_{k=0}^{M-1} \sum_{k'=0}^{M-1} (k + m_k M) \overline{(k' + m_{k'} M)} Y_k \overline{Y_{k'}} \underbrace{\frac{1}{M} \int\limits_{0}^{M} e^{j \theta (k + m_k M)} e^{-j \theta (k' + m_{k'} M)} dx}_{= \begin{cases} 0 & \text{if } k + m_k M \neq k' + m_{k'} M \\ & \iff k \neq k' \text{ for } 0 \leq k, k' < M \\ 1 & \text{if } k = k'\end{cases}} \\
+\frac{1}{2\pi} \int\limits_{0}^{2\pi} |y'(\theta)|^2 d\theta &= \frac{1}{2\pi} \int\limits_{0}^{2\pi} \Big|\frac{1}{M} \sum_{k=0}^{M-1} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big|^2 d\theta \\
+&= \frac{1}{2\pi M^2} \int\limits_{0}^{2\pi} \Big( \sum_{k=0}^{M-1} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big) \overline{\Big( \sum_{k=0}^{M-1} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big)} d\theta \\
+&= \frac{1}{2\pi M^2} \int\limits_{0}^{2\pi} \sum_{k=0}^{M-1} \sum_{k'=0}^{M-1} \Big( j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big) \overline{\Big( j(k' + m_{k'} M) Y_{k'} e^{j \theta (k' + m_{k'} M)} \Big)} d\theta \\
+&= \frac{1}{M^2} \sum_{k=0}^{M-1} \sum_{k'=0}^{M-1} (k + m_k M) \overline{(k' + m_{k'} M)} Y_k \overline{Y_{k'}} \underbrace{\frac{1}{2\pi} \int\limits_{0}^{2\pi} e^{j \theta (k + m_k M)} e^{-j \theta (k' + m_{k'} M)} d\theta}_{= \begin{cases} 0 & \text{if } k + m_k M \neq k' + m_{k'} M \\ & \iff k \neq k' \text{ for } 0 \leq k, k' < M \\ 1 & \text{if } k = k'\end{cases}} \\
 &= \frac{1}{M^2} \sum_{k=0}^{M-1} |Y_k|^2 (k + m_k M)^2
 \end{align*}
 
@@ -285,12 +279,273 @@ where $^*$ denotes optimality. But we additionally need to choose $m_k \in \math
 
 As we change the values of $M$ and $k$, the parabola shifts around, getting taller for larger $M$ and shifting leftward as $k \rightarrow M$.
 
-We can see that for $k \in [0, \frac{M}{2})$, the $m_k = 0$ solution is lower down the cost curve, and for $k \in (\frac{M}{2}, M]$, the $m_k = -1$ solution is more optimal. ``If $k = \frac{M}{2}$ for even $M$), however, there is an ambiguity: either $m_k = 0$ or -1 gives the same value $(k + m_k M)^2 = (\frac{M}{2})^2$. For this $Y_{M/2}$ term (the ``Nyquist" term), we can arbitrarily split up the 
+We can see that for $k \in [0, \frac{M}{2})$, the $m_k = 0$ solution is lower down the cost curve, and for $k \in (\frac{M}{2}, M)$, the $m_k = -1$ solution is more optimal. ``If $k = \frac{M}{2}$ (for even $M$), however, there is an ambiguity: either $m_k = 0$ or $-1$ gives the same value $(k + m_k M)^2 = (\frac{M}{2})^2$. For this $Y_{M/2}$ term (the ``Nyquist" term), we can arbitrarily split up the $Y_{M/2}$ term between $m = 0$ [$j\frac{M}{2}\theta$, positive frequency] and $m = -1$ [$j(\frac{M}{2} - M)\theta = -j\frac{M}{2}\theta$, negative frequency]:"
+
+$$ Y_{M/2}(ue^{j\frac{M}{2}\theta} + (1 - u)e^{-j\frac{M}{2}\theta}) $$
+
+where $u \in \mathbb{C}$ s.t. at sample points $\theta_n$ we get $Y_{M/2}(ue^{j\frac{M}{2}\frac{2\pi}{M}n} + (1-u)e^{-j\frac{M}{2}\frac{2\pi}{M}n}) = Y_{M/2}(u\overbrace{e^{j\pi n}}^{(-1)^n} + (1-u)\overbrace{e^{-j\pi n}}^{(-1)^n}) = Y_{M/2}(-1)^n$, which at $n = \frac{M}{2}$ will be $Y_{M/2}(-1)^{\frac{M}{2}} = Y_{M/2}\cos(\frac{M}{2}\pi)$, ``and so recover the DFT$^{-1}$."
+
+If we use the above in the mean-squared slope derivation instead of $Y_k e^{j \theta (k + m_k M)}$ and $Y_{k'} e^{j \theta (k' + m_{k'} M)}$, then the \href{https://math.stackexchange.com/a/5013632/278341}{integral portion becomes}:
+
+\begin{align*}
+& Y_{M/2}\overline{Y_{M/2}}\frac{1}{2\pi} \int\limits_{0}^{2\pi} (ue^{j\frac{M}{2}\theta} + (1 - u)e^{-j\frac{M}{2}\theta}) \overline{(ue^{j\frac{M}{2}\theta} + (1 - u)e^{-j\frac{M}{2}\theta})} d\theta \\
+&= |Y_{M/2}|^2 \frac{1}{2\pi} \Big(u\overline{u} \int\limits_{0}^{2\pi} \underbrace{e^{j\frac{M}{2}\theta} e^{-j\frac{M}{2}\theta}}_{= 1} d\theta + u \overline{(1 - u)} \int\limits_{0}^{2\pi} \underbrace{e^{j\frac{M}{2}\theta} e^{j\frac{M}{2}\theta}}_{\text{periodic!}} d\theta + (1 - u)\overline{u} \int\limits_{0}^{2\pi} \underbrace{e^{-j\frac{M}{2}\theta} e^{-j\frac{M}{2}\theta}}_{\text{periodic!}} d\theta \\
+& \quad \quad + (1 - u) \overline{(1 - u)} \int\limits_{0}^{2\pi} \underbrace{e^{-j\frac{M}{2}\theta} e^{j\frac{M}{2}\theta}}_{= 1} d\theta \Big) \\
+&= |Y_{M/2}|^2 \frac{1}{2\pi} (|u|^2 2\pi + |1 - u|^2 2\pi) = |Y_{M/2}|^2 (|u|^2 + |1 - u|^2)
+\end{align*}
+
+because integrating something periodic over a multiple of its period yields 0.\newline
+
+We now know that the contribution to the mean-squared slope from the $\frac{M}{2}^{th}$ term $\propto |u|^2 + |1 - u|^2$. What's the optimal $u$?
+
+$$\frac{d}{du} |u|^2 + |1 - u|^2 = 2u - 2(1-u) = 0 \rightarrow u = \frac{1}{2}$$
+
+So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} (DCT), which is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$, so we do have to worry about the Nyquist term.
+
+Now if we put it all together we get ``the \textbf{unique ``minimal-oscillation" trigonometric interpolation} of order N:"
+
+\begin{equation}\label{interpolant}
+y(\theta) = \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big(Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}\big) + Y_{M/2}\cos(\frac{M}{2}\theta) \Big)
+\end{equation}
+
+``As a useful side effect, this choice of trigonometric interpolation has the property that real-valued samples $y_n$ (for which $Y_0$ is real and $Y_{M-k} = \overline{Y_k}$) will result in a purely real-valued interpolation $y(\theta)$ for all $\theta$."
+
+\subsubsection{Taking Derivatives of the Interpolant}
+
+Now at last, with this interpolation between integer $n$ in hand, we can take a derivative w.r.t. the spatial variable:
+
+$$\frac{d}{d\theta} y(\theta) = \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} j k (Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}) - \frac{M}{2} Y_{M/2} \sin(\frac{M}{2}\theta) \Big)$$
+
+Evaluating at $\theta_n = \frac{2\pi}{M}n, n \in \mathbb{Z}$, we get:
+
+\begin{align*}
+y'_n &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} j k (Y_k e^{j k \frac{2\pi}{M}n} + Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \overset{\text{\large 0}}{\cancel{\frac{M}{2} Y_{M/2} \sin(\pi n)}} \Big) = \frac{1}{M} \sum_{k = 0}^{M-1} Y'_k e^{j\frac{2\pi}{M}kn} \\
+& \text{where} \quad Y'_k = \begin{cases} j k \cdot Y_k & k < \frac{M}{2} \\ 0 & k = \frac{M}{2} \\ j(k - M) \cdot Y_k & k > \frac{M}{2} \leftarrow \text{comes from: } k_{new} = M - k_{old}, 0 < k_{old} < \frac{M}{2} \end{cases}\\ & \hspace{5cm} \rightarrow \frac{M}{2} < k_{new} < M; -jk_{old} \cdot Y_{M - k_{old}} \rightarrow -j(M - k_{new}) \cdot Y_{k_{new}}
+\end{align*}
+
+Easy! Now let's do the second derivative:
+
+$$\frac{d^2}{d\theta^2} y(\theta) = \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^2 (Y_k e^{j k \frac{2\pi}{M}n} + Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \Big(\frac{M}{2}\Big)^2 Y_{M/2} \cos(\frac{M}{2}\theta) \Big)$$
+
+And again evaluating at $\theta_n = \frac{2\pi}{M}n, n \in \mathbb{Z}$:
+
+\begin{align*}
+y''_n &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^2 (Y_k e^{j k \frac{2\pi}{M}n} + Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \Big(\frac{M}{2}\Big)^2 Y_{M/2} (-1)^n \Big) = \frac{1}{M} \sum_{k = 0}^{M-1} Y''_k e^{j\frac{2\pi}{M}kn} \\
+& \text{where} \quad Y''_k = \begin{cases} (j k)^2 \cdot Y_k & k < \frac{M}{2} \\ \Big(j\frac{M}{2}\Big)^2 \cdot Y_k & k = \frac{M}{2} \\ (j(k - M))^2 \cdot Y_k & k > \frac{M}{2} \end{cases} \quad \text{or equivalently} \quad Y''_k = \begin{cases} (j k)^2 \cdot Y_k & k \leq \frac{M}{2} \\ (j(k - M))^2 \cdot Y_k & k > \frac{M}{2} \end{cases}
+\end{align*}
+
+It's important to realize ``this procedure is \textit{not} equivalent to performing the spectral first-derivative procedure twice (unless $M$ is odd so that there is no $Y_{M/2}$ term) because the first derivative operation omits the $Y_{M/2}$ term entirely."\cite{johnson}. We can repeat for higher derivatives, but the punchline is that for odd derivatives that $\frac{M}{2}$ term goes away, and for even derivatives it comes back. In general:
+
+$$ Y^{(\nu)}_k = \begin{cases} (j k)^\nu \cdot Y_k & k < \frac{M}{2} \\ (j \frac{M}{2})^\nu \cdot Y_k & k = \frac{M}{2} \text{ and } \nu \text{ even} \\ 0 & k = \frac{M}{2} \text{ and } \nu \text{ odd} \\ (j(k - M))^\nu \cdot Y_k & k > \frac{M}{2} \end{cases}$$
+
+This has definite echoes of the standardly-given, continuous-time case covered in \autoref{derivative}, but it's emphatically \textit{not} as simple as just multiplying by $j\omega$ or even by $j k$. However, the final answer is thankfully super compact to represent in math and in code.
+
+\section{Limitations}
+
+So far it has all been good news, but there is a serious caveat to using the Fourier basis, especially for derivatives.
+
+Although a Fourier transform tends to have more ``mass" at lower frequencies and fall off as we go to higher ones (otherwise the reconstruction integral would diverge), and therefore we can get really great reconstructions by leaving off higher modes\cite{kutz}, we in fact need \textit{all} the infinite modes to reconstruct the true signal\cite{oppenheim}, and even then the Fourier basis can not represent true discontinuities, instead converging ``almost everywhere", which is math speak for the ``measure" or volume of the set where it doesn't work being 0, meaning it only doesn't work \textit{at} the discontinuities themselves.\cite{oppenheim}
+
+If there are discontinuities, we get what's called the Gibbs Phenomenon\cite{oppenheim}, essentially overshoot as the set of basis functions tries to fit a big jump. These extra wiggles are bad news for function approximation but even worse news for taking derivatives! If we end up on one of those oscillations, the slope might wildly disagree with that of the true function!
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{gibbs.png}
+	\caption*{An example of the Gibbs phenomenon, from \cite{kutz}}
+\end{figure}
+
+This is a bigger problem than it may first appear, because when we do this on a computer, we're using the DFT, which implicitly periodically extends the function (\autoref{family}). So we not only need the function to have no jumps internal to its domain; we need it to match up \textit{at the edges} of its domain too!
+
+This rules out the above spectral method for all but ``periodic boundary conditions"\cite{kutz}. But if the story ended right there, I wouldn't have thought it worth building this package.
+
+\section{The Chebyshev Basis}
+
+\href{https://www.youtube.com/watch?v=HloOBYPwlmU}{There is another} basis which we can use to represent arbitrary functions, called the \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Chebyshev polynomials}\cite{trefethen}, which have a really neat relationship to the Fourier basis.
+
+\begin{figure}[h!]
+\begin{center}
+\begin{minipage}{0.45\textwidth}
+\begin{tikzpicture}
+	\begin{axis}[axis lines=middle, xlabel={Re$\{z\}$}, xlabel style={xshift=12mm, yshift=-3mm},
+		ylabel={Im$\{z\}$}, ylabel style={yshift=3mm}, xmin=-1.1, xmax=1.2, xtick={1},
+		xticklabels={1}, xticklabel style={xshift=1mm, yshift=5mm}, ymin=-1.1, ymax=1.2, ytick=\empty,
+		axis line style={->}, width=8cm, height=8cm]
+		\addplot[domain=0:360,samples=100, smooth, thick] ({cos(x)}, {sin(x)}); %  Plot the unit circle
+		\pgfmathsetmacro{\angle}{50}  % Angle in degrees
+		\pgfmathsetmacro{\xcoord}{cos(\angle)}  % Re{z} = cos(theta)
+		\pgfmathsetmacro{\ycoord}{sin(\angle)}  % Im{z} = sin(theta)
+		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, \ycoord)};
+		\node at (axis cs:\xcoord, \ycoord) [above right] {$z = e^{j\theta}$};
+		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, -\ycoord)};
+		\node at (axis cs:\xcoord, -\ycoord) [below right] {$\overline{z} = e^{-j\theta}$};
+		\addplot[domain=0:1, samples=2, thick] ({x*\xcoord}, {x*\ycoord}); 
+		\addplot[domain=1:0, samples=2, thick, dashed] ({\xcoord}, {x*\ycoord}); 
+		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, 0)};
+		\node at (axis cs:\xcoord, 0) [above right] {$x$};
+		\draw [thick](axis cs:0.1,0) ++(0:1) arc (0:\angle:0.3cm);
+		\node at (axis cs:0.1, 0) [above right] {$\theta$};
+	\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.45\textwidth}
+	\begin{equation}\label{domains}
+	\begin{aligned}
+		\text{Let} \quad & x \in [-1, 1] \phantom{\frac{0}{0}} & \text{Chebyshev} \\ & = \cos(\theta),\ \theta \in \mathbb{R} \phantom{\frac{0}{0}} & \text{Fourier} \\ & = \frac{1}{2}(z + z^{-1}),\ |z| = 1 & \text{Laurent}
+	\end{aligned}
+	\end{equation}
+\end{minipage}
+\end{center}
+\end{figure}
+
+The $k^{th}$ Chebyshev polynomial is defined as $T_k(x) = Re\{z^k\} = \frac{1}{2}(z^k + z^{-k}) = \cos(k\theta)$ by Euler formula.
+
+\begin{align*}
+T_0(x) &= Re\{z^0\} = 1\\
+T_1(x) &= Re\{z^1\} = \frac{1}{2}(e^{j\theta} + e^{-j\theta}) = \cos(\theta) = x\\
+T_2(x) &= \frac{1}{2}(e^{j2\theta} + e^{-j2\theta}) = \cos(2\theta)\\
+& \text{but also } = \frac{1}{2}\underbrace{(z^2 + 2 + z^{-2})}_{\text{perfect square}} - 1 = \Big( \sqrt{\frac{1}{2}} (z + z^{-1}) \Big)^2 - 1 = \underbrace{\Big( \frac{2}{\sqrt{2}} \Big)^2}_{2} \underbrace{\frac{z + z^{-1}}{2}}_{\cos(\theta)} - 1 = 2x^2 - 1\\
+T_3(x) &= \frac{1}{2}(e^{j3\theta} + e^{-j3\theta}) = \cos(3\theta)\\
+& \text{but also } = \frac{1}{2}(z + z^{-1})^3 - \frac{3}{2}(z + z^{-1}) = 4x^3 - 3x\\
+...
+\end{align*}
+
+It turns out there is a recurrent pattern:
+
+$$ T_{k+1} = \frac{1}{2}(z^{k+1} + z^{-(k+1)}) = \frac{1}{2}(z^k + z^{-k})(z + z^{-1}) - \frac{1}{2}(z^{k-1} + z^{-(k-1)}) = 2xT_k(x) - T_{k-1}(x) $$
+
+Due to the relationship between $\theta$ and $x$ on their respective domains, you can think of these polynomials as cosine waves ``wrapped around a cylinder and viewed from the side."\cite{trefethen}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{cylinder.png}
+	\captionsetup{width=0.65\textwidth}
+	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{cylinder}. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen}), but I prefer $k$ to enumerate basis modes, for consistency.}
+\end{figure}
+
+Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a $2\pi$-periodic cosine in the domain $[0, \pi]$.
+
+We can reconstruct a function using these different variables and bases, and as long as our variables are related as in \autoref{domains}, these reconstructions are \textit{equivalent}:
+
+\begin{equation}\label{equivalent}
+y(x) = \sum_{k=0}^N a_k T_k(x)\ ;\quad \tilde{y}(z) = \sum_{k=0}^N a_k \frac{1}{2}(z^k + z^{-k})\ ;\quad \hat{y}(\theta) = \sum_{k=0}^N a_k \cos(k \theta)
+\end{equation}
+
+Note the set of ${a_k}$ is for $k \in {0, .. N}$ and therefore has cardinality $N+1$.\newline
+
+\subsection{The Advantage of Chebyshev}
+
+Why might we prefer this basis to the Fourier basis? Well, the advantage of a polynomial basis is we can avert the need for periodicity at the boundaries. Polynomial fits don't suffer the Gibbs Phenomenon, however they do suffer from the also-bad Runge Phenomenon\cite{kutz}:
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{runge.png}
+	\captionsetup{width=0.6\textwidth}
+	\caption*{The Runge phenomenon, demonstrated in (a) and (b), mitigated in (c) and (d), from \cite{kutz}}
+\end{figure}
+
+However, there is something we can do about the Runge phenomenon: By clustering fit points at the edges of the domain, the wild wobbles go away.
+
+If we take $x = \cos(\theta)$ with $\theta$ equispaced $\in [0, \pi]$, then we get a very natural clustering at the edges of $[-1, 1]$ in $x$. What's more, if we have equispaced $\theta$ and a reconstruction expression built up out of sinusoids, we're back in a Fourier paradigm (at least in variable $\theta$) and can exploit the efficiency of the FFT, or, better, the discrete cosine and sine transforms!\cite{dct}\cite{dst}
+
+\section{An Algorithm}
+
+This all suggests a solution procedure:
+
+\begin{algorithm}
+\caption*{\textbf{Chebyshev Derivatives}}
+\begin{algorithmic}[1] % the [1] numbers the steps, starting from 1
+	\STATE Sample $y$ at $\{x_n = \cos(\theta_n)\}$ rather than at equally spaced $\{x_n\}$. This accomplishes a change of variables.
+	\STATE Use the DCT to transform to frequency domain.
+	\STATE Multiply by appropriate $(jk)^\nu$ to accomplish taking derivatives.
+	\STATE Inverse transform using the DST if odd function, DCT if even function.
+	\STATE Change variables back, taking care that the derivative in the Chebyshev domain entails an extra chain rule.
+\end{algorithmic}
+\end{algorithm}
+
+There are a lot of details left to be worked out here, which we'll tackle in sequence.
+
+\subsection{The Discrete Cosine Transform}
+
+Because the reconstruction of $\hat{y}(\theta)$ (\autoref{equivalent}) only contains cosines, doing a full FFT, which tries to fit sines as well as cosines, would be doing double work. Instead we can use the DCT. There are actually \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{several possible definitions of the DCT}\cite{dct}, but I use the DCT-I, because it is in some ways closest to the interpolant (\autoref{interpolant}) we've already derived.
+
+Say
+
+$$y = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N-1}, ... y_1}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2N, necessarily even!}}, \text{ that is } y_n = y_{M-n},\ 0 \leq n \leq N$$
+
+Then using $M-k$ for $k$ in the DFT equation (\autoref{dft}), we get:
+
+\begin{align*}
+Y_{M-k} &= \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}n(M-k)} = \sum_{n=0}^{M-1} y_n \underbrace{e^{-j 2\pi n}}_{1} e^{j \frac{2\pi}{M}nk} = \sum_{n = M}^{1} y_{M-n} e^{j \frac{2\pi}{M}(M - n)k} \\
+&= \sum_{n=1}^{M} \underbrace{y_{M-n}}_{= y_n} \underbrace{e^{j 2\pi k}}_{1} e^{-j\frac{2\pi}{M}nk} = \sum_{n=1}^M y_n e^{-j \frac{2\pi}{M}nk} = \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}nk} = Y_k \quad \square
+\end{align*}
+\begin{tikzpicture}[overlay, remember picture]  % overlay ensures this drawing goes over the equation
+	\node at (11.5,3.25) {\footnotesize let $n_{new} = M - n_{old}$};
+	\node at (11,0) {\parbox{28mm}{\footnotesize because $e^{-j\frac{2\pi}{M}Mk} = e^0 = 1$ and $y_M = y_0$}};
+	\draw[->] (11.5,3) -- (11.4,2.5);
+	\draw[->] (10.7,0.4) -- (10.9,0.9);
+\end{tikzpicture}\newline
+
+So when $y_n$ are redundant this way, the $Y_k$ are too in a very mirror way. We can now use the facts $Y_k = Y_{M-k}$ and $N = \frac{M}{2}$ in the FFT interpolation (\autoref{interpolant}):
+
+\begin{align*}
+y(\theta) &= \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big( Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}\big) + Y_{M/2}\cos(\frac{M}{2}\theta) \Big) \\
+&= \frac{1}{M} \Big(Y_0 + 2 \sum_{k = 1}^{N-1} \big( Y_k \underbrace{\frac{e^{j k \theta} + e^{-j k \theta}}{2}}_{\cos(k\theta)} \big) + Y_N\cos(N \theta) \Big)
+\end{align*}
+
+At samples $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N}n$, this becomes:
+
+\begin{equation}
+y(\theta_n) = \frac{1}{M} \Big(Y_0 + 2 \sum_{k = 1}^{N-1} \big( Y_k \cos(\frac{\pi nk}{N}) \big) + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} \Big) \tag{DCT$^{-1}$}
+\end{equation}
+
+This is exactly DCT-I$^{-1}$ (which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I) on the shorter set of $Y = [Y_0, ... Y_N]$, without redundant information! Thus
+
+\begin{equation}\label{ifftidct}
+\text{FFT}^{-1}([Y_0, ... Y_N, Y_{N-1}, ... Y_1])[:N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
+\end{equation}
+
+Where $[:N+1]$ truncates the left to only the first $N$ elements. Let's line up everything we now know in a diagram:
+
+\begin{figure}[h!]
+\begin{center}
+\begin{minipage}{0.5\textwidth}
+\centering
+\begin{tikzpicture}
+	\node (y_long) at (0, 3) {$y_{long}$};
+	\node (Y_long) at (0, 0) {$Y_{long}$};
+	\node (y_short) at (4, 3) {$y_{short}$};
+	\node (Y_short) at (4, 0) {$Y_{short}$};
+
+	\draw[->, bend right=40] (y_long) to node[midway] {FFT} (Y_long);
+	\draw[->, bend right=40] (Y_long) to node[midway] {FFT$^{-1}$} (y_long);
+	\draw[->, bend right=40] (y_short) to node[midway] {DCT-I} (Y_short);
+	\draw[->, bend right=40] (Y_short) to node[midway] {DCT-I$^{-1}$} (y_short);
+	\draw[->, bend left=20] (y_long) to node[midway, above] {truncate} (y_short);
+	\draw[->, bend left=20] (y_short) to node[midway, below] {truncate$^{-1}$} (y_long);
+	\draw[->, bend left=20] (Y_long) to node[midway, above] {truncate} (Y_short);
+	\draw[->, bend left=20] (Y_short) to node[midway, below] {truncate$^{-1}$} (Y_long);
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.25\textwidth} where truncate$^{-1}$ stacks back in redundant information\end{minipage}
+\end{center}
+\end{figure}
+
+We can now easily see that in addition to the inverse relationship (\autoref{ifftidct}), we also have the forward relationship:
+
+$$\text{FFT}([y_0, ... y_N, y_{N-1}, ... y_1])[:N+1] = \text{DCT-I}([y_0, ... y_N])$$
+
+Before we wrap up discussion of the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{DCT-I}\cite{dct}, note that the $0^{th}$ and $N^{th}$ terms appear \textit{outside the sum}, and that the sum \textit{is multiplied by 2}. In our original conception of the cosine series for $\hat{y}(\theta)$ (\autoref{equivalent}), all the cosines appear equally within the sum, so our $Y_k$ are subtly different from the $a_k$ in that formulation (some scaled by a factor of $\frac{1}{2}$). This will be important when we later transform back to the Chebyshev domain, because we will use \textit{the DCT-I version} of $\hat{y}(\theta)$, not the original conception.
+
+\subsection{The Discrete Sine Transform}
+
+\subsection{Transforming}
+
+
+\section{Multidimensionality}
 
 \printendnotes
 
 \begin{thebibliography}{99} % https://tex.stackexchange.com/questions/198330/argument-in-thebibliography
-
 \bibitem{lebesgue}
 	Lebesgue Integrable, https://mathworld.wolfram.com/LebesgueIntegrable.html
 \bibitem{hamming}
@@ -314,12 +569,15 @@ We can see that for $k \in [0, \frac{M}{2})$, the $m_k = 0$ solution is lower do
 \bibitem{bristow}
 	Bristow-Johnson, R., 2014, About Discrete Fourier Transform vs. Discrete Fourier Series, https://dsp.stackexchange.com/a/18931/40873
 \bibitem{johnson}
-	https://math.mit.edu/~stevenj/fft-deriv.pdf
-
-
+	Johnson, S., 2011, Notes on FFT-based differentiation, https://math.mit.edu/~stevenj/fft-deriv.pdf
+\bibitem{dct}
+	https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html
+\bibitem{dst}
+	https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dst.html
+\bibitem{trefethen}
+	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8
+\bibitem{cylinder}
+	https://www.researchgate.net/figure/Chebyshev-polynomials-a-can-be-viewed-as-cosine-functions-b-drawn-on-a-cylinder-and\_fig1\_340905766
 \end{thebibliography}
-
-
-
 
 \end{document}
