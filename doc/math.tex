@@ -1,11 +1,9 @@
 \documentclass[10pt]{article}
 \usepackage[margin=0.7in]{geometry}
-\usepackage{amsmath, amssymb, amsfonts, hyperref, enumitem, enotez, tikz, pgfplots, cancel, graphicx,
+\usepackage{amsmath, amssymb, amsfonts, bbm, hyperref, enumitem, enotez, tikz, pgfplots, cancel, graphicx,
 caption, algorithm, algorithmic}
 \usetikzlibrary{matrix, arrows.meta, positioning, angles}
-\hypersetup{colorlinks=true, urlcolor=blue}
-\DeclareMathOperator*{\argmax}{argmax}
-
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=violet}
 
 \begin{document}
 
@@ -19,6 +17,8 @@ One of the happiest accidents in all math is the ease of taking derivatives in t
 This document sets out the math behind the \texttt{spectral-derivatives} package, all the way down to the bones, as much as I can manage. I try to get in to the real \textit{whys} behind what we're doing here, touching on fundamental signal processing and calculus concepts as necessary, and building upwards to more general cases.
 
 % Add an enumerate here to outline things? Or a table of contents?
+\tableofcontents
+\pagebreak
 
 \section{Bases}
 
@@ -173,9 +173,11 @@ Part of what makes Fourier transforms confusing is the proliferation of differen
 \end{tikzpicture}
 \end{center}
 
+Note that, following a more signal-processing-y convention\cite{oppenheim}, the function we're transforming is now called $x$, and the independent variable, since it can no longer be $x$, is named $t$. For discrete signals, we use independent variable $n$ in square brackets.
+
 Here FS stands for ``Fourier Series", which is the first situation covered above. FT stands for ``Fourier Transform", which is given by the integral pair, \autoref{pair}. But these are not the only possibilities! DTFT stands for ``Discrete Time Fourier Transform", where the signal we want to analyze is discrete but the transform is continuous. And finally DFT stands for ``Discrete Fourier Transform", not to be confused with the DTFT, which we use when \textit{both} the original and transformed signals are sampled.
 
-\textit{All} of these can be considered Fourier transforms, but often when people talk about \textit{the} canonical ``Fourier Transform", they are referring to the continuous, aperiodic case in the upper righthand cell.
+\textit{All} of these can be considered Fourier transforms, but often when people talk about \textit{the} canonical ``Fourier capital-T Transform", they are referring to the continuous, aperiodic case in the upper righthand cell.
 
 The notation of all these different functions and transforms is easy to mix up and made all the more confusing by the reuse of symbols. But it's important to keep straight which situation we're in. \href{https://www.youtube.com/watch?v=6ITWKtTYlEI&t=69s}{I can only apologize.} For more on all these, see \cite{oppenheim}.
 
@@ -227,7 +229,7 @@ I now quote \href{https://math.mit.edu/~stevenj/fft-deriv.pdf}{Steven Johnson}\c
 
 We can now posit a slightly more general formula for the underlying continuous, periodic (over interval length M) signal:
 
-$$ y(\theta) = \frac{1}{M} \sum_{k=0}^{M-1} Y_k e^{j \theta (k + m_k M)} $$
+$$ y(\theta) = \frac{1}{M} \sum_{k=0}^{M-1} Y_k e^{j \theta (k + m_k M)}, \quad m_k \in \mathbb{Z} $$
 
 \begin{quotation}
 ``In order to uniquely determine the $m_k$, a useful criterion is that we wish to \textit{oscillate as little as possible} between the sample points $y_n$. One way to express this idea is to assume that $y(\theta)$ is \textit{bandlimited} to frequences $|k + m_k M| \leq \frac{M}{2}$. Another approach, that gives the same result ... is to \textit{minimize the mean-square slope}"\footnote{It's due to this ambiguity and constraint that spectral methods are only suitable for smooth functions!}
@@ -251,7 +253,7 @@ We now seek to minimize this by choosing $m_k$ for each $k$. Only the last term 
 
 This problem actually admits of good ol' calculus plus some common sense:
 
-$$ \frac{d}{dm_k} (k + m_k M)^2 = 2(k + m_k M)M = 0 \rightarrow m_k^* = \frac{-k}{M} \in (-1, 0] $$
+$$ \frac{d}{dm_k} (k + m_k M)^2 = 2(k + m_k M)M = 0 \longrightarrow m_k^* = \frac{-k}{M} \in (-1, 0] $$
 
 where $^*$ denotes optimality. But we additionally need to choose $m_k \in \mathbb{Z}$. Let's plot it to see what's going on.
 
@@ -298,11 +300,11 @@ because integrating something periodic over a multiple of its period yields 0.\n
 
 We now know that the contribution to the mean-squared slope from the $\frac{M}{2}^{th}$ term $\propto |u|^2 + |1 - u|^2$. What's the optimal $u$?
 
-$$\frac{d}{du} |u|^2 + |1 - u|^2 = 2u - 2(1-u) = 0 \rightarrow u = \frac{1}{2}$$
+$$\frac{d}{du} |u|^2 + |1 - u|^2 = 2u - 2(1-u) = 0 \longrightarrow u = \frac{1}{2}$$
 
 So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} (DCT), which is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$, so we do have to worry about the Nyquist term.
 
-Now if we put it all together we get ``the \textbf{unique ``minimal-oscillation" trigonometric interpolation} of order N:"
+Now if we put it all together we get ``the \textbf{unique ``minimal-oscillation" trigonometric interpolation} of order N":
 
 \begin{equation}\label{interpolant}
 y(\theta) = \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big(Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}\big) + Y_{M/2}\cos(\frac{M}{2}\theta) \Big)
@@ -334,13 +336,17 @@ y''_n &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^2 (Y_k e^{j k \frac{2
 & \text{where} \quad Y''_k = \begin{cases} (j k)^2 \cdot Y_k & k < \frac{M}{2} \\ \Big(j\frac{M}{2}\Big)^2 \cdot Y_k & k = \frac{M}{2} \\ (j(k - M))^2 \cdot Y_k & k > \frac{M}{2} \end{cases} \quad \text{or equivalently} \quad Y''_k = \begin{cases} (j k)^2 \cdot Y_k & k \leq \frac{M}{2} \\ (j(k - M))^2 \cdot Y_k & k > \frac{M}{2} \end{cases}
 \end{align*}
 
-It's important to realize ``this procedure is \textit{not} equivalent to performing the spectral first-derivative procedure twice (unless $M$ is odd so that there is no $Y_{M/2}$ term) because the first derivative operation omits the $Y_{M/2}$ term entirely."\cite{johnson}. We can repeat for higher derivatives, but the punchline is that for odd derivatives that $\frac{M}{2}$ term goes away, and for even derivatives it comes back. In general:
+It's important to realize ``this [second derivative] procedure is \textit{not} equivalent to performing the spectral first-derivative procedure twice (unless $M$ is odd so that there is no $Y_{M/2}$ term) because the first derivative operation omits the $Y_{M/2}$ term entirely."\cite{johnson}.
 
-$$ Y^{(\nu)}_k = \begin{cases} (j k)^\nu \cdot Y_k & k < \frac{M}{2} \\ (j \frac{M}{2})^\nu \cdot Y_k & k = \frac{M}{2} \text{ and } \nu \text{ even} \\ 0 & k = \frac{M}{2} \text{ and } \nu \text{ odd} \\ (j(k - M))^\nu \cdot Y_k & k > \frac{M}{2} \end{cases}$$
+We can repeat for higher derivatives, but the punchline is that for odd derivatives the $\frac{M}{2}$ term goes away, and for even derivatives it comes back. In general:
+
+\begin{equation}\label{Y_nu}
+Y^{(\nu)}_k = \begin{cases} (j k)^\nu \cdot Y_k & k < \frac{M}{2} \\ (j \frac{M}{2})^\nu \cdot Y_k & k = \frac{M}{2} \text{ and } \nu \text{ even} \\ 0 & k = \frac{M}{2} \text{ and } \nu \text{ odd} \\ (j(k - M))^\nu \cdot Y_k & k > \frac{M}{2} \end{cases}
+\end{equation}
 
 This has definite echoes of the standardly-given, continuous-time case covered in \autoref{derivative}, but it's emphatically \textit{not} as simple as just multiplying by $j\omega$ or even by $j k$. However, the final answer is thankfully super compact to represent in math and in code.
 
-\section{Limitations}
+\subsection{Limitations}
 
 So far it has all been good news, but there is a serious caveat to using the Fourier basis, especially for derivatives.
 
@@ -348,9 +354,9 @@ Although a Fourier transform tends to have more ``mass" at lower frequencies and
 
 If there are discontinuities, we get what's called the Gibbs Phenomenon\cite{oppenheim}, essentially overshoot as the set of basis functions tries to fit a big jump. These extra wiggles are bad news for function approximation but even worse news for taking derivatives! If we end up on one of those oscillations, the slope might wildly disagree with that of the true function!
 
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\textwidth]{gibbs.png}
+	\includegraphics[width=0.7\textwidth]{gibbs.png}
 	\caption*{An example of the Gibbs phenomenon, from \cite{kutz}}
 \end{figure}
 
@@ -427,7 +433,7 @@ Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wig
 We can reconstruct a function using these different variables and bases, and as long as our variables are related as in \autoref{domains}, these reconstructions are \textit{equivalent}:
 
 \begin{equation}\label{equivalent}
-y(x) = \sum_{k=0}^N a_k T_k(x)\ ;\quad \tilde{y}(z) = \sum_{k=0}^N a_k \frac{1}{2}(z^k + z^{-k})\ ;\quad \hat{y}(\theta) = \sum_{k=0}^N a_k \cos(k \theta)
+y(x) = \sum_{k=0}^N a_k T_k(x)\ ;\quad y(z) = \sum_{k=0}^N a_k \frac{1}{2}(z^k + z^{-k})\ ;\quad y(\theta) = \sum_{k=0}^N a_k \cos(k \theta)
 \end{equation}
 
 Note the set of ${a_k}$ is for $k \in {0, .. N}$ and therefore has cardinality $N+1$.\newline
@@ -436,9 +442,9 @@ Note the set of ${a_k}$ is for $k \in {0, .. N}$ and therefore has cardinality $
 
 Why might we prefer this basis to the Fourier basis? Well, the advantage of a polynomial basis is we can avert the need for periodicity at the boundaries. Polynomial fits don't suffer the Gibbs Phenomenon, however they do suffer from the also-bad Runge Phenomenon\cite{kutz}:
 
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.6\textwidth]{runge.png}
+	\includegraphics[width=0.58\textwidth, height=0.43\textwidth]{runge.png}
 	\captionsetup{width=0.6\textwidth}
 	\caption*{The Runge phenomenon, demonstrated in (a) and (b), mitigated in (c) and (d), from \cite{kutz}}
 \end{figure}
@@ -447,7 +453,7 @@ However, there is something we can do about the Runge phenomenon: By clustering 
 
 If we take $x = \cos(\theta)$ with $\theta$ equispaced $\in [0, \pi]$, then we get a very natural clustering at the edges of $[-1, 1]$ in $x$. What's more, if we have equispaced $\theta$ and a reconstruction expression built up out of sinusoids, we're back in a Fourier paradigm (at least in variable $\theta$) and can exploit the efficiency of the FFT, or, better, the discrete cosine and sine transforms!\cite{dct}\cite{dst}
 
-\section{An Algorithm}
+\section{An Algorithm}\label{algo}
 
 This all suggests a solution procedure:
 
@@ -466,11 +472,11 @@ There are a lot of details left to be worked out here, which we'll tackle in seq
 
 \subsection{The Discrete Cosine Transform}
 
-Because the reconstruction of $\hat{y}(\theta)$ (\autoref{equivalent}) only contains cosines, doing a full FFT, which tries to fit sines as well as cosines, would be doing double work. Instead we can use the DCT. There are actually \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{several possible definitions of the DCT}\cite{dct}, but I use the DCT-I, because it is in some ways closest to the interpolant (\autoref{interpolant}) we've already derived.
+Because the reconstruction of $y(\theta)$ (\autoref{equivalent}) only contains cosines, doing a full FFT, which tries to fit sines as well as cosines, would be doing double work. Instead we can use the DCT. There are actually \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{several possible definitions of the DCT}\cite{dct}, but I use the DCT-I, because it is in some sense closest to the interpolant (\autoref{interpolant}) we've already derived.
 
 Say
 
-$$y = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N-1}, ... y_1}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2N, necessarily even!}}, \text{ that is } y_n = y_{M-n},\ 0 \leq n \leq N$$
+$$y = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N-1}, ... y_1}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2N, necessarily even!}}, \text{ that is: } y_n = y_{M-n},\ 0 \leq n \leq N$$
 
 Then using $M-k$ for $k$ in the DFT equation (\autoref{dft}), we get:
 
@@ -485,26 +491,28 @@ Y_{M-k} &= \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}n(M-k)} = \sum_{n=0}^{M-1} y
 	\draw[->] (10.7,0.4) -- (10.9,0.9);
 \end{tikzpicture}\newline
 
-So when $y_n$ are redundant this way, the $Y_k$ are too in a very mirror way. We can now use the facts $Y_k = Y_{M-k}$ and $N = \frac{M}{2}$ in the FFT interpolation (\autoref{interpolant}):
+So when $y_n$ are redundant this way, the $Y_k$ are too, in a very mirror way. We can now use the facts $Y_k = Y_{M-k}$ and $N = \frac{M}{2}$ in the FFT interpolation (\autoref{interpolant}):
 
-\begin{align*}
+\begin{equation}\label{reconstruction}
+\begin{aligned}
 y(\theta) &= \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big( Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}\big) + Y_{M/2}\cos(\frac{M}{2}\theta) \Big) \\
 &= \frac{1}{M} \Big(Y_0 + 2 \sum_{k = 1}^{N-1} \big( Y_k \underbrace{\frac{e^{j k \theta} + e^{-j k \theta}}{2}}_{\cos(k\theta)} \big) + Y_N\cos(N \theta) \Big)
-\end{align*}
+\end{aligned}
+\end{equation}
 
 At samples $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N}n$, this becomes:
 
 \begin{equation}
-y(\theta_n) = \frac{1}{M} \Big(Y_0 + 2 \sum_{k = 1}^{N-1} \big( Y_k \cos(\frac{\pi nk}{N}) \big) + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} \Big) \tag{DCT$^{-1}$}
+y(\theta_n) = \frac{1}{M} \Big(Y_0 + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} + 2 \sum_{k = 1}^{N-1} Y_k \cos(\frac{\pi nk}{N}) \Big) \tag{DCT$^{-1}$}
 \end{equation}
 
-This is exactly DCT-I$^{-1}$ (which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I) on the shorter set of $Y = [Y_0, ... Y_N]$, without redundant information! Thus
+This is exactly DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT$^{-1}$ operates on the shorter set of $Y = [Y_0, ... Y_N]$, without redundant information. Thus
 
 \begin{equation}\label{ifftidct}
 \text{FFT}^{-1}([Y_0, ... Y_N, Y_{N-1}, ... Y_1])[:N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
 \end{equation}
 
-Where $[:N+1]$ truncates the left to only the first $N$ elements. Let's line up everything we now know in a diagram:
+Where $[:N+1]$ truncates to only the first $N$ elements. Given the equality above, we can line up everything we now know in a diagram:
 
 \begin{figure}[h!]
 \begin{center}
@@ -534,12 +542,194 @@ We can now easily see that in addition to the inverse relationship (\autoref{iff
 
 $$\text{FFT}([y_0, ... y_N, y_{N-1}, ... y_1])[:N+1] = \text{DCT-I}([y_0, ... y_N])$$
 
-Before we wrap up discussion of the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{DCT-I}\cite{dct}, note that the $0^{th}$ and $N^{th}$ terms appear \textit{outside the sum}, and that the sum \textit{is multiplied by 2}. In our original conception of the cosine series for $\hat{y}(\theta)$ (\autoref{equivalent}), all the cosines appear equally within the sum, so our $Y_k$ are subtly different from the $a_k$ in that formulation (some scaled by a factor of $\frac{1}{2}$). This will be important when we later transform back to the Chebyshev domain, because we will use \textit{the DCT-I version} of $\hat{y}(\theta)$, not the original conception.
+Before we wrap up discussion of the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{DCT-I}\cite{dct}, note that the $0^{th}$ and $N^{th}$ terms appear \textit{outside the sum}, and that the sum \textit{is multiplied by 2}. In our original conception of the cosine series for $y(\theta)$ (\autoref{equivalent}), all the cosines appear equally within the sum, so our $Y_k$ are subtly different from the $a_k$ in that formulation (some scaled by a factor of $\frac{1}{2}$ and all scaled by $M$). This will be important when we later transform back to the Chebyshev domain, because we will use \textit{the DCT-I version} of $y(\theta)$, not the original conception.
 
-\subsection{The Discrete Sine Transform}
+\subsection{Even and Odd Derivatives and the Discrete Sine Transform}
 
-\subsection{Transforming}
+The DCT-I can get us in to the frequency domain, but we'll need the help of another transform to get back out.
 
+If we look at the full $Y_{long}$ with redundant information, we have a palindromic structure around $N$, but also around $0$, because of \href{https://dsp.stackexchange.com/a/18931/40873}{the repetitions}\cite{bristow}, which ensure we can read the values of $Y$ at negative $k$ by wrapping around to the end of the vector. This is describing an \textit{even} function, $f(-x) = f(x)$, which makes sense, because $y(\theta)$ is entirely composed of cosines, which are even functions, and the forward transform is symmetrical with the inverse transform, also ultimately a bunch of cosines if we were to interpolate $Y(\omega)$ from $Y_k$.
+
+The derivative of an even function is an \textit{odd} function, $f(-x) = -f(x)$, which in principle should be constructable from purely sines, which are odd. And the derivative of an odd function is an even function again.
+
+To see this more granularly, let's look in more detail at the multiplication by $(jk)^\nu$ that produces $Y_k^{(\nu)}$ (\autoref{Y_nu}) (the longer, not truncated version):
+
+\begin{align*}
+Y_k^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{black} \text{ or } \color{red}(jN)^\nu\color{black})}_{\parbox{20mm}{\footnotesize \centering depending on $\nu$ \color{blue}odd \color{black} or \color{red}even}}, (-j(N-1))^\nu, ... (-j)^\nu] \odot Y_k\\
+&= j^\nu \cdot {\underbrace{[0, 1, ... 1, (\color{blue}0 \color{black}\text{ or }\color{red} 1\color{black}), -1, ..., -1]}_{\text{\large $\tilde{\mathbbm{1}}$}}}^\nu \odot \underbrace{[0, 1, ... N-1, N, N-1, ... 1]^\nu} \odot Y_k
+\end{align*}
+\begin{tikzpicture}[overlay, remember picture]  % overlay ensures this drawing goes over the equation
+	\node at (4.4,0.25) {\footnotesize constant};
+	\node at (13.4,0.2) {\footnotesize palindromic};
+	\draw[->] (4.4,0.5) -- (4.4,1);
+	\draw[->] (12.8,0.35) -- (12,0.75);
+	\draw[->] (14,0.35) -- (14.6,1);
+\end{tikzpicture}\newline
+
+
+where $\odot$ is a Hadamard, or element-wise, product, and raising a vector to a power is also element-wise. We can see
+
+$$\tilde{\mathbbm{1}}^\nu = \begin{cases} [0, 1, ... 1, 0, -1, ..., -1] & \text{if $\nu$ is \color{blue}odd}\\ [0, 1, ... 1, 1, 1, ... 1] & \text{if $\nu$ is \color{red}even}\end{cases}$$
+
+$[0, 1, ... 1, 0, -1, ..., -1]$ is odd around entries $0$ and $N$, and $[0, 1, ... 1, 1, 1, ... 1]$ is even around entry $0$.\newline
+
+Let's now use this to reconstruct samples in the $\theta$ domain, $y_n$, for odd and even derivatives:
+
+\begin{align}
+y_n^{(\text{odd } \nu)} &= \frac{1}{M} \sum_{0 < k < \frac{M}{2}} (jk)^\nu (Y_k e^{jk\theta_n} \color{blue}-\color{black} \underbrace{Y_{M-k}}_{= Y_k} e^{-jk\theta_n}) = \frac{1}{M} \sum_{k=1}^{N-1} (jk)^\nu Y_k \underbrace{(e^{jk\theta_n} - e^{-jk\theta_n})}_{2j\sin(k\theta_n)} \notag \\
+&= \frac{1}{M} \underbrace{2 \sum_{k=1}^{N-1} (jk)^\nu Y_k j \sin(\frac{\pi nk}{N})}_{\text{\normalsize = a DST-I of $Y_k^{(\nu)} \cdot j$!}} \label{y_prime_odd}\\
+y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^\nu (Y_k e^{jk\theta_n} \color{red}+\color{black} \underbrace{Y_{M-k}}_{= Y_k} e^{-jk\theta_n}) + (j\frac{M}{2})^\nu Y_{M/2} \cos(\frac{M}{2}\theta_n) \Big) \notag \\
+&= \frac{1}{M} \Big( (jN)^\nu Y_N \cos(\pi n) + \sum_{k=1}^{N-1} (jk)^\nu Y_k \underbrace{(e^{jk\theta_n} + e^{-jk\theta_n})}_{2\cos(k\theta_n)} \Big) \notag \\
+&= \frac{1}{M} \Big( \underbrace{(j0)^\nu Y_0 + (jN)^\nu Y_N (-1)^n + 2 \sum_{k=1}^{N-1} (jk)^\nu Y_k \cos(\frac{\pi nk}{N})}_{\text{\normalsize = a DCT-I of $Y_k^{(\nu)}$!}} \Big) \label{y_prime_even}
+\end{align}
+\begin{tikzpicture}[overlay, remember picture]  % overlay ensures this drawing goes over the equation
+	\node at (7.2,7.25) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
+	\node at (7.25,4) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
+	\draw[->, blue] (7.7,7.6) -- (8,7.85);
+	\draw[->, red] (7.7,4.3) -- (8.1,4.5);
+\end{tikzpicture}\newline
+
+Brilliant! So we can use only the non-redundant $Y_k$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
+
+Note that the DCT-I and DST-I definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing than in my definitions here, which can be a point of confusion. I consistently take $N$ to be the \textit{index} of the last element of the non-redundant $y$, not its length, following \cite{trefethen}. Note too that the DST-I only takes the $k = \{1, ... N-1\}$ elements, whereas the DCT-I takes all $k = \{0, ... N\}$ elements!
+
+\subsection{Transforming Back to the Chebyshev Domain}
+
+At this point we've accomplished all but the last step of \hyperref[algo]{the algorithm}, but we've been operating with $y_n = y(\theta_n)$ and $y_n^{(\nu)} = y^{(\nu)}(\theta_n)$, which are really samples from the $\theta$ domain, when what we really need to do is take derivatives in the $x = \cos(\theta)$ domain.
+
+When we do this, we have to employ a chain rule, which introduces a new factor: the derivative of one of our variables w.r.t. the other. For the $1^{st}$ derivative it looks like:
+
+$$\frac{d}{dx} y(\theta) = \frac{d}{d\theta} y(\theta) \cdot \frac{d\theta}{dx} = \frac{\frac{d}{d\theta} y(\theta)}{\frac{dx}{d\theta}}, \quad \text{where } \frac{dx}{d\theta} = \frac{d}{d\theta} \cos(\theta) = -\sin(\theta)$$
+\begin{align*}
+	& \sin^2(\theta) + \cos^2(\theta) = 1 \longrightarrow \sin(\theta) = \pm \sqrt{1-\cos^2(\theta)} = \sqrt{1 - x^2} \text{ using upper semicircle}\\
+	& \longrightarrow -\sin(\theta) = -\sqrt{1 - x^2} \longrightarrow \frac{d\theta}{dx} = \frac{1}{\frac{dx}{d\theta}} = \frac{-1}{\sqrt{1 - x^2}} \quad \Big(\text{and also } \frac{d}{dx} \cos^{-1}(x) = \frac{-1}{\sqrt{1 - x^2}} \Big)
+\end{align*}
+
+The $\frac{d}{d\theta} y(\theta)$ a.k.a $y'(\theta)$ term is actually pretty easy to handle, because we know its value (and for higher orders too) at discretized $\theta_n$ from earlier (\autoref{y_prime_odd} and \autoref{y_prime_even})! If we use the sampled $x_n = \cos(\theta_n)$ from step 1 of the algorithm (\autoref{algo}), then our $\{x_n\}$ and $\{\theta_n\}$ align, and we can find samples of the derivative w.r.t. $x$ by plugging $\{x_n\}$ in to the new factor(s) and multiplying appropriately (pointwise):
+
+$$[\frac{d}{dx} y(\theta)]_n = \frac{-1}{\sqrt{1 - x_n^2}} \odot y'_n$$
+
+\subsubsection{Higher Derivatives}
+
+Let's see it for the second derivative:
+
+\begin{align*}
+\frac{d^2}{dx^2} y(\theta) &= \frac{d}{dx} \frac{y'(\theta)}{-\sqrt{1-x^2}} = \frac{-\sqrt{1-x^2} \frac{d}{dx} y'(\theta) - y'(\theta) \frac{d}{dx} (-\sqrt{1-x^2})}{1 - x^2} \\
+&= \frac{-\frac{d}{d\theta}y'(\theta)\cdot \frac{d\theta}{dx}}{\sqrt{1-x^2}} - \frac{y'(\theta)\frac{x}{\sqrt{1-x^2}}}{1 - x^2} = \frac{y''(\theta)}{1-x^2} - \frac{x y'(\theta)}{(1 - x^2)^{3/2}} \\
+\longrightarrow [\frac{d^2}{dx^2} y(\theta)]_n &= \frac{1}{1-x_n^2} \odot y''_n - \frac{x_n}{(1 - x_n^2)^{3/2}} \odot y'_n
+\end{align*}
+
+Notice that the $2^{nd}$ derivative in $x$ requires \textit{both} the $1^{st}$ and $2^{nd}$ derivatives in $\theta$! This pattern will turn out to hold for higher derivatives as well: For the $\nu^{th}$ derivative in $x$ we require all derivatives up to order $\nu$ in $\theta$.
+
+Let's see a few more:
+
+\begin{equation}\label{derivatives}
+\footnotesize
+\begin{aligned}
+\frac{d^3}{dx^3} y(\theta) &= \frac{-1}{(1-x^2)^{3/2}} y'''(\theta) + \frac{3x}{(1-x^2)^2} y''(\theta) + \frac{-2x^2 - 1}{(1-x^2)^{5/2}} y'(\theta)\\
+\frac{d^4}{dx^4} y(\theta) &= \frac{1}{(1-x^2)^2} y^{IV}(\theta) + \frac{-6x}{(1-x^2)^{5/2}} y'''(\theta) + \frac{11x^2 + 4}{(1-x^2)^3} y''(\theta) + \frac{-6x^3 - 9x}{(1-x^2)^{7/2}} y'(\theta)\\
+\frac{d^5}{dx^5} y(\theta) &= \frac{-1}{(1-x^2)^{5/2}} y^V(\theta) + \frac{10x}{(1-x^2)^3} y^{IV}(\theta) + \frac{-35x^2-10}{(1-x^2)^{7/2}} y'''(\theta) + \frac{50x^2 + 55x}{(1-x^2)^4} y''(\theta) + \frac{-24x^4 -72x^2 - 9}{(1-x^2)^{9/2}} y'(\theta)\\
+\end{aligned}
+\end{equation}\newline
+
+As we take higher derivatives, we can see a bit of a pattern. In particular, the function of $x$ multiplying each derivative of $y$ in $\theta$ comes from at most two terms in the preceding derivative, which have a predictable form:
+
+\begin{align*}
+\frac{d}{dx} \Big( \frac{p(x)}{(1-x^2)^{c-1}} y^{(\mu)}(\theta) &+ \frac{q(x)}{(1-x^2)^{c -\frac{1}{2}}} y^{(\mu-1)}(\theta) \Big) = \\
+&\frac{p(x)}{(1-x^2)^{c-1}} y^{(\mu+1)}(\theta) \cdot \frac{d\theta}{dx} + \frac{(1 - x^2)^{c-1} \frac{d}{dx} p(x) - p(x)(c-1)(1-x^2)^{c-2}(-2x)}{(1-x^2)^{2c - 2}} y^{(\mu)}(\theta)\ +\\
+&\frac{q(x)}{(1-x^2)^{c-\frac{1}{2}}} y^{(\mu)} \cdot \frac{d\theta}{dx} + \frac{(1 - x^2)^{c-\frac{1}{2}} \frac{d}{dx} q(x) - q(x)(c-\frac{1}{2})(1-x^2)^{c-\frac{3}{2}}(-2x)}{(1-x^2)^{2c - 1}} y^{(\mu-1)}(\theta)
+\end{align*} 
+
+If we now gather the $y^{(\mu)}(\theta)$ terms and use the fact $\frac{d\theta}{dx} = \frac{-1}{\sqrt{1-x^2}}$, we can find its new factor in $x$ is equal to
+
+\begin{align*}
+\frac{(1-x^2)p'(x) + 2(c-1)xp(x) - q(x)}{(1 - x^2)^c}
+\end{align*}
+
+This relationship holds no matter which, $\mu, c, p, q$ we're addressing, which allows us to build up a kind of pyramid of terms:
+
+\begin{figure}[h!]\label{pyramid}
+\begin{center}
+\begin{minipage}{0.55\textwidth}
+\centering
+\begin{tikzpicture}
+	\footnotesize
+	\node[anchor=west] at (0, 4) {$-1$};
+	\node[anchor=west] at (0, 3) {$-x$};\node[anchor=west] at (2.75, 3) {$1$};
+	\node[anchor=west] at (0, 2) {$-2x^2-1$};\node[anchor=west] at (2.75, 2) {$3x$};\node[anchor=west] at (4.5, 2) {$-1$};
+	\node[anchor=west] at (0, 1) {$-6x^3-9x$};\node[anchor=west] at (2.75, 1) {$11x^2+4$};\node[anchor=west] at (4.5, 1) {$-6x$};\node[anchor=west] at (6.5, 1) {$1$};
+	\node[anchor=west] at (0, 0) {$-24x^4-72x^2-9$};\node[anchor=west] at (2.75, 0) {$50x^3+55x$};\node[anchor=west] at (4.5, 0) {$-35x^2-10$};\node[anchor=west] at (6.5, 0) {$10x$};\node[anchor=west] at (7.5, 0) {$-1$};
+	\node at (0.5, -0.75) {lower $\frac{d}{d\theta}$ of y};
+	\node at (8, -0.75) {higher $\frac{d}{d\theta}$ of y};
+	\node at (-0.8, 2) {\parbox{15mm}{increasing $\frac{d}{dx}$ of y}};
+	\node at (-1, 4) {\parbox{15mm}{\normalsize numerator $p$ and $q$:}};
+	\draw[->] (0,3.8) -- (0,0.2);
+	\draw[->] (0.5,-0.55) -- (0.75,-0.2);
+	\draw[->] (8,-0.55) -- (7.75,-0.2);
+	\draw[->] (3,1.25) -- (3,1.75) node[midway, right] {p};
+	\draw[->] (2.75,1) -- (1,1.75) node[midway, above] {q};
+	\node at (3, -0.75) {...}; \node at (5, -0.75) {...};
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{tikzpicture}
+	\node[anchor=west] at (0, 4) {$\frac{1}{2}$};
+	\node[anchor=west] at (0, 3) {$\frac{3}{2}$};\node[anchor=west] at (1, 3) {$1$};
+	\node[anchor=west] at (0, 2) {$\frac{5}{2}$};\node[anchor=west] at (1, 2) {$2$};\node[anchor=west] at (2, 2) {$\frac{3}{2}$};
+	\node[anchor=west] at (0, 1) {$\frac{7}{2}$};\node[anchor=west] at (1, 1) {$3$};\node[anchor=west] at (2, 1) {$\frac{5}{2}$};\node[anchor=west] at (3, 1) {$2$};
+	\node[anchor=west] at (0, 0) {$\frac{9}{2}$};\node[anchor=west] at (1, 0) {$4$};\node[anchor=west] at (2, 0) {$\frac{7}{2}$};\node[anchor=west] at (3, 0) {$3$};\node[anchor=west] at (4, 0) {$\frac{5}{2}$};
+	\node at (1, -0.75) {...};\node at (4, -0.75) {...};
+	\node at (-1, 4) {\parbox{15mm}{\normalsize $c$ at each location:}};
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+\end{figure}
+
+$q$ always refers to the element up and to the left, and $p$ always refers to the element above. If the arrows roll out of the pyramid, the corresponding $p$ or $q$ is $0$.
+
+I've done the above programmatically in \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{the code}, such that we can find and apply the factors---and thereby accomplish the variable transformation back to the Chebyshev domain---for arbitrarily high derivatives. You're welcome.
+
+\subsubsection{Handling Domain Endpoints}
+
+There's a problem in the above at the edges of the domain: If $x = \pm 1$, the denominators of all the factors, which are powers of $\sqrt{1 - x^2} = 0$!
+
+However, this doesn't mean $\frac{d^\nu}{dx^\nu} y$ can't have a valid \textit{limit value} at those points. First remember our reconstruction $y(\theta)$ is composed of cosines, so notice if we take odd derivatives in $\theta$, we get sines, and at the edges of the domain where $x \rightarrow \pm 1$, $\theta \rightarrow 0,\pi$, sine will be 0! However, if we take even derivatives, then $\cos(0,\pi) \rightarrow 1, -1$. Then, if we look closely at the derivatives (\autoref{derivatives}) in $x$, we can see that \textit{even} derivatives in $\theta$ of $y$ are divided by \textit{even} powers of $\sqrt{1 - x^2}$, and the \textit{highest} power in a denominator is an \textit{odd} power of $\sqrt{1 - x^2}$. If we multiply through so everything is over the highest-power denominator and then combine the expression into a single fraction, we get a situation where the odd-derivative terms are 0 because sines, and the even-derivative terms are 0 because they're multiplied by at least one $\sqrt{1 - x^2}$.
+
+This means the \textit{numerator} as well as the denominator is $0$ at the domain endpoints. $\frac{0}{0}$ is an indeterminate form, so we can use L'Hôpital's rule!
+
+Let's see it for the $1^{st}$ derivative. Plugging in the DCT-I reconstruction (\autoref{reconstruction}) for $y(\theta)$:
+
+\begin{align*}
+&\lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{d}{d\theta} \frac{1}{M} \Big( Y_0 + Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} Y_k \cos(k\theta) \Big) \cdot \frac{d\theta}{dx} = \lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\frac{1}{M} \Big(-N Y_N \sin(N\theta) - 2 \sum_{k=1}^{N-1} k Y_k \sin(k\theta) \Big)}{-\sqrt{1-x^2}} \\
+&\underset{\frac{d}{dx}}{\overset{\frac{d}{dx}}{\longrightarrow}}\ = \lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\frac{1}{M} \Big(-N^2 Y_N \cos(N\theta) - 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big) \cdot \frac{-1}{\cancel{\sqrt{1-x^2}}}}{\frac{x}{\cancel{\sqrt{1-x^2}}}} = \lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\frac{1}{M} \Big(N^2 Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big)}{x}
+\end{align*}
+
+\begin{equation}
+= \begin{cases} \frac{1}{M} \Big(N^2 Y_N + 2 \sum_{k=1}^{N-1} k^2 Y_k \Big) & \text{ at } x=1, \theta=0 \\ -\frac{1}{M} \Big(N^2 (-1)^N Y_N + 2 \sum_{k=1}^{N-1} k^2 (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$1^{st}$ endpoints}
+\end{equation}
+
+And now let's do it for the $2^{nd}$ derivative, with some slightly more compact notation:
+
+\begin{align*}
+&\lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\sqrt{1 - x^2} y''(\theta) - x y'(\theta)}{(1-x^2)^{3/2}} \rightarrow \frac{0}{0} \underset{\frac{d}{dx}}{\overset{\frac{d}{dx}}{\longrightarrow}} \frac{\cancel{\sqrt{1-x^2}}y'''(\theta)\frac{-1}{\cancel{\sqrt{1-x^2}}} + \cancel{\frac{-x}{\sqrt{1-x^2}}y''(\theta)} - (\cancel{xy''(\theta)\frac{-1}{\sqrt{1-x^2}}} + y'(\theta))}{-3x\sqrt{1-x^2}}\\
+& \rightarrow \frac{0}{0} \underset{\frac{d}{dx}}{\overset{\frac{d}{dx}}{\longrightarrow}} \frac{\cancel{-}y^{IV}(\theta)\frac{\cancel{-1}}{\cancel{\sqrt{1-x^2}}} \cancel{-} y''(\theta)\frac{\cancel{-1}}{\cancel{\sqrt{1-x^2}}}}{\frac{6x^2 - 3}{\cancel{\sqrt{1-x^2}}}} = \frac{1}{6x^2 - 3}(y^{IV}(\theta) + y''(\theta))
+\end{align*}
+
+We already know $y''(\theta) = \frac{1}{M} \Big(-N^2 Y_N \cos(N\theta) - 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big)$. We can easily find
+
+$$y^{IV}(\theta) = \frac{1}{M} \Big(N^4 Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} k^4 Y_k \cos(k\theta) \Big)$$
+
+Now we can evaluate these and the factor $\frac{1}{6x^2 - 3}$ at the limit values and put it all together to find: 
+
+\begin{equation}
+\begin{cases} \frac{1}{3M} \Big((N^4 - N^2) Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{3M} \Big((N^4 - N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$2^{nd}$ endpoints}
+\end{equation}
+
+It's possible to do this for higher derivatives too. I actually did it for the $3^{rd}$ and $4^{th}$ derivatives and put the answers in \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{the code}. However, in general to find the endpoints for the $\nu^{th}$ derivative takes $\nu$ applications of L'Hôpital's rule, and the algebra gets to be pretty gnarly.
+
+In principle it is possible to build up the formulas via a similar process to the \hyperref[pyramid]{pyramid scheme} from earlier, because $f(x)$ factors multiplying respective orders of $y(\theta)$ come from at most two terms in the previous expression (before the latest application of L'Hôpital). But this time the $f(x)$ involve fractional powers of $\sqrt{1-x^2}$, which can't be as easily represented in \texttt{numpy}. So for now a neat scheme \href{https://github.com/pavelkomarov/spectral-derivatives/issues/1}{hasn't been invented}.
+
+It is possible to sidestep the ballooningly-complicated variable mappings and limit evaluations of higher derivatives by building up to higher derivatives from lower ones in stages (being careful to only use even derivatives if our end goal is even, so we preserve the Nyquist term). This would involve more forward transforms but actually no more inverse ones, since we have to remember the results of all the inverse transforms up to the $\nu^{th}$ order anyway.
 
 \section{Multidimensionality}
 

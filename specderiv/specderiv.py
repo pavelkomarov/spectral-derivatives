@@ -1,7 +1,8 @@
 import numpy as np
 from numpy.polynomial import Polynomial as poly
-from scipy.fftpack import dct, dst
+from scipy.fft import dct, dst
 from collections import deque
+from warnings import warn
 
 
 def cheb_deriv(y, nu, axis=0):
@@ -28,12 +29,12 @@ def cheb_deriv(y, nu, axis=0):
 	y_primes = [] # Store all derivatives in theta up to the nu^th, because we need them all for reconstruction.
 	for order in range(1, nu+1):
 		if order % 2: # odd derivative
-			Y_prime = (1j * k[s])**order * Y[middle] # Y_prime[k=0 and N] = 0 and so are not needed for the DST
-			y_primes.append(dst(1j * Y_prime, 1, axis=axis).real / M) # d/dtheta y = the inverse transform of DST-1 
+			Y_order = (1j * k[s])**order * Y[middle] # Y_prime[k=0 and N] = 0 and so are not needed for the DST
+			y_primes.append(dst(1j * Y_order, 1, axis=axis).real / M) # d/dtheta y = the inverse transform of DST-1 
 				# = 1/M * DST-1. Extra j for equivalence with IFFT. Im{y_prime} = 0 for real y, so just keep real.
 		else: # even derivative
-			Y_prime = (1j * np.arange(0, N+1)[s])**order * Y # Include terms for wavenumbers 0 and N, becase the DCT uses them
-			y_primes.append(dct(Y_prime, 1, axis=axis)[middle].real / M) # the inverse transform of DCT-1 is 1/M * DCT-1.
+			Y_order = (1j * np.arange(0, N+1)[s])**order * Y # Include terms for wavenumbers 0 and N, becase the DCT uses them
+			y_primes.append(dct(Y_order, 1, axis=axis)[middle].real / M) # the inverse transform of DCT-1 is 1/M * DCT-1.
 				# Slice off ends. Im{y_prime} = 0 for real y, so just keep real.
 
 	# Calculate the polynomials in x necessary for transforming back to the Chebyshev domain
@@ -68,21 +69,36 @@ def cheb_deriv(y, nu, axis=0):
 		dy[first] = np.sum((k**8 - 14*k**6 + 49*k**4 - 36*k**2)[s] * Y[middle], axis=axis)/(105*N) + N*(N**6 - 14*N**4 + 49*N**2 - 36)/210 * Y[last]
 		dy[last] = np.sum(((k**8 - 14*k**6 + 49*k**4 - 36*k**2)*np.power(-1, k))[s] * Y[middle], axis=axis)/(105*N) + (N*(N**6 - 14*N**4 + 49*N**2 - 36)*(-1)**N)/210 * Y[last]
 	else: # For higher derivatives, leave the endpoints uncalculated
+		warn("endpoints set to NaN, only calculated for 4th derivatives and below")
 		dy[first] = np.nan
 		dy[last] = np.nan
 
 	return dy
 
 
-def fourier_deriv(y, nu, axis):
-	"""For use with periodic functions"""
-	# No need to extend vectors; simply use FFT and IFFT?
+def fourier_deriv(y, nu, axis=0):
+	"""For use with periodic functions.
+	:param y: Data to transform, representing a function at equispaced points in [0, 2pi)
+	:param nu: The order of derivative to take
+	:param axis: The dimension along which to take the derivative, defaults to first dimension
+	:return dy: data representing the nu^th derivative of the function, sampled at points theta_n
+	"""
 	# No worrying about conversion back from a variable transformation.
 	# No special treatment of boundaries.
-	# "true" multidimensional fftn and ifftn can be used without a problem
 	# Use DCT-II and DST-II for no-flux and pinned?
-	# The domain for these is [0, 2pi] rather than [-1, 1], correct?
-	pass
+	M = y.shape[axis]
+	if M % 2 == 0: # if M has an even length, then we make k = [0, 1, ... M/2 - 1, 0 or M/2, -M/2 + 1, ... -1]
+		k = np.concatenate((np.arange(M//2 + 1), np.arange(-M//2 + 1, 0)))
+		if nu % 2 == 1: # odd derivatives get the M/2th element zeroed out
+			k[M//2] = 0
+	else: # M has odd length, so k = [0, 1, ... floor(M/2), -floor(M/2), ... -1]
+		k = np.concatenate((np.arange(M//2 + 1), np.arange(-M//2 + 1, 0)))
 
+	s = [np.newaxis for dim in y.shape]; s[axis] = slice(None); s = tuple(s) # for elevating vectors to have same dimension as data
 
+	Y = np.fft.fft(y, axis=axis)
+	Y_prime = (1j * k[s])**nu * Y
+	dy = np.fft.ifft(Y_prime, axis=axis)
+
+	return dy
 
