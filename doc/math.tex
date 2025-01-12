@@ -26,15 +26,15 @@ A \textit{basis} is a set of ``orthogonal" functions, call them $\{\xi_k\}$, tha
 
 The inner product between two functions $f$ and $g$ is a generalization of the inner product between vectors, where instead of summing over a finite number of discrete entries, we integrate over infinitely many infinitesimally-separated points in the domain. We define it as:
 
-$$ \langle f,g \rangle = \int\limits_{-\infty}^{\infty} \overline{f(x)} g(x) dx $$
+$$ \langle f,g \rangle = \int\limits_{a}^{b} \overline{f(x)} g(x) dx $$
 
 where the overbar $\overline{\cdot}$ denotes a complex conjugate.\newline
 
 The inner product is symmetrical, so
 
-$$ \langle f,g \rangle = \langle g,f \rangle = \int\limits_{-\infty}^{\infty} f(x) \overline{g(x)} dx $$
+$$ \langle f,g \rangle = \langle g,f \rangle = \int\limits_{a}^{b} f(x) \overline{g(x)} dx $$
 
-Notice that this integral could diverge. If it doesn't, we say the argument is \href{https://mathworld.wolfram.com/LebesgueIntegrable.html}{``Lebesgue integrable"}\cite{lebesgue}. Much of what we'll do only makes sense for this class of functions, so be aware.
+Note that if we set $a$ and $b$ at $\pm \infty$, this integral could diverge. If it doesn't diverge with infinite bounds, we say the argument is \href{https://mathworld.wolfram.com/LebesgueIntegrable.html}{``Lebesgue integrable"}\cite{lebesgue}. Some of what we'll do only makes sense for this class of functions, so be aware.
 
 \subsection{The Fourier Basis}
 
@@ -77,7 +77,7 @@ $$ \cos(\omega) = 1 - \frac{\omega^2}{2!} + \frac{\omega^4}{4!} - \frac{\omega^6
 
 Notice all of the even-power terms appear with alternating sign as in the cosine expansion, and the odd-power terms appear with alternating sign as in the sine expansion, but with an extra $j$ multiplied in.
 
-The presence of complex numbers to make this work can be confusing at first, but don't be scared! All we're really doing is using a compressed representation of a sine plus a cosine, where the real and imaginary parts (orthogonal in the complex plane, and therefore independent and non-interfering) allow us to describe the contributions of sine and cosine simultaniously. In fact, \href{https://math.stackexchange.com/a/1293127/278341}{Joseph Fourier originally used only real trigonometric functions}\cite{complex}, and it wasn't until later someone decided it would be easier to work with complex exponentials. Later (\autoref{fourier}) we'll see that for real signals all the complex numbers cancel, leaving only a \textit{real} sine and \textit{real} cosine, which when added together make \textit{a single, phase-shifted sinusoid!} So think of $e^{j \omega}$ as oscillations at a particular frequency, $\omega$.
+The presence of complex numbers to make this work can be confusing at first, but don't be scared! All we're really doing is using a compressed representation of a sine plus a cosine, where the real and imaginary parts (orthogonal in the complex plane, and therefore independent and non-interfering) allow us to describe the contributions of sine and cosine simultaneously. In fact, \href{https://math.stackexchange.com/a/1293127/278341}{Joseph Fourier originally used only real trigonometric functions}\cite{complex}, and it wasn't until later someone decided it would be easier to work with complex exponentials. Later (\autoref{fourier}) we'll see that for real signals all the complex numbers cancel, leaving only a \textit{real} sine and \textit{real} cosine, which when added together make \textit{a single, phase-shifted sinusoid!} So think of $e^{j \omega}$ as oscillations at a particular frequency, $\omega$.
 
 If we inner product mismatched wiggles, they misalign and integrate to 0, but if we inner product matched wiggles, they align, multiply to 1 because of the complex conjugate, and integrate to $2\pi$ over a period.
 
@@ -85,28 +85,29 @@ If we inner product mismatched wiggles, they misalign and integrate to 0, but if
 
 I can use a basis to ``transform" a function, meaning I take the function's inner product with each of the basis functions to produce numbers:
 
-$$ \langle f,\xi_k \rangle = \int\limits_{-\infty}^{\infty} f(x) \overline{\xi_k(x)} dx = \text{a constant coefficient}, c_k $$
+$$ \langle f,\xi_k \rangle = \int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx = \text{a constant coefficient}, c_k $$
 
-These numbers descibe \textit{how much} of each basis function $\xi_k$ is present in the signal $f$. If I do this for all the $\{\xi_k\}$, I essentially get a \textit{recipe}, which says ``I need this much of $\xi_0$ and that much of $\xi_1$ and howevermuch of $\xi_2$ ... added together to reproduce the original signal."
+These numbers descibe \textit{how much} of each basis function $\xi_k$ is present in the signal $f$ on a domain between $a$ and $b$. If I do this for all the $\{\xi_k\}$, I essentially get a \textit{recipe}, which says ``I need this much of $\xi_0$ and that much of $\xi_1$ and howevermuch of $\xi_2$ ... added together to reproduce the original signal."
 
-$$ f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x) $$
+$$ f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b] $$
 
 where $M$ is the number of basis functions I'm using in my reconstruction.\newline
 
-The set of numbers $c_k$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. We've \textit{transformed} to a different domain.
+The set of numbers $c_k$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. We've \textit{transformed} the function to a set of numbers which now live in a different domain.
 
-Beware that the terminology ``transform" and ``domain" is not always used to describe transforming a continuous function to a discrete series like this. However, it is possible the basis set has infinitely many members which are in some sense dense, infinitesimally close together. This is indeed the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain. (For the relationship between different variants of the Fourier transform, see \autoref{family}.) 
+Beware that the terminology ``transform" and ``domain" is not always used to describe transforming a continuous function to a discrete set of $c_k$ like this, because ``domain" technically refers to a ``connected" set, not just a collection of $k$ things. However, it is possible for members of the basis set to be related through a continuous parameter which in some sense makes the set dense, having infinitely many members which are infinitesimally close together. This is the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain.
 
 \subsection{The Fourier Transform}\label{fourier}
 
-Using Fourier's original sinusoid formulation, we can write the reconstruction expression as:
+Using Fourier's original real-sinusoid-based formulation, we can write the reconstruction expression as\footnote{It's worth considering how weird it is this is true. In fact, it's so weird that Joseph Lagrange publicly declared Fourier was wrong at a meeting of the Paris Academy in 1807!\cite{michigan} It's valuable to ask \href{https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work}{why this works}\cite{why} and sift through some analysis.}:
 
 $$ f(x) = a_0 + \sum_{k=1}^{\infty} (a_k \cos(k \omega_0 x) + b_k \sin(k \omega_0 x))$$
 
 where
 \begin{itemize}[noitemsep, topsep=0pt, after=\newline]
+	\item $f$ is periodic with fundamental frequency $\omega_0$, so the $k^{th}$ frequency becomes $k \cdot \omega_0$
 	\item $a_k$ and $b_k$ are coefficients describing how much cosine and sine to add in, respectively
-	\item $\omega_0$ is a fundamental frequency, so the $k^{th}$ frequency becomes $k \cdot \omega_0$
+	\item $k$ goes up to $\infty$ because we need an infinite number of ever-higher-frequency sinusoids to reconstruct the function with perfect fidelity
 \end{itemize}
 
 Let's now use $\cos(x) = \frac{e^{jx} + e^{-jx}}{2}$ and $\sin(x) = \frac{e^{jx} - e^{-jx}}{2j}$, which can be verified by manipulating Euler's formula, \autoref{euler}.
@@ -116,9 +117,9 @@ f(x) &= a_0 + \sum_{k=1}^{\infty} (a_k \frac{e^{j k \omega_0 x} + e^{-j k \omega
 &= a_0 + \sum_{k = -\infty}^{-1} (\frac{a_{-k}}{2} - \frac{b_{-k}}{2j}) e^{j k \omega_0 x} + \sum_{k = 1}^{\infty} (\frac{a_k}{2} + \frac{b_k}{2j}) e^{j k \omega_0 x} = \sum_{k = -\infty}^{\infty} c_k e^{j k \omega_0 x}
 \end{align*}
 
-So if we choose $c_0 = a_0$ and $c_k = \overline{c_{-k}} = \frac{a_k}{2} + \frac{b_k}{2j}$, then the complex exponential formulation is \href{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}{exactly equivalent to the trigonometric formulation}\cite{swarthmore}. That is, we can choose \textit{complex} $c_k$ such that when multiplied by \textit{complex} exponentials, we get back only \textit{real} signal! Essentially, the relative balance of real and complex in $c_k$ affects how much cosine and sine are present at the $k^{th}$ frequency, thereby accomplishing a phase shift. Without accounting for phase shifts, we would only be able to model \textit{symmetric} signals!
+So if we choose $c_0 = a_0$ and $c_k = \overline{c_{-k}} = \frac{a_k}{2} + \frac{b_k}{2j}$, then the complex exponential formulation is \href{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}{exactly equivalent to the trigonometric formulation}\cite{swarthmore}. That is, we can choose \textit{complex} $c_k$ such that when multiplied by \textit{complex} exponentials, we get back only \textit{real} signal! Essentially, the relative balance of real and complex in $c_k$ affects how much cosine and sine are present at the $k^{th}$ frequency, \href{https://dsego.github.io/demystifying-fourier/}{thereby accomplishing a phase shift}\cite{sego}. Without accounting for phase shifts, we would only be able to model \textit{symmetric} signals!
 
-If instead of a fundamental frequency $\omega_0 = \frac{2\pi}{T}$, where $T$ is a period of repetition, the signal contains dense frequencies (because it has no repetition, $T \rightarrow \infty$, $\omega_0 \rightarrow 0$), then it makes more sense to express the transformed coefficients as a function in $\omega$ and to make both our inner product and reconstruction expression integrals:
+If instead of a fundamental frequency $\omega_0 = \frac{2\pi}{T}$, where $T$ is a period of repetition, the signal contains dense frequencies (because it has no repetition, $T \rightarrow \infty$, $\omega_0 \rightarrow 0$), and if we care about a domain of the entire set of $\mathbb{R}$, then it makes more sense to express the transformed coefficients as a function in $\omega$ and to make both our inner product and reconstruction expression integrals from $-\infty$ to $+\infty$:
 
 
 \begin{equation}\label{pair}
@@ -197,7 +198,7 @@ This is great because taking derivatives in the spatial domain is actually prett
 
 \subsection{Taking Derivatives in the Discrete Case}
 
-Because we're going to want to use a computer, and a computer can only operate on discrete representations, we really need to talk about the DFT and what it means to take a derivative in this discrete paradigm. It has a connection to the above continuous case but is far more subtle, worth going in to \textit{at some length}.
+Because we're going to want to use a computer, and a computer can only operate on discrete representations, we really need to talk about the DFT and what it means to take a derivative in this discrete paradigm. It has a connection to the above continuous case but is far more subtle, worth going in to \textit{\href{https://www.youtube.com/watch?v=v7l3Q11DBq0&t=1299s}{at some length}}.
 
 \subsubsection{The DFT Pair}
 
@@ -383,7 +384,7 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, \ycoord)};
 		\node at (axis cs:\xcoord, \ycoord) [above right] {$z = e^{j\theta}$};
 		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, -\ycoord)};
-		\node at (axis cs:\xcoord, -\ycoord) [below right] {$\overline{z} = e^{-j\theta}$};
+		\node at (axis cs:\xcoord, -\ycoord) [below, right, yshift=-4mm] {\parbox{15mm}{\begin{align*}\overline{z} &= z^{-1} \\ &= e^{-j\theta}\end{align*}}};
 		\addplot[domain=0:1, samples=2, thick] ({x*\xcoord}, {x*\ycoord}); 
 		\addplot[domain=1:0, samples=2, thick, dashed] ({\xcoord}, {x*\ycoord}); 
 		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, 0)};
@@ -605,7 +606,7 @@ $$\frac{d}{dx} y(\theta) = \frac{d}{d\theta} y(\theta) \cdot \frac{d\theta}{dx} 
 	& \longrightarrow -\sin(\theta) = -\sqrt{1 - x^2} \longrightarrow \frac{d\theta}{dx} = \frac{1}{\frac{dx}{d\theta}} = \frac{-1}{\sqrt{1 - x^2}} \quad \Big(\text{and also } \frac{d}{dx} \cos^{-1}(x) = \frac{-1}{\sqrt{1 - x^2}} \Big)
 \end{align*}
 
-The $\frac{d}{d\theta} y(\theta)$ a.k.a $y'(\theta)$ term is actually pretty easy to handle, because we know its value (and for higher orders too) at discretized $\theta_n$ from earlier (\autoref{y_prime_odd} and \autoref{y_prime_even})! If we use the sampled $x_n = \cos(\theta_n)$ from step 1 of the algorithm (\autoref{algo}), then our $\{x_n\}$ and $\{\theta_n\}$ align, and we can find samples of the derivative w.r.t. $x$ by plugging $\{x_n\}$ in to the new factor(s) and multiplying appropriately (pointwise):
+The $\frac{d}{d\theta} y(\theta)$ a.k.a $y'(\theta)$ term is actually pretty easy to handle, because we know its value (and for higher orders too) at discretized $\theta_n$ from earlier (\autoref{y_prime_odd} and \autoref{y_prime_even})! If we use the sampled $x_n = \cos(\theta_n)$ from step 1 of \hyperref[algo]{the algorithm}, then our $\{x_n\}$ and $\{\theta_n\}$ align, and we can find samples of the derivative w.r.t. $x$ by plugging $\{x_n\}$ in to the new factor(s) and multiplying appropriately (pointwise):
 
 $$[\frac{d}{dx} y(\theta)]_n = \frac{-1}{\sqrt{1 - x_n^2}} \odot y'_n$$
 
@@ -613,11 +614,13 @@ $$[\frac{d}{dx} y(\theta)]_n = \frac{-1}{\sqrt{1 - x_n^2}} \odot y'_n$$
 
 Let's see it for the second derivative:
 
-\begin{align*}
+\begin{equation}\label{2nd}
+\begin{aligned}
 \frac{d^2}{dx^2} y(\theta) &= \frac{d}{dx} \frac{y'(\theta)}{-\sqrt{1-x^2}} = \frac{-\sqrt{1-x^2} \frac{d}{dx} y'(\theta) - y'(\theta) \frac{d}{dx} (-\sqrt{1-x^2})}{1 - x^2} \\
 &= \frac{-\frac{d}{d\theta}y'(\theta)\cdot \frac{d\theta}{dx}}{\sqrt{1-x^2}} - \frac{y'(\theta)\frac{x}{\sqrt{1-x^2}}}{1 - x^2} = \frac{y''(\theta)}{1-x^2} - \frac{x y'(\theta)}{(1 - x^2)^{3/2}} \\
 \longrightarrow [\frac{d^2}{dx^2} y(\theta)]_n &= \frac{1}{1-x_n^2} \odot y''_n - \frac{x_n}{(1 - x_n^2)^{3/2}} \odot y'_n
-\end{align*}
+\end{aligned}
+\end{equation}
 
 Notice that the $2^{nd}$ derivative in $x$ requires \textit{both} the $1^{st}$ and $2^{nd}$ derivatives in $\theta$! This pattern will turn out to hold for higher derivatives as well: For the $\nu^{th}$ derivative in $x$ we require all derivatives up to order $\nu$ in $\theta$.
 
@@ -640,7 +643,7 @@ As we take higher derivatives, we can see a bit of a pattern. In particular, the
 &\frac{q(x)}{(1-x^2)^{c-\frac{1}{2}}} y^{(\mu)} \cdot \frac{d\theta}{dx} + \frac{(1 - x^2)^{c-\frac{1}{2}} \frac{d}{dx} q(x) - q(x)(c-\frac{1}{2})(1-x^2)^{c-\frac{3}{2}}(-2x)}{(1-x^2)^{2c - 1}} y^{(\mu-1)}(\theta)
 \end{align*} 
 
-If we now gather the $y^{(\mu)}(\theta)$ terms and use the fact $\frac{d\theta}{dx} = \frac{-1}{\sqrt{1-x^2}}$, we can find its new factor in $x$ is equal to
+If we now gather the $y^{(\mu)}(\theta)$ terms and use the fact $\frac{d\theta}{dx} = \frac{-1}{\sqrt{1-x^2}}$, we can find its new miltiplying $f(x)$ is equal to:
 
 \begin{align*}
 \frac{(1-x^2)p'(x) + 2(c-1)xp(x) - q(x)}{(1 - x^2)^c}
@@ -683,7 +686,7 @@ This relationship holds no matter which, $\mu, c, p, q$ we're addressing, which 
 \end{tikzpicture}
 \end{minipage}
 \end{center}
-\end{figure}
+\end{figure}\vspace{-5mm}
 
 $q$ always refers to the element up and to the left, and $p$ always refers to the element above. If the arrows roll out of the pyramid, the corresponding $p$ or $q$ is $0$.
 
@@ -706,7 +709,7 @@ Let's see it for the $1^{st}$ derivative. Plugging in the DCT-I reconstruction (
 
 \begin{equation}
 = \begin{cases} \frac{1}{M} \Big(N^2 Y_N + 2 \sum_{k=1}^{N-1} k^2 Y_k \Big) & \text{ at } x=1, \theta=0 \\ -\frac{1}{M} \Big(N^2 (-1)^N Y_N + 2 \sum_{k=1}^{N-1} k^2 (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$1^{st}$ endpoints}
-\end{equation}
+\end{equation}\vspace{2mm}
 
 And now let's do it for the $2^{nd}$ derivative, with some slightly more compact notation:
 
@@ -723,7 +726,7 @@ Now we can evaluate these and the factor $\frac{1}{6x^2 - 3}$ at the limit value
 
 \begin{equation}
 \begin{cases} \frac{1}{3M} \Big((N^4 - N^2) Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{3M} \Big((N^4 - N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$2^{nd}$ endpoints}
-\end{equation}
+\end{equation}\vspace{2mm}
 
 It's possible to do this for higher derivatives too. I actually did it for the $3^{rd}$ and $4^{th}$ derivatives and put the answers in \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{the code}. However, in general to find the endpoints for the $\nu^{th}$ derivative takes $\nu$ applications of L'Hôpital's rule, and the algebra gets to be pretty gnarly.
 
@@ -733,19 +736,132 @@ It is possible to sidestep the ballooningly-complicated variable mappings and li
 
 \section{Multidimensionality}
 
+We are now fully equipped to find derivatives for 1-dimensional data. This is in fact all we need, because, due to linearity of the derivative operator, we can find the derivative along a particular dimension of a multidimensional space by using our 1D solution along each constituent vector running in that direction, and we can find derivatives along multiple dimensions by applying the above in series along each dimension:
+
+$$\frac{\partial^2}{\partial x_1 \partial x_2} y(x_1, x_2) = \texttt{Algo}(\texttt{Algo}(y_i, 1^{st}, x_1)_j, 1^{st}, x_2) \quad \forall\ i, j$$
+
+$$ \nabla^2 y = (\frac{\partial^2}{\partial x_1^2} + \frac{\partial^2}{\partial x_2^2}) y = \texttt{Algo}(y_i, 2^{nd}, x_1) + \texttt{Algo}(y_j, 2^{nd}, x_2) \quad \forall\ i, j$$
+
+where $i, j$ are indexers as in the computing sense and have nothing to do with the imaginary unit, \texttt{Algo} applies \hyperref[algo]{the algorithm} to each vector along the dimension given by the third argument, and the $1^{st}$ and $2^{nd}$ in the second argument refer to the derivative order.
+
+Each application to a vector incurs $O(N \log N)$ cost, and fundamentally applying the method to higher-dimensional data must involve a loop, so the full cost of applying along any given direction is (assuming length $N$ in all dimensions) $O(N^D \log N)$, where $D$ is the dimension of the data. Aside from pushing this loop lower down into \texttt{numpy} to take advantage of vectorized compute, there can be no cost savings for a derivative in a particular dimension.
+
+\subsection{Dimensions Together versus In Series}
+
+Due to the linearity of the Fourier transform, transforming along all dimensions, multiplying by appropriate $(jk)^\nu$ along corresponding dimensions of the transformed data, and then inverse transforming along all dimensions is equivalent to transforming, multiplying, and inverse transforming each dimension in series\cite{johnson}:
+
+\begin{center}
+\begin{tikzpicture}
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm] (y) {$y$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of y] (Y) {$Y$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of Y] (jkY) {$(jk)^\nu \odot Y$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of jkY] (dy) {$dy$};
+	\draw[->] (y) -- (Y);
+	\draw[->] (Y) -- (jkY);
+	\draw[->] (jkY) -- (dy);
+	\draw[->] (-1,1.75) -- (-1,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
+	\draw[->] (-1.75,-1) -- (1.75,-1) node[midway, above] {\footnotesize FFT};
+	\draw[<->] (3,1.75) -- (3,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $\odot (jk)^\nu$};
+	\draw[<->] (2.25,-1) -- (5.75,-1) node[midway, above] {\footnotesize $\odot (jk)^\nu$};
+	\draw[<-] (7,1.75) -- (7,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
+	\draw[<-] (6.25,-1) -- (9.75,-1) node[midway, above] {\footnotesize FFT$^{-1}$};
+	\node[anchor=north, yshift=-2mm] at (y.south) {$O(D \cdot N^D \log N)$};
+	\node[anchor=north, yshift=-2mm] at (Y.south) {$O(D \cdot N^D)$};
+	\node[anchor=north, yshift=-2mm] at (jkY.south) {$O(D \cdot N^D \log N)$};
+\end{tikzpicture}
+\end{center}
+
+That's really neat, but does it save us anything?
+
+\begin{center}
+\begin{tikzpicture}
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm] (y) {$y$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of y] (Y1) {$Y_d$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of Y] (jkY1) {$(jk)^\nu \odot Y_d$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of jkY] (dy1) {$\partial_d y$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, below=of dy1] (Y2) {$Y_{d'}$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, left=of Y2] (jkY2) {$(jk)^\nu \odot Y_{d'}$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, left=of jkY2] (dy2) {$\partial_{d'} \partial_{d} y$};
+	\node[left=of dy2, font=\huge] (dots) {...};
+	\draw[->] (y) -- (Y);
+	\draw[->] (Y) -- (jkY);
+	\draw[->] (jkY) -- (dy1);
+	\draw[->] (dy1) -- (Y2);
+	\draw[->] (Y2) -- (jkY2);
+	\draw[->] (jkY2) -- (dy2);
+	\draw[->] (dy2) -- (dots);
+	\draw[->] (11,1.75) -- (11,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
+	\draw[->] (-1.75,-1) -- (1.75,-1) node[midway, above] {\footnotesize FFT};
+	\draw[<->] (11,-2.25) -- (11,-5.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $\odot (jk)^\nu$};
+	\draw[<->] (2.25,-1) -- (5.75,-1) node[midway, above] {\footnotesize $\odot (jk)^\nu$};
+	\draw[<-] (7,-2.25) -- (7,-5.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
+	\draw[<-] (6.25,-1) -- (9.75,-1) node[midway, above] {\footnotesize FFT$^{-1}$};
+	\node[anchor=north] at (y.south) {$O(N^D \log N)$};
+	\node[anchor=north] at (Y.south) {$O(N^D)$};
+	\node[anchor=north] at (jkY.south) {$O(N^D \log N)$};
+	\node at (0, -4.75) {\parbox{19mm}{repeat for $D$ dimensions}};
+\end{tikzpicture}
+\end{center}
+
+If we add up the costs, we can see that it's actually no more or less efficient to differentiate along all dimensions at once versus in series.
+
+\subsection{Splintering}
+
+The above is good news, because the fact we need all inverse transforms in $\theta$ up to order $\nu$ to compute the derivative of order $\nu$ in $x$ leads to \textit{far} more terms in multiple dimensions, due to interactions. I'll demonstrate with the simplest possible case, $2^{nd}$ order in one dimension and $1^{st}$ order in another:
+
+$$\frac{\partial^3}{\partial x_1^2 \partial x_2} y(\theta_1, \theta_2) = \frac{\partial}{\partial x_2} \Big[ \frac{\partial^2}{\partial x_1^2} y(\theta_1, \theta_2) \Big]$$
+
+Let's break this up and apply the \href{https://math.libretexts.org/Bookshelves/Calculus/Calculus_(OpenStax)/14%3A_Differentiation_of_Functions_of_Several_Variables/14.05%3A_The_Chain_Rule_for_Multivariable_Functions}{multivariable chain rule}\cite{chainrule} and product rule to just evaluate that inner portion first:
+
+\begin{align*}
+\frac{\partial^2}{\partial x_1^2} y(\theta_1, \theta_2) &= \frac{\partial}{\partial x_1} \Big( \frac{\partial}{\partial \theta_1} y \cdot \frac{d\theta_1}{dx_1} + \frac{\partial}{\partial \theta_2} y \cdot \overset{\text{\normalsize 0}}{\cancel{\frac{d\theta_2}{dx_1}}} \Big) & \text{multivariable chain rule}\\
+&= \frac{\partial}{\partial \theta_1} y \cdot \frac{d^2 \theta_1}{dx_1^2} + \frac{\partial}{\partial x_1}\Big( \frac{\partial}{\partial \theta_1} y \Big) \cdot \frac{d\theta_1}{d x_1} & \text{product rule}\\
+&= \frac{\partial}{\partial \theta_1} y \cdot \frac{d^2 \theta_1}{dx_1^2} + \Big( \frac{\partial^2}{\partial \theta_1^2} y \cdot \frac{d \theta_1}{dx_1} + \frac{\partial^2}{\partial \theta_2 \partial \theta_1} y \overset{\text{\normalsize 0}}{\cancel{\frac{d\theta_2}{dx_1}}} \Big) \cdot \frac{d\theta_1}{d x_1} & \text{multivariable chain rule}\\
+&= \frac{\partial}{\partial \theta_1} y \cdot \frac{d^2 \theta_1}{dx_1^2} + \frac{\partial^2}{\partial \theta_1^2} y \cdot \Big( \frac{d \theta_1}{dx_1} \Big)^2
+\end{align*}
+
+Now using this to evaluate the original:
+
+\begin{align*}
+\frac{\partial^3}{\partial x_1^2 \partial x_2} y(\theta_1, \theta_2) =& \frac{\partial}{\partial x_2} \Big[ \frac{\partial}{\partial \theta_1} y \cdot \frac{d^2 \theta_1}{dx_1^2} + \frac{\partial^2}{\partial \theta_1^2} y \cdot \Big( \frac{d \theta_1}{dx_1} \Big)^2 \Big]\\
+=& \frac{\partial}{\partial \theta_1} y \cdot \overset{\text{\normalsize 0}}{\cancel{\frac{\partial}{\partial x_2} \frac{d^2 \theta_1}{dx_1^2}}} + \Big( \frac{\partial^2}{\partial \theta_1^2} y \cdot \overset{\text{\normalsize 0}}{\cancel{\frac{d\theta_1}{dx_2}}} + \frac{\partial^2}{\partial \theta_1 \partial \theta_2} y \cdot \frac{d \theta_2}{dx_2} \Big) \cdot \frac{d^2\theta_1}{dx_1^2} \\
+&+ \frac{\partial^2}{\partial \theta_1^2} y \overset{\text{\normalsize 0}}{\cancel{\frac{\partial}{\partial x_2} \Big( \frac{d\theta_1}{dx_1} \Big)^2}} + \Big( \frac{\partial^3}{\partial \theta_1^3} y \cdot \overset{\text{\normalsize 0}}{\cancel{\frac{d\theta_1}{dx_2}}} + \frac{\partial^3}{\partial \theta_1^2 \partial \theta_2} y \cdot \frac{d \theta_2}{dx_2} \Big) \cdot \Big(\frac{d\theta_1}{dx_1}\Big)^2 \\
+=& \frac{\partial^2}{\partial \theta_1 \partial \theta_2} y \cdot \frac{d \theta_2}{dx_2} \cdot \frac{d^2\theta_1}{dx_1^2} + \frac{\partial^3}{\partial \theta_1^2 \partial \theta_2} y \cdot \frac{d \theta_2}{dx_2} \cdot \Big(\frac{d\theta_1}{dx_1}\Big)^2
+\end{align*}
+
+The double derivative in $x_1$ has \textit{splintered} the expression into two, and then the single derivative in $x_2$ has interacted with \textit{both} those terms.
+
+All the terms that involve derivatives of a $\theta$ w.r.t. an $x$ are ultimately just functions of $x$. In fact, $\frac{d\theta_2}{dx_2}$ is just our old friend $\frac{-1}{\sqrt{1-x_2^2}}$, and you can pick out $\big( \frac{d\theta_1}{dx_1} \big)^2$ and $\frac{d^2\theta_1}{dx_1^2}$ in \autoref{2nd}. Together they are \textit{a Cartesian product} of the \hyperref[pyramid]{the 1D case}!
+
+Meanwhile, the $\partial y$ terms have different orders, which means that to find them we need to multiply $Y$, the all-dimensions transform of $y$, by \textit{different} orders of $(jk)$. If we do this carefully, the best-case scenario is that we incur \href{https://github.com/pavelkomarov/spectral-derivatives/issues/2}{the same amount of work} as the in-series case, but it takes some extra bookkeeping and data copying.
+
+But worst of all, at the edges of the domain we still need to use L'Hôpital's rule on an analytic expression 
+
+If we start totaling up the amount of work this entails, we can see there's an extra $O(D \cdot N^D \log N)$ of work for that second term, and the situation only gets worse if we have higher derivatives that cause more splintering (\autoref{derivatives}), especially if we have them in more dimensions, because then we have to deal with \textit{the Cartesian product} of splintered terms! No good! 
+
+
+
+
 \printendnotes
 
 \begin{thebibliography}{99} % https://tex.stackexchange.com/questions/198330/argument-in-thebibliography
+\raggedright 
 \bibitem{lebesgue}
 	Lebesgue Integrable, https://mathworld.wolfram.com/LebesgueIntegrable.html
 \bibitem{hamming}
 	Hamming, R., \textit{The Art of Doing Science and Engineering}
 \bibitem{taylor}
-	Simplest proof of Taylor's theorem, https://math.stackexchange.com/a/492165/278341
+	Pego, B., Simplest proof of Taylor's theorem, https://math.stackexchange.com/a/492165/278341
 \bibitem{complex}
-	Why do Fourier transforms use complex numbers?, https://math.stackexchange.com/a/1293127/278341
+	Disintegration By Parts, Why do Fourier transforms use complex numbers?, https://math.stackexchange.com/a/1293127/278341
+\bibitem{michigan}
+	Yagle, A., 2005, https://web.eecs.umich.edu/~aey/eecs206/lectures/fourier2.pdf
+\bibitem{why}
+	https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work
 \bibitem{swarthmore}
 	Derivation of Fourier Series, http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html
+\bibitem{sego}
+	Sego, D., Demystifying Fourier analysis, https://dsego.github.io/demystifying-fourier/
 \bibitem{medium}
 	Nakagome, S. Fourier Transform 101 — Part 4: Discrete Fourier Transform, https://medium.com/sho-jp/fourier-transform-101-part-4-discrete-fourier-transform-8fc3fbb763f3
 \bibitem{oppenheim}
@@ -753,7 +869,7 @@ It is possible to sidestep the ballooningly-complicated variable mappings and li
 \bibitem{brunton}
 	Brunton, S., The Fourier Transform and Derivatives, https://www.youtube.com/watch?v=d5d0ORQHNYs
 \bibitem{kutz}
-	\raggedright Kutz, J.N., 2023, \textit{Data-Driven Modeling \& Scientific Computation}, Ch. 11, https://faculty.washington.edu/kutz/kutz\_book\_v2.pdf
+	Kutz, J.N., 2023, \textit{Data-Driven Modeling \& Scientific Computation}, Ch. 11, https://faculty.washington.edu/kutz/kutz\_book\_v2.pdf
 \bibitem{numpy}
 	Discrete Fourier Transform, https://numpy.org/doc/2.1/reference/routines.fft.html
 \bibitem{bristow}
@@ -768,6 +884,8 @@ It is possible to sidestep the ballooningly-complicated variable mappings and li
 	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8
 \bibitem{cylinder}
 	https://www.researchgate.net/figure/Chebyshev-polynomials-a-can-be-viewed-as-cosine-functions-b-drawn-on-a-cylinder-and\_fig1\_340905766
+\bibitem{chainrule}
+	The Chain Rule for Multivariable Functions, https://math.libretexts.org/Bookshelves/Calculus/Calculus\newline\_(OpenStax)/14\%3A\_Differentiation\_of\_Functions\_of\_Several\_Variables/14.05\%3A\_The\_Chain\_Rule\_for\newline\_Multivariable\_Functions
 \end{thebibliography}
 
 \end{document}
