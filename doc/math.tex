@@ -1,11 +1,11 @@
 \documentclass[10pt]{article}
 \usepackage[margin=0.7in]{geometry}
-\usepackage{amsmath, amssymb, amsfonts, bbm, hyperref, enumitem, enotez, tikz, pgfplots, cancel, graphicx,
-caption, algorithm, algorithmic}
+\usepackage{amsmath, amssymb, amsfonts, bbm, enumitem, enotez, tikz, pgfplots, cancel, graphicx,
+caption, algorithm, algorithmic, hyperref}
 \usetikzlibrary{matrix, arrows.meta, positioning, angles}
 \hypersetup{colorlinks=true, urlcolor=blue, linkcolor=violet}
 
-\begin{document}
+\begin{document}\allowdisplaybreaks
 
 \title{Spectral Derivatives}
 \author{Pavel Komarov}
@@ -445,7 +445,7 @@ Why might we prefer this basis to the Fourier basis? Well, the advantage of a po
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.58\textwidth, height=0.43\textwidth]{runge.png}
+	\includegraphics[width=0.6\textwidth]{runge.png}
 	\captionsetup{width=0.6\textwidth}
 	\caption*{The Runge phenomenon, demonstrated in (a) and (b), mitigated in (c) and (d), from \cite{kutz}}
 \end{figure}
@@ -485,7 +485,7 @@ Then using $M-k$ for $k$ in the DFT equation (\autoref{dft}), we get:
 Y_{M-k} &= \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}n(M-k)} = \sum_{n=0}^{M-1} y_n \underbrace{e^{-j 2\pi n}}_{1} e^{j \frac{2\pi}{M}nk} = \sum_{n = M}^{1} y_{M-n} e^{j \frac{2\pi}{M}(M - n)k} \\
 &= \sum_{n=1}^{M} \underbrace{y_{M-n}}_{= y_n} \underbrace{e^{j 2\pi k}}_{1} e^{-j\frac{2\pi}{M}nk} = \sum_{n=1}^M y_n e^{-j \frac{2\pi}{M}nk} = \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}nk} = Y_k \quad \square
 \end{align*}
-\begin{tikzpicture}[overlay, remember picture]  % overlay ensures this drawing goes over the equation
+\begin{tikzpicture}[overlay, remember picture]
 	\node at (11.5,3.25) {\footnotesize let $n_{new} = M - n_{old}$};
 	\node at (11,0) {\parbox{28mm}{\footnotesize because $e^{-j\frac{2\pi}{M}Mk} = e^0 = 1$ and $y_M = y_0$}};
 	\draw[->] (11.5,3) -- (11.4,2.5);
@@ -503,9 +503,9 @@ y(\theta) &= \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big( Y_k e^{j k 
 
 At samples $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N}n$, this becomes:
 
-\begin{equation}
+\[
 y(\theta_n) = \frac{1}{M} \Big(Y_0 + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} + 2 \sum_{k = 1}^{N-1} Y_k \cos(\frac{\pi nk}{N}) \Big) \tag{DCT$^{-1}$}
-\end{equation}
+\]
 
 This is exactly DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT$^{-1}$ operates on the shorter set of $Y = [Y_0, ... Y_N]$, without redundant information. Thus
 
@@ -559,14 +559,13 @@ To see this more granularly, let's look in more detail at the multiplication by 
 Y_k^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{black} \text{ or } \color{red}(jN)^\nu\color{black})}_{\parbox{20mm}{\footnotesize \centering depending on $\nu$ \color{blue}odd \color{black} or \color{red}even}}, (-j(N-1))^\nu, ... (-j)^\nu] \odot Y_k\\
 &= j^\nu \cdot {\underbrace{[0, 1, ... 1, (\color{blue}0 \color{black}\text{ or }\color{red} 1\color{black}), -1, ..., -1]}_{\text{\large $\tilde{\mathbbm{1}}$}}}^\nu \odot \underbrace{[0, 1, ... N-1, N, N-1, ... 1]^\nu} \odot Y_k
 \end{align*}
-\begin{tikzpicture}[overlay, remember picture]  % overlay ensures this drawing goes over the equation
+\begin{tikzpicture}[overlay, remember picture]
 	\node at (4.4,0.25) {\footnotesize constant};
 	\node at (13.4,0.2) {\footnotesize palindromic};
 	\draw[->] (4.4,0.5) -- (4.4,1);
 	\draw[->] (12.8,0.35) -- (12,0.75);
 	\draw[->] (14,0.35) -- (14.6,1);
-\end{tikzpicture}\newline
-
+\end{tikzpicture}\vspace{2mm}
 
 where $\odot$ is a Hadamard, or element-wise, product, and raising a vector to a power is also element-wise. We can see
 
@@ -583,12 +582,12 @@ y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^\n
 &= \frac{1}{M} \Big( (jN)^\nu Y_N \cos(\pi n) + \sum_{k=1}^{N-1} (jk)^\nu Y_k \underbrace{(e^{jk\theta_n} + e^{-jk\theta_n})}_{2\cos(k\theta_n)} \Big) \notag \\
 &= \frac{1}{M} \Big( \underbrace{(j0)^\nu Y_0 + (jN)^\nu Y_N (-1)^n + 2 \sum_{k=1}^{N-1} (jk)^\nu Y_k \cos(\frac{\pi nk}{N})}_{\text{\normalsize = a DCT-I of $Y_k^{(\nu)}$!}} \Big) \label{y_prime_even}
 \end{align}
-\begin{tikzpicture}[overlay, remember picture]  % overlay ensures this drawing goes over the equation
+\begin{tikzpicture}[overlay, remember picture]
 	\node at (7.2,7.25) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
 	\node at (7.25,4) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
 	\draw[->, blue] (7.7,7.6) -- (8,7.85);
 	\draw[->, red] (7.7,4.3) -- (8.1,4.5);
-\end{tikzpicture}\newline
+\end{tikzpicture}
 
 Brilliant! So we can use only the non-redundant $Y_k$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
 
@@ -633,7 +632,8 @@ Let's see a few more:
 \frac{d^4}{dx^4} y(\theta) &= \frac{1}{(1-x^2)^2} y^{IV}(\theta) + \frac{-6x}{(1-x^2)^{5/2}} y'''(\theta) + \frac{11x^2 + 4}{(1-x^2)^3} y''(\theta) + \frac{-6x^3 - 9x}{(1-x^2)^{7/2}} y'(\theta)\\
 \frac{d^5}{dx^5} y(\theta) &= \frac{-1}{(1-x^2)^{5/2}} y^V(\theta) + \frac{10x}{(1-x^2)^3} y^{IV}(\theta) + \frac{-35x^2-10}{(1-x^2)^{7/2}} y'''(\theta) + \frac{50x^2 + 55x}{(1-x^2)^4} y''(\theta) + \frac{-24x^4 -72x^2 - 9}{(1-x^2)^{9/2}} y'(\theta)\\
 \end{aligned}
-\end{equation}\newline
+\normalsize
+\end{equation}\vspace{2mm}
 
 As we take higher derivatives, we can see a bit of a pattern. In particular, the function of $x$ multiplying each derivative of $y$ in $\theta$ comes from at most two terms in the preceding derivative, which have a predictable form:
 
@@ -692,11 +692,11 @@ $q$ always refers to the element up and to the left, and $p$ always refers to th
 
 I've done the above programmatically in \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{the code}, such that we can find and apply the factors---and thereby accomplish the variable transformation back to the Chebyshev domain---for arbitrarily high derivatives. You're welcome.
 
-\subsubsection{Handling Domain Endpoints}
+\subsubsection{Handling Domain Endpoints}\label{endpoints}
 
 There's a problem in the above at the edges of the domain: If $x = \pm 1$, the denominators of all the factors, which are powers of $\sqrt{1 - x^2} = 0$!
 
-However, this doesn't mean $\frac{d^\nu}{dx^\nu} y$ can't have a valid \textit{limit value} at those points. First remember our reconstruction $y(\theta)$ is composed of cosines, so notice if we take odd derivatives in $\theta$, we get sines, and at the edges of the domain where $x \rightarrow \pm 1$, $\theta \rightarrow 0,\pi$, sine will be 0! However, if we take even derivatives, then $\cos(0,\pi) \rightarrow 1, -1$. Then, if we look closely at the derivatives (\autoref{derivatives}) in $x$, we can see that \textit{even} derivatives in $\theta$ of $y$ are divided by \textit{even} powers of $\sqrt{1 - x^2}$, and the \textit{highest} power in a denominator is an \textit{odd} power of $\sqrt{1 - x^2}$. If we multiply through so everything is over the highest-power denominator and then combine the expression into a single fraction, we get a situation where the odd-derivative terms are 0 because sines, and the even-derivative terms are 0 because they're multiplied by at least one $\sqrt{1 - x^2}$.
+However, this doesn't mean $\frac{d^\nu}{dx^\nu} y$ can't have a valid \textit{limit value} at those points. First remember our reconstruction $y(\theta)$ is composed of cosines, so notice if we take odd derivatives in $\theta$, we get sines, and at the edges of the domain where $x \rightarrow \pm 1$, $\theta \rightarrow 0,\pi$, sine will be 0! However, if we take even derivatives, then $\cos(0,\pi) \rightarrow 1, -1$. Then, if we look closely at the derivatives in $x$ (\autoref{derivatives}), we can see that \textit{even} derivatives in $\theta$ of $y$ are divided by \textit{even} powers of $\sqrt{1 - x^2}$, and the \textit{highest} power in a denominator is an \textit{odd} power of $\sqrt{1 - x^2}$. If we multiply through so everything is over the highest-power denominator and then combine the expression into a single fraction, we get a situation where the odd-derivative terms are 0 because sines, and the even-derivative terms are 0 because they're multiplied by at least one $\sqrt{1 - x^2}$.
 
 This means the \textit{numerator} as well as the denominator is $0$ at the domain endpoints. $\frac{0}{0}$ is an indeterminate form, so we can use L'Hôpital's rule!
 
@@ -707,9 +707,9 @@ Let's see it for the $1^{st}$ derivative. Plugging in the DCT-I reconstruction (
 &\underset{\frac{d}{dx}}{\overset{\frac{d}{dx}}{\longrightarrow}}\ = \lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\frac{1}{M} \Big(-N^2 Y_N \cos(N\theta) - 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big) \cdot \frac{-1}{\cancel{\sqrt{1-x^2}}}}{\frac{x}{\cancel{\sqrt{1-x^2}}}} = \lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\frac{1}{M} \Big(N^2 Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big)}{x}
 \end{align*}
 
-\begin{equation}
+\[
 = \begin{cases} \frac{1}{M} \Big(N^2 Y_N + 2 \sum_{k=1}^{N-1} k^2 Y_k \Big) & \text{ at } x=1, \theta=0 \\ -\frac{1}{M} \Big(N^2 (-1)^N Y_N + 2 \sum_{k=1}^{N-1} k^2 (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$1^{st}$ endpoints}
-\end{equation}\vspace{2mm}
+\]\vspace{2mm}
 
 And now let's do it for the $2^{nd}$ derivative, with some slightly more compact notation:
 
@@ -724,19 +724,19 @@ $$y^{IV}(\theta) = \frac{1}{M} \Big(N^4 Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} k
 
 Now we can evaluate these and the factor $\frac{1}{6x^2 - 3}$ at the limit values and put it all together to find: 
 
-\begin{equation}
+\[
 \begin{cases} \frac{1}{3M} \Big((N^4 - N^2) Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{3M} \Big((N^4 - N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$2^{nd}$ endpoints}
-\end{equation}\vspace{2mm}
+\]\vspace{2mm}
 
 It's possible to do this for higher derivatives too. I actually did it for the $3^{rd}$ and $4^{th}$ derivatives and put the answers in \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{the code}. However, in general to find the endpoints for the $\nu^{th}$ derivative takes $\nu$ applications of L'Hôpital's rule, and the algebra gets to be pretty gnarly.
 
-In principle it is possible to build up the formulas via a similar process to the \hyperref[pyramid]{pyramid scheme} from earlier, because $f(x)$ factors multiplying respective orders of $y(\theta)$ come from at most two terms in the previous expression (before the latest application of L'Hôpital). But this time the $f(x)$ involve fractional powers of $\sqrt{1-x^2}$, which can't be as easily represented in \texttt{numpy}. So for now a neat scheme \href{https://github.com/pavelkomarov/spectral-derivatives/issues/1}{hasn't been invented}.
+In principle it is possible to build up the formulas via a similar process to the \hyperref[pyramid]{pyramid scheme} from earlier, because $f(x)$ factors multiplying respective orders of $y^{(\mu)}(\theta)$ come from at most two terms in the previous expression (before the latest application of L'Hôpital). But this time the $f(x)$s involve fractional powers of $\sqrt{1-x^2}$, which can't be as easily represented in \texttt{numpy}. So for now a neat scheme \href{https://github.com/pavelkomarov/spectral-derivatives/issues/1}{hasn't been invented}.
 
-It is possible to sidestep the ballooningly-complicated variable mappings and limit evaluations of higher derivatives by building up to higher derivatives from lower ones in stages (being careful to only use even derivatives if our end goal is even, so we preserve the Nyquist term). This would involve more forward transforms but actually no more inverse ones, since we have to remember the results of all the inverse transforms up to the $\nu^{th}$ order anyway.
+It is possible to sidestep these ballooningly-complicated variable mappings and higher derivative limit-evaluations by building up to higher derivatives from lower ones in stages (being careful to only use even derivatives if our end goal is even, so we preserve the Nyquist term). This would involve more forward transforms but actually no more inverse ones, since we have to remember the results of all the inverse transforms up to the $\nu^{th}$ order anyway.
 
 \section{Multidimensionality}
 
-We are now fully equipped to find derivatives for 1-dimensional data. This is in fact all we need, because, due to linearity of the derivative operator, we can find the derivative along a particular dimension of a multidimensional space by using our 1D solution along each constituent vector running in that direction, and we can find derivatives along multiple dimensions by applying the above in series along each dimension:
+We are now fully equipped to find derivatives for 1-dimensional data. This is technically all we need, because, due to linearity of the derivative operator, we can find the derivative along a particular dimension of a multidimensional space by using our 1D solution along each constituent vector running in that direction, and we can find derivatives along multiple dimensions by applying the above in series along each dimension:
 
 $$\frac{\partial^2}{\partial x_1 \partial x_2} y(x_1, x_2) = \texttt{Algo}(\texttt{Algo}(y_i, 1^{st}, x_1)_j, 1^{st}, x_2) \quad \forall\ i, j$$
 
@@ -748,21 +748,23 @@ Each application to a vector incurs $O(N \log N)$ cost, and fundamentally applyi
 
 \subsection{Dimensions Together versus In Series}
 
+But can we simplify the situation at all?
+
 Due to the linearity of the Fourier transform, transforming along all dimensions, multiplying by appropriate $(jk)^\nu$ along corresponding dimensions of the transformed data, and then inverse transforming along all dimensions is equivalent to transforming, multiplying, and inverse transforming each dimension in series\cite{johnson}:
 
 \begin{center}
 \begin{tikzpicture}
 	\node[draw, rectangle, minimum width=3cm, minimum height=3cm] (y) {$y$};
 	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of y] (Y) {$Y$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of Y] (jkY) {$(jk)^\nu \odot Y$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of Y] (jkY) {$(jk)^{\tilde{\nu}} \odot Y$};
 	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of jkY] (dy) {$dy$};
 	\draw[->] (y) -- (Y);
 	\draw[->] (Y) -- (jkY);
 	\draw[->] (jkY) -- (dy);
 	\draw[->] (-1,1.75) -- (-1,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
 	\draw[->] (-1.75,-1) -- (1.75,-1) node[midway, above] {\footnotesize FFT};
-	\draw[<->] (3,1.75) -- (3,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $\odot (jk)^\nu$};
-	\draw[<->] (2.25,-1) -- (5.75,-1) node[midway, above] {\footnotesize $\odot (jk)^\nu$};
+	\draw[<->] (3,1.75) -- (3,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $\odot (jk)^{\nu_d}$};
+	\draw[<->] (2.25,-1) -- (5.75,-1) node[midway, above] {\footnotesize $\odot (jk)^{\nu_{d'}}$};
 	\draw[<-] (7,1.75) -- (7,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
 	\draw[<-] (6.25,-1) -- (9.75,-1) node[midway, above] {\footnotesize FFT$^{-1}$};
 	\node[anchor=north, yshift=-2mm] at (y.south) {$O(D \cdot N^D \log N)$};
@@ -771,16 +773,16 @@ Due to the linearity of the Fourier transform, transforming along all dimensions
 \end{tikzpicture}
 \end{center}
 
-That's really neat, but does it save us anything?
+That's really neat, but does it save us anything, really? Let's see it in series:
 
 \begin{center}
 \begin{tikzpicture}
 	\node[draw, rectangle, minimum width=3cm, minimum height=3cm] (y) {$y$};
 	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of y] (Y1) {$Y_d$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of Y] (jkY1) {$(jk)^\nu \odot Y_d$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of Y] (jkY1) {$(jk)^{\nu_d} \odot Y_d$};
 	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of jkY] (dy1) {$\partial_d y$};
 	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, below=of dy1] (Y2) {$Y_{d'}$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, left=of Y2] (jkY2) {$(jk)^\nu \odot Y_{d'}$};
+	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, left=of Y2] (jkY2) {$(jk)^{\nu_{d'}} \odot Y_{d'}$};
 	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, left=of jkY2] (dy2) {$\partial_{d'} \partial_{d} y$};
 	\node[left=of dy2, font=\huge] (dots) {...};
 	\draw[->] (y) -- (Y);
@@ -792,8 +794,8 @@ That's really neat, but does it save us anything?
 	\draw[->] (dy2) -- (dots);
 	\draw[->] (11,1.75) -- (11,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
 	\draw[->] (-1.75,-1) -- (1.75,-1) node[midway, above] {\footnotesize FFT};
-	\draw[<->] (11,-2.25) -- (11,-5.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $\odot (jk)^\nu$};
-	\draw[<->] (2.25,-1) -- (5.75,-1) node[midway, above] {\footnotesize $\odot (jk)^\nu$};
+	\draw[<->] (11,-2.25) -- (11,-5.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $\odot (jk)^{\nu_{d'}}$};
+	\draw[<->] (2.25,-1) -- (5.75,-1) node[midway, above] {\footnotesize $\odot (jk)^{\nu_d}$};
 	\draw[<-] (7,-2.25) -- (7,-5.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
 	\draw[<-] (6.25,-1) -- (9.75,-1) node[midway, above] {\footnotesize FFT$^{-1}$};
 	\node[anchor=north] at (y.south) {$O(N^D \log N)$};
@@ -807,9 +809,13 @@ If we add up the costs, we can see that it's actually no more or less efficient 
 
 \subsection{Splintering}
 
-The above is good news, because the fact we need all inverse transforms in $\theta$ up to order $\nu$ to compute the derivative of order $\nu$ in $x$ leads to \textit{far} more terms in multiple dimensions, due to interactions. I'll demonstrate with the simplest possible case, $2^{nd}$ order in one dimension and $1^{st}$ order in another:
+The above is good news, because converting back to the Chebyshev domain turns out to be terribly knotty and difficult in the simultaneous-multidimensional derivatives case, for several reasons.
 
-$$\frac{\partial^3}{\partial x_1^2 \partial x_2} y(\theta_1, \theta_2) = \frac{\partial}{\partial x_2} \Big[ \frac{\partial^2}{\partial x_1^2} y(\theta_1, \theta_2) \Big]$$
+First, the fact we need all inverse transforms in $\theta$ up to order $\nu$ to compute the derivative of order $\nu$ in $x$ leads to \textit{far} more terms in multiple dimensions, due to interactions. I'll demonstrate with the simplest possible case, $2^{nd}$ order in one dimension and $1^{st}$ order in another:
+
+\begin{equation}\label{minexample}
+\frac{\partial^3}{\partial x_1^2 \partial x_2} y(\theta_1, \theta_2) = \frac{\partial}{\partial x_2} \Big[ \frac{\partial^2}{\partial x_1^2} y(\theta_1, \theta_2) \Big]
+\end{equation}
 
 Let's break this up and apply the \href{https://math.libretexts.org/Bookshelves/Calculus/Calculus_(OpenStax)/14%3A_Differentiation_of_Functions_of_Several_Variables/14.05%3A_The_Chain_Rule_for_Multivariable_Functions}{multivariable chain rule}\cite{chainrule} and product rule to just evaluate that inner portion first:
 
@@ -820,7 +826,7 @@ Let's break this up and apply the \href{https://math.libretexts.org/Bookshelves/
 &= \frac{\partial}{\partial \theta_1} y \cdot \frac{d^2 \theta_1}{dx_1^2} + \frac{\partial^2}{\partial \theta_1^2} y \cdot \Big( \frac{d \theta_1}{dx_1} \Big)^2
 \end{align*}
 
-Now using this to evaluate the original:
+Now using this to evaluate \autoref{minexample}:
 
 \begin{align*}
 \frac{\partial^3}{\partial x_1^2 \partial x_2} y(\theta_1, \theta_2) =& \frac{\partial}{\partial x_2} \Big[ \frac{\partial}{\partial \theta_1} y \cdot \frac{d^2 \theta_1}{dx_1^2} + \frac{\partial^2}{\partial \theta_1^2} y \cdot \Big( \frac{d \theta_1}{dx_1} \Big)^2 \Big]\\
@@ -835,12 +841,23 @@ All the terms that involve derivatives of a $\theta$ w.r.t. an $x$ are ultimatel
 
 Meanwhile, the $\partial y$ terms have different orders, which means that to find them we need to multiply $Y$, the all-dimensions transform of $y$, by \textit{different} orders of $(jk)$. If we do this carefully, the best-case scenario is that we incur \href{https://github.com/pavelkomarov/spectral-derivatives/issues/2}{the same amount of work} as the in-series case, but it takes some extra bookkeeping and data copying.
 
-But worst of all, at the edges of the domain we still need to use L'Hôpital's rule on an analytic expression 
+Most gnarly, at the \textit{edges} of the domain we still need to use L'Hôpital's rule on an analytic expression to evaluate the limits of
 
-If we start totaling up the amount of work this entails, we can see there's an extra $O(D \cdot N^D \log N)$ of work for that second term, and the situation only gets worse if we have higher derivatives that cause more splintering (\autoref{derivatives}), especially if we have them in more dimensions, because then we have to deal with \textit{the Cartesian product} of splintered terms! No good! 
+$$\frac{\partial^{\sum\nu_i}}{\partial x_1^{\nu_1} ... \partial x_D^{\nu_D}} y(\theta_1, ... \theta_D)$$
 
+This is made worse by the fact our analytic expression is based on the DCT-I, which has terms outside the central sum, so as we substitute the DCT-I in to the DCT-I, we get ever more terms ($3^D$ of them), e.g. in 2D:
 
+\begin{align*}
+y(\theta_1, \theta_2) =& \frac{1}{M^2} \Big[ Y_{00} + Y_{N0}\cos(N\theta_1) + Y_{0N}\cos(N\theta_2) + Y_{NN}\cos(N\theta_1)\cos(N\theta_2)\\
+&+ 2\sum_{k_1 = 1}^{N-1} Y_{k_1 0} \cos(k_1 \theta_1) + 2\sum_{k_2 = 1}^{N-1} Y_{0 k_2} \cos(k_2 \theta_2) + 2\cos(N\theta_2) \sum_{k_1 = 1}^{N-1} Y_{k_1 N} \cos(k_1 \theta_1)\\
+&+ 2\cos(N\theta_1) \sum_{k_2 = 1}^{N-1} Y_{N k_2} \cos(k_2 \theta_2) + 4 \sum_{k_1 = 1}^{N-1} \sum_{k_2 = 1}^{N-1} Y_{k_1 k_2} \cos(k_1 \theta_1) \cos(k_2 \theta_2)\Big]
+\end{align*}
 
+We could generalize the original conception (\autoref{equivalent}), which has a single sum with $a_0 = \frac{Y_0}{M}, a_k = \frac{2 Y_k}{M} \text{ for } k \in [1, N-1], a_N = \frac{Y_N}{M}$, to get a $y(\vec{\theta})$ with only a single term, but this involves still more extra bookkeeping.
+
+Worst of all, we then still have to take limits as different \textit{combinations} of dimensions reach the edges, which becomes a combinatorial nightmare. This was \hyperref[endpoints]{already hard enough in 1D}!
+
+So although \texttt{numpy} does provide the \texttt{fftn} function for transforming in multiple dimensions at once, and \texttt{scipy} provides similar \texttt{dctn} and \texttt{dstn} functions, they wouldn't confer a computational-complexity benefit and would require the math and code to get massively more complicated, so I have chosen not to use them. From a user-friendliness perspective, I also judge it to be somewhat more confusing to specify multiple derivatives at once (although generalizing the \texttt{nu} and \texttt{axis} parameters to vectors is possible). For all these reasons, I have chosen to limit the package to taking derivatives along a single dimension at once. Multidimensional data is handled via clever indexing and use of \texttt{fft}, \texttt{dct}, and \texttt{dst}'s \texttt{axis} parameter.
 
 \printendnotes
 
