@@ -23,7 +23,7 @@ jobs:
       - name: sphinx things
         run: |
           pip install sphinx sphinx-gallery
-          sphinx-build doc out
+          sphinx-build -a doc out
 
       - name: LaTeX stuff
         if: contains(steps.changed-files.outputs.modified_files, 'doc/math.tex')
