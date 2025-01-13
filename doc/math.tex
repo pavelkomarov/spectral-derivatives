@@ -644,7 +644,7 @@ As we take higher derivatives, we can see a bit of a pattern. In particular, the
 &\frac{q(x)}{(1-x^2)^{c-\frac{1}{2}}} y^{(\mu)} \cdot \frac{d\theta}{dx} + \frac{(1 - x^2)^{c-\frac{1}{2}} \frac{d}{dx} q(x) - q(x)(c-\frac{1}{2})(1-x^2)^{c-\frac{3}{2}}(-2x)}{(1-x^2)^{2c - 1}} y^{(\mu-1)}(\theta)
 \end{align*} 
 
-If we now gather the $y^{(\mu)}(\theta)$ terms and use the fact $\frac{d\theta}{dx} = \frac{-1}{\sqrt{1-x^2}}$, we can find its new miltiplying $f(x)$ is equal to:
+If we now gather the $y^{(\mu)}(\theta)$ terms and use the fact $\frac{d\theta}{dx} = \frac{-1}{\sqrt{1-x^2}}$, we can find its new multiplying factor is equal to:
 
 \begin{align*}
 \frac{(1-x^2)p'(x) + 2(c-1)xp(x) - q(x)}{(1 - x^2)^c}
@@ -858,7 +858,7 @@ We could generalize the original conception (\autoref{equivalent}), which has a 
 
 Worst of all, we then still have to take limits as different \textit{combinations} of dimensions reach the edges, which becomes a combinatorial nightmare. This was \hyperref[endpoints]{already hard enough in 1D}!
 
-So although \texttt{numpy} does provide the \texttt{fftn} function for transforming in multiple dimensions at once, and \texttt{scipy} provides similar \texttt{dctn} and \texttt{dstn} functions, they wouldn't confer a computational-complexity benefit and would require the math and code to get massively more complicated, so I have chosen not to use them. From a user-friendliness perspective, I also judge it to be somewhat more confusing to specify multiple derivatives at once (although generalizing the \texttt{nu} and \texttt{axis} parameters to vectors is possible). For all these reasons, I have chosen to limit the package to taking derivatives along a single dimension at once. Multidimensional data is handled via clever indexing and use of \texttt{fft}, \texttt{dct}, and \texttt{dst}'s \texttt{axis} parameter.
+So although \texttt{numpy} does provide the \texttt{fftn} function for transforming in multiple dimensions at once, and \texttt{scipy} provides similar \texttt{dctn} and \texttt{dstn} functions, they wouldn't confer a computational-complexity benefit and would require the math and code to get massively more complicated, so I have chosen not to use them. From a user-friendliness perspective, I also judge it to be somewhat more confusing to specify multiple derivatives at once (although generalizing the \texttt{nu} and \texttt{axis} parameters to vectors is possible). For all these reasons, I have chosen to limit the package to taking derivatives along a single dimension at once. Multidimensional \textit{data} can still be handled, however, via clever indexing and use of \texttt{fft}, \texttt{dct}, and \texttt{dst}'s \texttt{axis} parameter.
 
 \printendnotes
 
