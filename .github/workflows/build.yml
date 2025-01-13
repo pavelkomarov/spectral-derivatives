@@ -28,7 +28,7 @@ jobs:
       - name: LaTeX stuff
         #if: contains(steps.changed-files.outputs.modified_files, 'doc/math.tex')
         run: |
-          sudo apt-get install texlive texlive-latex-extra texlive-pictures texlive-science
+          sudo apt-get install texlive texlive-latex-extra texlive-pictures texlive-science texlive-fonts-extra
           cd doc
           pdflatex math.tex # generates all the refs and stuff
           pdflatex math.tex # links everything properly in final pdf
