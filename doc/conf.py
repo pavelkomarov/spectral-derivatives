@@ -90,7 +90,7 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-	'description': 'Spectral derivatives with the Chebyshev and Fourier basis',
+	'description': 'Spectral derivatives with the Chebyshev and Fourier bases',
 	'github_button': True,
 	'github_user': 'pavelkomarov',
 	'github_repo': 'spectral-derivatives',
