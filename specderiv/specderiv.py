@@ -99,4 +99,4 @@ def fourier_deriv(y, nu, axis=0):
 
 	Y = np.fft.fft(y, axis=axis)
 	Y_nu = (1j * k[s])**nu * Y
-	return np.fft.ifft(Y_nu, axis=axis)
+	return np.fft.ifft(Y_nu, axis=axis).real if y.dtype != np.complex128 else np.fft.ifft(Y_nu, axis=axis)
