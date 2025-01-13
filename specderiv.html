@@ -12,6 +12,7 @@
     <script src="_static/documentation_options.js?v=5929fcd5"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
    
@@ -33,6 +34,47 @@
             
   <section id="specderiv-module">
 <h1>specderiv module<a class="headerlink" href="#specderiv-module" title="Link to this heading">¶</a></h1>
+<dl class="py function" id="module-specderiv">
+<dt class="sig sig-object py" id="specderiv.cheb_deriv">
+<span class="sig-prename descclassname"><span class="pre">specderiv.</span></span><span class="sig-name descname"><span class="pre">cheb_deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/specderiv.html#cheb_deriv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#specderiv.cheb_deriv" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate derivatives with Chebyshev polynomials via discrete cosine and sine transforms. Caveats:</p>
+<ul class="simple">
+<li><p>Taking the 1st derivative twice with a discrete method like this is not exactly the same as taking the second derivative.</p></li>
+<li><p>For derivatives over the 4th, this method presently returns <code class="code docutils literal notranslate"><span class="pre">NaN</span></code> at the edges of the domain. Be cautious if passing
+the result to another function.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> – Data to transform, representing a function at Chebyshev points in each dimension <span class="math notranslate nohighlight">\(x_n = cos(\frac{\pi n}{N}), n \in [0, N-1]\)</span></p></li>
+<li><p><strong>nu</strong> – The order of derivative to take</p></li>
+<li><p><strong>axis</strong> – The dimension along which to take the derivative, defaults to first dimension</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="code docutils literal notranslate"><span class="pre">dy</span></code>, data representing the <span class="math notranslate nohighlight">\(\nu^{th}\)</span> derivative of the function, sampled at points <span class="math notranslate nohighlight">\(x_n\)</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="specderiv.fourier_deriv">
+<span class="sig-prename descclassname"><span class="pre">specderiv.</span></span><span class="sig-name descname"><span class="pre">fourier_deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/specderiv.html#fourier_deriv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#specderiv.fourier_deriv" title="Link to this definition">¶</a></dt>
+<dd><p>For use with periodic functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> – Data to transform, representing a function at equispaced points <span class="math notranslate nohighlight">\(\theta_n \in [0, 2\pi)\)</span></p></li>
+<li><p><strong>nu</strong> – The order of derivative to take</p></li>
+<li><p><strong>axis</strong> – The dimension along which to take the derivative, defaults to first dimension</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="code docutils literal notranslate"><span class="pre">dy</span></code>, data representing the <span class="math notranslate nohighlight">\(\nu^{th}\)</span> derivative of the function, sampled at points <span class="math notranslate nohighlight">\(\theta_n\)</span></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
