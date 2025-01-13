@@ -12,7 +12,7 @@ def cheb_deriv(y, nu, axis=0):
 	- For derivatives over the 4th, this method presently returns :code:`NaN` at the edges of the domain. Be cautious if passing
 	  the result to another function.
 
-	:param y: Data to transform, representing a function at Chebyshev points in each dimension :math:`x_n = cos(\\frac{\pi n}{N}), n \\in [0, N-1]`
+	:param y: Data to transform, representing a function at Chebyshev points in each dimension :math:`x_n = cos(\\frac{\\pi n}{N}), n \\in [0, N-1]`
 	:param nu: The order of derivative to take
 	:param axis: The dimension along which to take the derivative, defaults to first dimension
 	:return: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`x_n`
