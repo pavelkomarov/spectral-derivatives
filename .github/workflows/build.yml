@@ -12,9 +12,9 @@ jobs:
       - uses: tj-actions/changed-files@v45
         id: changed-files
   
-      #- name: tests and coverage
-      #  run: |
-      #    pip install numpy matplotlib scipy pytest coveralls
+      - name: tests and coverage
+        run: |
+          pip install numpy matplotlib scipy pytest coveralls
       #    coverage run --source=specderiv -m pytest -s
       #    coveralls
       #  env:
@@ -26,7 +26,7 @@ jobs:
           sphinx-build doc out
 
       - name: LaTeX stuff
-        #if: contains(steps.changed-files.outputs.modified_files, 'doc/math.tex')
+        if: contains(steps.changed-files.outputs.modified_files, 'doc/math.tex')
         run: |
           sudo apt-get install texlive texlive-latex-extra texlive-pictures texlive-science texlive-fonts-extra
           cd doc
