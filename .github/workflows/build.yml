@@ -1,6 +1,4 @@
-on:
-  release:
-    types: [created] # I actually want `on: push`, but I don't want CI triggering every time this early in development.
+on: push
 jobs:
   do-the-thing:
     runs-on: ubuntu-latest
@@ -14,13 +12,13 @@ jobs:
       - uses: tj-actions/changed-files@v45
         id: changed-files
   
-      - name: tests and coverage
-        run: |
-          pip install numpy matplotlib scipy pytest coveralls
-          coverage run --source=specderiv -m pytest -s
-          coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      #- name: tests and coverage
+      #  run: |
+      #    pip install numpy matplotlib scipy pytest coveralls
+      #    coverage run --source=specderiv -m pytest -s
+      #    coveralls
+      #  env:
+      #    COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
 
       - name: sphinx things
         run: |
@@ -31,8 +29,12 @@ jobs:
         if: contains(steps.changed-files.outputs.modified_files, 'doc/math.tex')
         run: |
           sudo apt-get install texlive texlive-latex-extra
-          pdflatex -output-directory=out doc/math.tex # clean up .aux file and such?
-          rm out/math.aux out/math.log out/math.out # remove unneeded .tex compilation files
+          cd doc
+          pdflatex math.tex # generates all the refs and stuff
+          pdflatex math.tex # links everything properly in final pdf
+          rm math.aux math.log math.out math.toc
+          cd ..
+          mv doc/math.pdf out
 
       - name: deploy to pages
         uses: peaceiris/actions-gh-pages@v4

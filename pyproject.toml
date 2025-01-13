@@ -21,7 +21,7 @@ package = "specderiv"
 version = {attr = "specderiv.__version__"}
 
 [project.urls]
-Documentation = 'https://pavelkomarov.como/spectral-derivatives'
+Documentation = 'https://pavelkomarov.com/spectral-derivatives'
 Repository = 'https://github.com/pavelkomarov/spectral-derivatives'
 
 [build-system]

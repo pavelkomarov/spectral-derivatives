@@ -7,13 +7,15 @@ from warnings import warn
 
 def cheb_deriv(y, nu, axis=0):
 	"""Evaluate derivatives with Chebyshev polynomials via discrete cosine and sine transforms. Caveats:
+
 	- Taking the 1st derivative twice with a discrete method like this is not exactly the same as taking the second derivative.
-	- For derivatives over the 4th, this method presently returns NaN at the edges of the domain. Be cautious if passing
+	- For derivatives over the 4th, this method presently returns :code:`NaN` at the edges of the domain. Be cautious if passing
 	  the result to another function.
-	:param y: Data to transform, representing a function at Chebyshev points in each dimension x_n = cos(pi * n /N)
+
+	:param y: Data to transform, representing a function at Chebyshev points in each dimension :math:`x_n = cos(\\frac{\pi n}{N}), n \\in [0, N-1]`
 	:param nu: The order of derivative to take
 	:param axis: The dimension along which to take the derivative, defaults to first dimension
-	:return dy: data representing the nu^th derivative of the function, sampled at points x_n
+	:return: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`x_n`
 	"""
 	N = y.shape[axis] - 1; M = 2*N # We only have to care about the number of points in the dimension we're differentiating
 	if N == 0: return 0 # because if the function is a constant, the derivative is 0
@@ -78,14 +80,13 @@ def cheb_deriv(y, nu, axis=0):
 
 def fourier_deriv(y, nu, axis=0):
 	"""For use with periodic functions.
-	:param y: Data to transform, representing a function at equispaced points in [0, 2pi)
+
+	:param y: Data to transform, representing a function at equispaced points :math:`\\theta_n \\in [0, 2\\pi)`
 	:param nu: The order of derivative to take
 	:param axis: The dimension along which to take the derivative, defaults to first dimension
-	:return dy: data representing the nu^th derivative of the function, sampled at points theta_n
+	:return: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`\\theta_n`
 	"""
-	# No worrying about conversion back from a variable transformation.
-	# No special treatment of boundaries.
-	# Use DCT-II and DST-II for no-flux and pinned?
+	#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.
 	M = y.shape[axis]
 	if M % 2 == 0: # if M has an even length, then we make k = [0, 1, ... M/2 - 1, 0 or M/2, -M/2 + 1, ... -1]
 		k = np.concatenate((np.arange(M//2 + 1), np.arange(-M//2 + 1, 0)))
@@ -97,8 +98,5 @@ def fourier_deriv(y, nu, axis=0):
 	s = [np.newaxis for dim in y.shape]; s[axis] = slice(None); s = tuple(s) # for elevating vectors to have same dimension as data
 
 	Y = np.fft.fft(y, axis=axis)
-	Y_prime = (1j * k[s])**nu * Y
-	dy = np.fft.ifft(Y_prime, axis=axis)
-
-	return dy
-
+	Y_nu = (1j * k[s])**nu * Y
+	return np.fft.ifft(Y_nu, axis=axis)
