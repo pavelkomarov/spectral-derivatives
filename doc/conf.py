@@ -11,7 +11,6 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
 import sys
 sys.path.append('specderiv')
 
@@ -22,9 +21,9 @@ copyright = u'2025, Pavel Komarov'
 author = u'Pavel Komarov'
 
 # The short X.Y version
-#version = __version__
+#version = u''
 # The full version, including alpha/beta/rc tags
-#release = __version
+#release = u''
 
 
 # -- General configuration ---------------------------------------------------
