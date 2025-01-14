@@ -7,7 +7,7 @@
 This repository is home to Python code that can take spectral derivatives with the Chebyshev basis or the Fourier basis, based on some [pretty elegant, deep math](https://pavelkomarov.com/spectral-derivatives/math.pdf). It's useful any time you want to take a derivative programmatically, such as for doing PDE simulations.
 
 ## Installation and Usage
-The package is a single module containing derivative functions. Before installing the module you will need `numpy`, `scipy`, `scikit-learn`, and `matplotlib`. To install, execute:
+The package is a single module containing derivative functions. To install, execute:
 ```shell
 python3 -m pip install spectral-derivatives
 ```
