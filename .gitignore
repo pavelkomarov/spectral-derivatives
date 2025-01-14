@@ -1,5 +1,6 @@
 .DS_Store
 .ipynb_checkpoints
+.coverage
 __pycache__
 out/
 *.mp4
