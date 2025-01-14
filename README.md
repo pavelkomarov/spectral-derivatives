@@ -25,5 +25,5 @@ For usage examples, see the Jupyter notebooks in the examples folder: [Chebyshev
 ## References
 
 1. Trefethen, N., 2000, Spectral Methods in Matlab, https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8
-2. Johnson, S., 2011, Notes on FFT-based differentiation, https://math.mit.edu/ stevenj/fft-deriv.pdf
+2. Johnson, S., 2011, Notes on FFT-based differentiation, https://math.mit.edu/stevenj/fft-deriv.pdf
 3. Kutz, J.N., 2023, Data-Driven Modeling & Scientific Computation, Ch. 11, https://faculty.washington.edu/kutz/kutz_book_v2.pdf
