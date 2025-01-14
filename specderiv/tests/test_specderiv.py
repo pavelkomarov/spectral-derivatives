@@ -64,15 +64,16 @@ def test_cheb_endpoints():
 def test_fourier_deriv_accurate_to_3rd():
 	"""A test for derivatives of a periodic function sampled at equispaced points
 	"""
-	y_n = np.cos(th_n) + 2*np.sin(3*th_n)
-	analytic_truth = [-np.sin(th_n) + 6*np.cos(3*th_n),		# 1st
-						-np.cos(th_n) - 18*np.sin(3*th_n),	# 2nd
-						np.sin(th_n) - 54*np.cos(3*th_n)]	# 3rd
+	for th_n_ in (th_n, np.arange(0, M+1) * 2*np.pi / (M+1)): # Test for an odd M too!
+		y_n = np.cos(th_n_) + 2*np.sin(3*th_n_)
+		analytic_truth = [-np.sin(th_n_) + 6*np.cos(3*th_n_),		# 1st
+							-np.cos(th_n_) - 18*np.sin(3*th_n_),	# 2nd
+							np.sin(th_n_) - 54*np.cos(3*th_n_)]		# 3rd
 
-	for nu in range(1,4): # Things get less accurate for higher derivatives, so check < 10^f(nu)
-		computed = fourier_deriv(y_n, nu)
-		assert np.nanmean((analytic_truth[nu-1] - computed)**2) < 1e-25
-		assert np.nanmax(np.abs(analytic_truth[nu-1] - computed)) < 1e-12
+		for nu in range(1,4): # Things get less accurate for higher derivatives, so check < 10^f(nu)
+			computed = fourier_deriv(y_n, nu)
+			assert np.nanmean((analytic_truth[nu-1] - computed)**2) < 1e-25
+			assert np.nanmax(np.abs(analytic_truth[nu-1] - computed)) < 1e-12
 
 def test_cheb_multidimensional():
 	"""A test for multidimensional derivatives in the aperiodic case
