@@ -508,7 +508,7 @@ At samples $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N}n$, this becomes:
 y(\theta_n) = \frac{1}{M} \Big(Y_0 + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} + 2 \sum_{k = 1}^{N-1} Y_k \cos(\frac{\pi nk}{N}) \Big) \tag{DCT$^{-1}$}
 \]
 
-This is exactly DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT$^{-1}$ operates on the shorter set of $Y = [Y_0, ... Y_N]$, without redundant information. Thus
+This is exactly the DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT$^{-1}$ operates on the shorter set of $Y = [Y_0, ... Y_N]$, without redundant information. Thus
 
 \begin{equation}\label{ifftidct}
 \text{FFT}^{-1}([Y_0, ... Y_N, Y_{N-1}, ... Y_1])[:N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
