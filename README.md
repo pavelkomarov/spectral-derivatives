@@ -17,10 +17,18 @@ python3 -m pip install .
 ```
 You should now be able to
 ```python
->>>from specderiv import *
+>>> from specderiv import *
+>>> import numpy as np
+>>>
+>>> x_n = np.cos(np.arange(21) * np.pi / 20) # cosine-spaced, includes last point
+>>> yx_n = np.sin(x_n) # can be periodic or aperiodic on the domain
+>>> dyx_n = cheb_deriv(yx_n, 1)
+>>>
+>>> th_n = np.arange(20) * 2*np.pi / 20 # equispaced, excludes last point
+>>> yth_n = np.sin(th_n) # must be periodic on the domain
+>>> dyth_n = fourier_deriv(yth_n, 1)
 ```
-
-For usage examples, see the Jupyter notebooks in the examples folder: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/examples/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/examples/fourier.ipynb)
+For further usage examples, see the Jupyter notebooks in the examples folder: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/examples/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/examples/fourier.ipynb)
 
 ## References
 
