@@ -28,6 +28,8 @@ You should now be able to
 >>> yth_n = np.sin(th_n) # must be periodic on the domain [0, 2pi)
 >>> dyth_n = fourier_deriv(yth_n, 1)
 ```
+If you have a function that isn't on one of these prescribed domains, you'll have to [scale](https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:transformations/x2ec2f6f830c9fb89:scale/v/scaling-functions-intro) and [shift](https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:transformations/x2ec2f6f830c9fb89:shift/v/shifting-functions-intro) your function's dependent variable(s) to fit one of these domains, use the derivative function of your choice, then scale and shift back. Tricky, but straightforward.
+
 For further usage examples, see the Jupyter notebooks in the notebooks folder: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/fourier.ipynb)
 
 ## References
