@@ -14,8 +14,8 @@ dependencies = [
 ]
 license = {text = "BSD License"}
 
-[tool.spin]
-package = "specderiv"
+[tool.setuptools]
+packages = ["specderiv"]
 
 [tool.setuptools.dynamic]
 version = {attr = "specderiv.__version__"}
