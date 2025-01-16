@@ -28,12 +28,12 @@ You should now be able to
 >>> yth_n = np.sin(th_n) # must be periodic on the domain [0, 2pi)
 >>> dyth_n = fourier_deriv(yth_n, 1)
 ```
-If you have a function that isn't on one of these prescribed domains, you'll have to [scale](https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:transformations/x2ec2f6f830c9fb89:scale/v/scaling-functions-intro) and [shift](https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:transformations/x2ec2f6f830c9fb89:shift/v/shifting-functions-intro) your function's dependent variable(s) to fit one of these domains, use the derivative function of your choice, then scale and shift back. Tricky, but straightforward. If we're sampling the domain at $\vec{t}$, then we should be able to convert with:
+Note the `deriv` functions are agnostic to where the `y` data comes from, but for accurate results you'll need to use equispaced samples on an open periodic interval for `fourier` and cosine-spaced points for `chebyshev`. Specifically, if you want to sample at $\vec{t}$, then you can convert from one of the prescribed domains with:
 
 $$[0, 2\pi) \rightarrow [0, M) \cdot (\underbrace{t_1 - t_0}_{\delta t}) + t_0$$
 $$[1, -1] \rightarrow \cos(\frac{\pi [0, N]}{N}) \cdot \frac{t_N - t_0}{2} + \frac{t_N + t_0}{2}$$
 
-For further usage examples, see the Jupyter notebooks in the notebooks folder: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/fourier.ipynb)
+For further usage examples, see the Jupyter notebooks: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/fourier.ipynb)
 
 ## References
 
