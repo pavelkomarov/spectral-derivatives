@@ -28,7 +28,7 @@ You should now be able to
 >>> yth_n = np.sin(th_n) # must be periodic on the domain
 >>> dyth_n = fourier_deriv(yth_n, 1)
 ```
-For further usage examples, see the Jupyter notebooks in the examples folder: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/examples/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/examples/fourier.ipynb)
+For further usage examples, see the Jupyter notebooks in the notebooks folder: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/fourier.ipynb)
 
 ## References
 

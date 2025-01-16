@@ -1,3 +1,3 @@
 from .specderiv import cheb_deriv, fourier_deriv
 
-__version__ = '0.4'
+__version__ = '0.5'
