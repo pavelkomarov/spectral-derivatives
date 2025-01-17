@@ -28,12 +28,9 @@ You should now be able to
 >>> yth_n = np.sin(th_n) # must be periodic on the domain [0, 2pi)
 >>> dyth_n = fourier_deriv(yth_n, 1)
 ```
-Note the `deriv` functions are agnostic to where the `y` data comes from, but for accurate results you'll need to use equispaced samples on an open periodic interval for `fourier` and cosine-spaced points for `chebyshev`. Specifically, if you want to sample from $t_0$ to $t_M$ (exclusive) or $t_N$ (inclusive), then you can convert one of the prescribed domains with:
+For further usage examples, see the Jupyter notebooks: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/fourier.ipynb).
 
-$$\theta \in [0, 2\pi) \leftrightarrow t \in [0, M) \cdot (\underbrace{t_1 - t_0}_{\delta t}) + t_0$$
-$$x \in [1, -1] \leftrightarrow t \in \cos(\frac{\pi [0, N]}{N}) \cdot \frac{t_N - t_0}{2} + \frac{t_N + t_0}{2}$$
-
-For further usage examples, see the Jupyter notebooks: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/fourier.ipynb)
+Note the `deriv` functions are agnostic to where the `y` data comes from, but for accurate results you'll need to use equispaced samples on an open periodic interval for `fourier` and cosine-spaced points for `chebyshev`. For examples of using arbitrary domains, see [this notebook](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/arbitrary_domains.ipynb).
 
 ## References
 
