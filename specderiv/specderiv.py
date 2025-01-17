@@ -5,17 +5,25 @@ from collections import deque
 from warnings import warn
 
 
-def cheb_deriv(y, nu, axis=0):
+def cheb_deriv(domain: tuple[int|float, int|float], y: np.ndarray, nu: int, axis: int=0):
 	"""Evaluate derivatives with Chebyshev polynomials via discrete cosine and sine transforms. Caveats:
 
 	- Taking the 1st derivative twice with a discrete method like this is not exactly the same as taking the second derivative.
 	- For derivatives over the 4th, this method presently returns :code:`NaN` at the edges of the domain. Be cautious if passing
 	  the result to another function.
 
-	:param y: Data to transform, representing a function at Chebyshev points in each dimension :math:`x_n = cos(\\frac{\\pi n}{N}), n \\in [0, N-1]`
-	:param nu: The order of derivative to take
-	:param axis: The dimension along which to take the derivative, defaults to first dimension
-	:return: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`x_n`
+	Args:
+		domain (tuple): Left and right edges of the domain over which to evaluate the derivative. If you're
+			using canonical Chebyshev points, this will be :math:`[-1, 1]`, :code:`domain=[-1, 1]`. Note both endpoints are
+			*inclusive*.
+		y (np.ndarray): Data to transform, representing a function sampled at cosine-spaced points in each dimension,
+			which means samples are taken at a linear transformation of :math:`x_n = cos(\\frac{\\pi n}{N}), n \\in [0, N-1]`.
+			Note the order of these samples is high-to-low in the :math:`x` domain, but low-to-high in :math:`n`.
+		nu (int): The order of derivative to take.
+		axis (int, optional): The dimension along which to take the derivative. Defaults to the first dimension (axis=0).
+ 
+	Returns:
+		np.ndarray: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`x_n`
 	"""
 	N = y.shape[axis] - 1; M = 2*N # We only have to care about the number of points in the dimension we're differentiating
 	if N == 0: return 0 # because if the function is a constant, the derivative is 0
@@ -78,13 +86,20 @@ def cheb_deriv(y, nu, axis=0):
 	return dy
 
 
-def fourier_deriv(y, nu, axis=0):
+def fourier_deriv(domain: tuple[int|float, int|float], y: np.ndarray, nu: int, axis: int=0):
 	"""For use with periodic functions.
+ 
+	Args:
+		domain (tuple[numeric, numeric]): Left and right edges of the domain over which to evaluate the derivative. If
+			you're using canonical Fourier points, this will be :math:`[0, 2\\pi)`, :code:`domain=[0, 2*np.pi]`. Note the
+			lower, left endpoint is *inclusive*, and the higher, right endpoint is *exclusive*.
+		y (np.ndarray): Data to transform, representing a period of a periodic function, sampled at equispaced points in
+			each dimension.
+		nu (int): The order of derivative to take.
+		axis (int, optional): The dimension along which to take the derivative. Defaults to the first dimension (axis=0).
 
-	:param y: Data to transform, representing a function at equispaced points :math:`\\theta_n \\in [0, 2\\pi)`
-	:param nu: The order of derivative to take
-	:param axis: The dimension along which to take the derivative, defaults to first dimension
-	:return: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`\\theta_n`
+	Returns:
+		np.ndarray: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`x_n`
 	"""
 	#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.
 	M = y.shape[axis]

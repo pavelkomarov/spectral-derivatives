@@ -12,7 +12,8 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 import sys, os
-sys.path.append(os.path.abspath('../specderiv'))
+sys.path.insert(0, os.path.abspath('../specderiv')) # inserting at the first location
+	# makes sphinx prioritize your source code over any version that might be pip installed
 
 # -- Project information -----------------------------------------------------
 
@@ -69,7 +70,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
