@@ -13,12 +13,12 @@ def cheb_deriv(t_n: np.ndarray, y_n: np.ndarray, nu: int, axis: int=0):
 	  the result to another function.
 
 	Args:
-		t_n (np.ndarray): Where the function :math:`y` is sampled. If you're using canonical Chebyshev points, this will be
-			:code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`). Note the order is high-to-low and both
-			endpoints are *inclusive*.
-		y_n (np.ndarray): Data to transform, representing a function sampled at cosine-spaced points in each dimension,
-			which means samples are taken at a linear transformation of :math:`x_n = cos(\\frac{\\pi n}{N}), n \\in [0, N-1]`.
-			Note the order of these samples is high-to-low in the :math:`x` domain, but low-to-high in :math:`n`.
+		t_n (np.ndarray): Where the function :math:`y` is sampled in the dimension of differentation. If you're using canonical
+			Chebyshev points, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`). If you're
+			sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.cos(np.arange(N+1) * np.pi / N) *
+			(b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high in
+			:math:`n`. Also note both endpoints are *inclusive*.
+		y_n (np.ndarray): Data to transform, representing a function sampled at the cosine-spaced points in each dimension.
 		nu (int): The order of derivative to take.
 		axis (int, optional): The dimension along which to take the derivative. Defaults to the first dimension (axis=0).
  
@@ -96,9 +96,10 @@ def fourier_deriv(t_n: np.ndarray, y_n: np.ndarray, nu: int, axis: int=0):
 	"""For use with periodic functions.
  
 	Args:
-		t_n (np.ndarray): Where the function :math:`y` is sampled. If you're using canonical Fourier points, this will be
-			:code:`th_n = np.arange(M) * 2*np.pi / M` (:math:`\\theta \\in [0, 2\\pi)`). Note the lower, left bound is
-			*inclusive* and the upper, right bound is *exclusive*.
+		t_n (np.ndarray): Where the function :math:`y` is sampled in the dimension of differentiation. If you're using canonical
+			Fourier points, this will be :code:`th_n = np.arange(M) * 2*np.pi / M` (:math:`\\theta \\in [0, 2\\pi)`). If you're
+			sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.arange(0, M)/M * (b - a) + a`.
+			Note the lower, left bound is *inclusive* and the upper, right bound is *exclusive*.
 		y_n (np.ndarray): Data to transform, representing a period of a periodic function, sampled at equispaced points in
 			each dimension.
 		nu (int): The order of derivative to take.
@@ -109,7 +110,7 @@ def fourier_deriv(t_n: np.ndarray, y_n: np.ndarray, nu: int, axis: int=0):
 	"""
 	#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.
 	if not np.all(np.diff(t_n) > 0):
-		raise ValueError("The domain, t_n, should be ordered low-to-high, [a, ... b). Try sampling with `(np.arange(0, M) / M) * (b - a) + a`")
+		raise ValueError("The domain, t_n, should be ordered low-to-high, [a, ... b). Try sampling with `np.arange(0, M)/M * (b - a) + a`")
 
 	M = y_n.shape[axis]
 	if M % 2 == 0: # if M has an even length, then we make k = [0, 1, ... M/2 - 1, 0 or M/2, -M/2 + 1, ... -1]

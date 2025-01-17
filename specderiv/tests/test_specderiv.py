@@ -130,7 +130,7 @@ def test_cheb_arbitrary_domains_to_3rd():
 			assert np.mean((analytic_truth[nu-1] - computed)**2) < 10**L2_powers[i][nu-1]
 			assert np.max(np.abs(analytic_truth[nu-1] - computed)) < 10**L1_powers[i][nu-1]
 
-def test_foureir_arbitrary_domains_to_3rd():
+def test_fourier_arbitrary_domains_to_3rd():
 	"""A test that we can take the derivative on domains that aren't the canonical [0, 2pi)
 	"""
 	for t_0 in [0, 4]:
