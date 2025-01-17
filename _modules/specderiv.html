@@ -40,7 +40,7 @@
 
 <div class="viewcode-block" id="cheb_deriv">
 <a class="viewcode-back" href="../specderiv.html#specderiv.cheb_deriv">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">cheb_deriv</span><span class="p">(</span><span class="n">t_n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">nu</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cheb_deriv</span><span class="p">(</span><span class="n">y_n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">t_n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">nu</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;Evaluate derivatives with Chebyshev polynomials via discrete cosine and sine transforms. Caveats:</span>
 
 <span class="sd">	- Taking the 1st derivative twice with a discrete method like this is not exactly the same as taking the second derivative.</span>
@@ -48,17 +48,18 @@
 <span class="sd">	  the result to another function.</span>
 
 <span class="sd">	Args:</span>
+<span class="sd">		y_n (np.ndarray): Data to transform, representing a function sampled at cosine-spaced points in the dimension of</span>
+<span class="sd">			differentiation.</span>
 <span class="sd">		t_n (np.ndarray): Where the function :math:`y` is sampled in the dimension of differentation. If you&#39;re using canonical</span>
 <span class="sd">			Chebyshev points, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`). If you&#39;re</span>
 <span class="sd">			sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.cos(np.arange(N+1) * np.pi / N) *</span>
 <span class="sd">			(b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high in</span>
 <span class="sd">			:math:`n`. Also note both endpoints are *inclusive*.</span>
-<span class="sd">		y_n (np.ndarray): Data to transform, representing a function sampled at the cosine-spaced points in each dimension.</span>
 <span class="sd">		nu (int): The order of derivative to take.</span>
 <span class="sd">		axis (int, optional): The dimension along which to take the derivative. Defaults to the first dimension (axis=0).</span>
 <span class="sd"> </span>
 <span class="sd">	Returns:</span>
-<span class="sd">		np.ndarray: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`x_n`</span>
+<span class="sd">		np.ndarray: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`t_n`</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="n">N</span> <span class="o">=</span> <span class="n">y_n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">M</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">N</span> <span class="c1"># We only have to care about the number of points in the dimension we&#39;re differentiating</span>
 
@@ -130,21 +131,21 @@
 
 <div class="viewcode-block" id="fourier_deriv">
 <a class="viewcode-back" href="../specderiv.html#specderiv.fourier_deriv">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">fourier_deriv</span><span class="p">(</span><span class="n">t_n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">nu</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fourier_deriv</span><span class="p">(</span><span class="n">y_n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">t_n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">nu</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;For use with periodic functions.</span>
 <span class="sd"> </span>
 <span class="sd">	Args:</span>
+<span class="sd">		y_n (np.ndarray): Data to transform, representing a period of a periodic function sampled at equispaced points in the</span>
+<span class="sd">			dimension of differentiation.</span>
 <span class="sd">		t_n (np.ndarray): Where the function :math:`y` is sampled in the dimension of differentiation. If you&#39;re using canonical</span>
 <span class="sd">			Fourier points, this will be :code:`th_n = np.arange(M) * 2*np.pi / M` (:math:`\\theta \\in [0, 2\\pi)`). If you&#39;re</span>
 <span class="sd">			sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.arange(0, M)/M * (b - a) + a`.</span>
 <span class="sd">			Note the lower, left bound is *inclusive* and the upper, right bound is *exclusive*.</span>
-<span class="sd">		y_n (np.ndarray): Data to transform, representing a period of a periodic function, sampled at equispaced points in</span>
-<span class="sd">			each dimension.</span>
 <span class="sd">		nu (int): The order of derivative to take.</span>
 <span class="sd">		axis (int, optional): The dimension along which to take the derivative. Defaults to the first dimension (axis=0).</span>
 
 <span class="sd">	Returns:</span>
-<span class="sd">		np.ndarray: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`x_n`</span>
+<span class="sd">		np.ndarray: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`t_n`</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="c1">#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.</span>
 	<span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">t_n</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
@@ -164,8 +165,8 @@
 	<span class="n">Y_nu</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">k</span><span class="p">[</span><span class="n">s</span><span class="p">])</span><span class="o">**</span><span class="n">nu</span> <span class="o">*</span> <span class="n">Y_k</span>
 	<span class="n">dy_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">Y_nu</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">y_n</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">Y_nu</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
 
-	<span class="c1"># The above is agnostic to where the data came from, pretends it came from the domain [0, 2pi), but the data is</span>
-	<span class="n">scale</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_n</span><span class="p">[</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">t_n</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">t_n</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="c1"># actually smooshed from some other domain. So scale the derivative appropriately.</span>
+	<span class="c1"># The above is agnostic to where the data came from, pretends it came from the domain [0, 2pi), but the data is actually</span>
+	<span class="n">scale</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_n</span><span class="p">[</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">t_n</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">t_n</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="c1"># smooshed from some other domain. So scale the derivative appropriately.</span>
 	<span class="k">return</span> <span class="n">dy_n</span><span class="o">/</span><span class="n">scale</span><span class="o">**</span><span class="n">nu</span> </div>
 
 </pre></div>
