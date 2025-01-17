@@ -1,5 +1,5 @@
 specderiv module
------------
+----------------
 
 .. automodule:: specderiv
     :members:
