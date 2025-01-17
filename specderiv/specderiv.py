@@ -14,8 +14,8 @@ def cheb_deriv(t_n: np.ndarray, y_n: np.ndarray, nu: int, axis: int=0):
 
 	Args:
 		t_n (np.ndarray): Where the function :math:`y` is sampled. If you're using canonical Chebyshev points, this will be
-			:code:`np.cos(np.arange(N+1) * np.pi / N)` (:math:`[1, -1]`). Note the order is high-to-low and both endpoints are
-			*inclusive*.
+			:code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`). Note the order is high-to-low and both
+			endpoints are *inclusive*.
 		y_n (np.ndarray): Data to transform, representing a function sampled at cosine-spaced points in each dimension,
 			which means samples are taken at a linear transformation of :math:`x_n = cos(\\frac{\\pi n}{N}), n \\in [0, N-1]`.
 			Note the order of these samples is high-to-low in the :math:`x` domain, but low-to-high in :math:`n`.
@@ -29,7 +29,7 @@ def cheb_deriv(t_n: np.ndarray, y_n: np.ndarray, nu: int, axis: int=0):
 
 	if not np.all(np.diff(t_n) < 0):
 		raise ValueError("The domain, t_n, should be ordered high-to-low, [b, ... a]. Try sampling with `np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`")
-	scale = (t[0] - t[N])/2; offset = (t[0] + t[N])/2 # Trying to be helpful, because sampling is tricky to get right
+	scale = (t_n[0] - t_n[N])/2; offset = (t_n[0] + t_n[N])/2 # Trying to be helpful, because sampling is tricky to get right
 	if not np.allclose(t_n, np.cos(np.arange(N+1) * np.pi / N) * scale + offset):
 		raise ValueError("Your function is not sampled at cosine-spaced points! Try sampling with `np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`")
 
@@ -97,8 +97,8 @@ def fourier_deriv(t_n: np.ndarray, y_n: np.ndarray, nu: int, axis: int=0):
  
 	Args:
 		t_n (np.ndarray): Where the function :math:`y` is sampled. If you're using canonical Fourier points, this will be
-			:code:`np.arange(M) * 2*np.pi / M` (:math:`[0, 2\\pi)`). Note the lower, left bound is *inclusive* and the upper,
-			right bound is *exclusive*.
+			:code:`th_n = np.arange(M) * 2*np.pi / M` (:math:`\\theta \\in [0, 2\\pi)`). Note the lower, left bound is
+			*inclusive* and the upper, right bound is *exclusive*.
 		y_n (np.ndarray): Data to transform, representing a period of a periodic function, sampled at equispaced points in
 			each dimension.
 		nu (int): The order of derivative to take.
@@ -108,7 +108,7 @@ def fourier_deriv(t_n: np.ndarray, y_n: np.ndarray, nu: int, axis: int=0):
 		np.ndarray: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`x_n`
 	"""
 	#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.
-	if not np.all(np.diff(arr) > 0):
+	if not np.all(np.diff(t_n) > 0):
 		raise ValueError("The domain, t_n, should be ordered low-to-high, [a, ... b). Try sampling with `(np.arange(0, M) / M) * (b - a) + a`")
 
 	M = y_n.shape[axis]
@@ -126,5 +126,5 @@ def fourier_deriv(t_n: np.ndarray, y_n: np.ndarray, nu: int, axis: int=0):
 	dy_n = np.fft.ifft(Y_nu, axis=axis).real if not np.iscomplexobj(y_n) else np.fft.ifft(Y_nu, axis=axis)
 
 	# The above is agnostic to where the data came from, pretends it came from the domain [0, 2pi), but the data is
-	scale = (t[M] + t[1] - t[0])/(2*np.pi) # actually smooshed from some other domain. So scale the derivative appropriately.
+	scale = (t_n[M-1] + t_n[1] - 2*t_n[0])/(2*np.pi) # actually smooshed from some other domain. So scale the derivative appropriately.
 	return dy_n/scale**nu 

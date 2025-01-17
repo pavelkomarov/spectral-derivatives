@@ -1,4 +1,4 @@
-# run with python(3) -m pytest
+# run with python(3) -m pytest -s
 # CI runs this with `coverage` and uploads results to coveralls, badge displayed in the readme
 
 import pytest
@@ -31,7 +31,7 @@ def test_cheb_deriv_accurate_to_6th():
 	L1_powers = [-9, -6, -4, -2, -1, 1]
 
 	for nu in range(1,7):
-		computed = cheb_deriv(y_n, nu)
+		computed = cheb_deriv(x_n, y_n, nu)
 		assert np.nanmean((analytic_truth[nu-1] - computed)**2) < 10**L2_powers[nu-1]
 		assert np.nanmax(np.abs(analytic_truth[nu-1] - computed)) < 10**L1_powers[nu-1]
 
@@ -50,12 +50,12 @@ def test_cheb_endpoints():
 
 	for nu in range(1, 7):
 		if nu <= 4:
-			computed = cheb_deriv(y_n, nu)
+			computed = cheb_deriv(x_n, y_n, nu)
 			assert np.abs(computed[0] - analytic_truth[nu-1][0]) < 1e-7
 			assert np.abs(computed[-1] - analytic_truth[nu-1][-1]) < 1e-7
 		else: # nu > 4
 			with pytest.warns(UserWarning): # assure the warning is thrown
-				computed = cheb_deriv(y_n, nu)
+				computed = cheb_deriv(x_n, y_n, nu)
 			assert np.isnan(computed[0]) # the endpoints are NaN
 			assert np.isnan(computed[-1])
 			assert np.all(~np.isnan(computed[1:-1])) # the middle isn't NaN
@@ -71,7 +71,7 @@ def test_fourier_deriv_accurate_to_3rd():
 							np.sin(th_n_) - 54*np.cos(3*th_n_)]		# 3rd
 
 		for nu in range(1,4): # Things get less accurate for higher derivatives, so check < 10^f(nu)
-			computed = fourier_deriv(y_n, nu)
+			computed = fourier_deriv(th_n_, y_n, nu)
 			assert np.nanmean((analytic_truth[nu-1] - computed)**2) < 1e-25
 			assert np.nanmax(np.abs(analytic_truth[nu-1] - computed)) < 1e-12
 
@@ -83,13 +83,13 @@ def test_cheb_multidimensional():
 	
 	# d^2 / dx_1 dx_2
 	analytic_truth = 3 * X1_n * np.pi * np.cos(3/2 * np.pi * X2_n)
-	computed = cheb_deriv(cheb_deriv(y_n, 1, axis=0), 1, axis=1)
+	computed = cheb_deriv(x_n, cheb_deriv(x_n, y_n, 1, axis=0), 1, axis=1)
 	assert np.mean((analytic_truth - computed)**2) < 1e-18
 	assert np.max(np.abs(analytic_truth - computed)) < 1e-9
 	
 	# Laplacian
 	analytic_truth = 2 * np.sin(3/2 * np.pi * X2_n) - 9/4 * np.pi**2 * X1_n**2 * np.sin(3/2 * np.pi * X2_n)
-	computed = cheb_deriv(y_n, 2, axis=0) + cheb_deriv(y_n, 2, axis=1)
+	computed = cheb_deriv(x_n, y_n, 2, axis=0) + cheb_deriv(x_n, y_n, 2, axis=1)
 	assert np.mean((analytic_truth - computed)**2) < 1e-16
 	assert np.max(np.abs(analytic_truth - computed)) < 1e-6
 
@@ -101,12 +101,58 @@ def test_fourier_multidimensional():
 
 	#d^2 / d theta_1 d theta_2
 	analytic_truth = -2 * np.cos(2 * T1_n) * np.sin(T2_n)
-	computed = fourier_deriv(fourier_deriv(y_n, 1, axis=0), 1, axis=1)
+	computed = fourier_deriv(th_n, fourier_deriv(th_n, y_n, 1, axis=0), 1, axis=1)
 	assert np.mean((analytic_truth - computed)**2) < 1e-25
 	assert np.max(np.abs(analytic_truth - computed)) < 1e-14
 
 	# Laplacian
 	analytic_truth = -5 * np.sin(2 * T1_n) * np.cos(T2_n)
-	computed = fourier_deriv(y_n, 2, axis=0) + fourier_deriv(y_n, 2, axis=1)
+	computed = fourier_deriv(th_n, y_n, 2, axis=0) + fourier_deriv(th_n, y_n, 2, axis=1)
 	assert np.mean((analytic_truth - computed)**2) < 1e-25
 	assert np.max(np.abs(analytic_truth - computed)) < 1e-13
+
+def test_cheb_arbitrary_domains_to_3rd():
+	"""A test that we can take the derivative on domains that aren't the canonical [1, -1]
+	"""
+	L2_powers = [[-10, -6, -2],[-25, -24, -20]] # The function does *much* better on shorter 
+	L1_powers = [[-4, -2, 1],[-14, -11, -9]] # domains with an N this low and y this wobbly.
+
+	for i,(t_0,t_N) in enumerate([(3.5, 0.5), (-4,-5)]):
+		t_n = np.cos(np.arange(N+1) * np.pi / N) * (t_0 - t_N)/2 + (t_0 + t_N)/2
+
+		y_n = np.exp(t_n) * np.sin(5*t_n)
+		analytic_truth = [5*np.exp(t_n) * np.cos(5*t_n) + np.exp(t_n) * np.sin(5*t_n),	# 1st
+							2*np.exp(t_n) * (5*np.cos(5*t_n) - 12*np.sin(5*t_n)),		# 2nd
+							-2*np.exp(t_n) * (37*np.sin(5*t_n) + 55*np.cos(5*t_n))]		# 3rd
+
+		for nu in range(1,4):
+			computed = cheb_deriv(t_n, y_n, nu)
+			assert np.mean((analytic_truth[nu-1] - computed)**2) < 10**L2_powers[i][nu-1]
+			assert np.max(np.abs(analytic_truth[nu-1] - computed)) < 10**L1_powers[i][nu-1]
+
+def test_foureir_arbitrary_domains_to_3rd():
+	"""A test that we can take the derivative on domains that aren't the canonical [0, 2pi)
+	"""
+	for t_0 in [0, 4]:
+		t_n = (np.arange(0, M) / M) * 4 + t_0
+
+		y_n = np.cos(np.pi/2 * t_n) + 2*np.sin(3*np.pi/2 * t_n)
+		analytic_truth = [3*np.pi*np.cos(3*np.pi/2 * t_n) - np.pi/2 * np.sin(np.pi/2 * t_n),					# 1st 
+							-(np.pi**2)/4 * np.cos(np.pi/2 * t_n) - (9*np.pi**2)/2 * np.sin(3*np.pi/2 * t_n),	# 2nd
+							(np.pi**3)/8 * np.sin(np.pi/2 * t_n) - (27*np.pi**3)/4 * np.cos(3*np.pi/2 * t_n)]	# 3rd
+
+		for nu in range(1,4):
+			computed = fourier_deriv(t_n, y_n, nu)
+			assert np.mean((analytic_truth[nu-1] - computed)**2) < 1e-23
+			assert np.max(np.abs(analytic_truth[nu-1] - computed)) < 1e-11
+
+def test_user_errors():
+	"""A test that helpful errors are thrown when a user goofs up
+	"""
+	for t_n in [np.cos(np.arange(N+1) * np.pi / N)[::-1] * (4 - 1)/2 + (4 + 1)/2, # t_n ordered low-to-high
+				np.linspace(4, 1, N)]:											# t_n not cosine-spaced
+		with pytest.raises(ValueError):
+			cheb_deriv(t_n, np.zeros(t_n.shape), 1)
+	t_n = np.linspace(8, 4, M) # t_n ordered high-to-low
+	with pytest.raises(ValueError):
+		fourier_deriv(t_n, np.zeros(t_n.shape), 1)
