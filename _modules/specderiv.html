@@ -48,12 +48,12 @@
 <span class="sd">	  the result to another function.</span>
 
 <span class="sd">	Args:</span>
-<span class="sd">		t_n (np.ndarray): Where the function :math:`y` is sampled. If you&#39;re using canonical Chebyshev points, this will be</span>
-<span class="sd">			:code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`). Note the order is high-to-low and both</span>
-<span class="sd">			endpoints are *inclusive*.</span>
-<span class="sd">		y_n (np.ndarray): Data to transform, representing a function sampled at cosine-spaced points in each dimension,</span>
-<span class="sd">			which means samples are taken at a linear transformation of :math:`x_n = cos(\\frac{\\pi n}{N}), n \\in [0, N-1]`.</span>
-<span class="sd">			Note the order of these samples is high-to-low in the :math:`x` domain, but low-to-high in :math:`n`.</span>
+<span class="sd">		t_n (np.ndarray): Where the function :math:`y` is sampled in the dimension of differentation. If you&#39;re using canonical</span>
+<span class="sd">			Chebyshev points, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`). If you&#39;re</span>
+<span class="sd">			sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.cos(np.arange(N+1) * np.pi / N) *</span>
+<span class="sd">			(b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high in</span>
+<span class="sd">			:math:`n`. Also note both endpoints are *inclusive*.</span>
+<span class="sd">		y_n (np.ndarray): Data to transform, representing a function sampled at the cosine-spaced points in each dimension.</span>
 <span class="sd">		nu (int): The order of derivative to take.</span>
 <span class="sd">		axis (int, optional): The dimension along which to take the derivative. Defaults to the first dimension (axis=0).</span>
 <span class="sd"> </span>
@@ -134,9 +134,10 @@
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;For use with periodic functions.</span>
 <span class="sd"> </span>
 <span class="sd">	Args:</span>
-<span class="sd">		t_n (np.ndarray): Where the function :math:`y` is sampled. If you&#39;re using canonical Fourier points, this will be</span>
-<span class="sd">			:code:`th_n = np.arange(M) * 2*np.pi / M` (:math:`\\theta \\in [0, 2\\pi)`). Note the lower, left bound is</span>
-<span class="sd">			*inclusive* and the upper, right bound is *exclusive*.</span>
+<span class="sd">		t_n (np.ndarray): Where the function :math:`y` is sampled in the dimension of differentiation. If you&#39;re using canonical</span>
+<span class="sd">			Fourier points, this will be :code:`th_n = np.arange(M) * 2*np.pi / M` (:math:`\\theta \\in [0, 2\\pi)`). If you&#39;re</span>
+<span class="sd">			sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.arange(0, M)/M * (b - a) + a`.</span>
+<span class="sd">			Note the lower, left bound is *inclusive* and the upper, right bound is *exclusive*.</span>
 <span class="sd">		y_n (np.ndarray): Data to transform, representing a period of a periodic function, sampled at equispaced points in</span>
 <span class="sd">			each dimension.</span>
 <span class="sd">		nu (int): The order of derivative to take.</span>
@@ -147,7 +148,7 @@
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="c1">#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.</span>
 	<span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">t_n</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The domain, t_n, should be ordered low-to-high, [a, ... b). Try sampling with `(np.arange(0, M) / M) * (b - a) + a`&quot;</span><span class="p">)</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The domain, t_n, should be ordered low-to-high, [a, ... b). Try sampling with `np.arange(0, M)/M * (b - a) + a`&quot;</span><span class="p">)</span>
 
 	<span class="n">M</span> <span class="o">=</span> <span class="n">y_n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
 	<span class="k">if</span> <span class="n">M</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># if M has an even length, then we make k = [0, 1, ... M/2 - 1, 0 or M/2, -M/2 + 1, ... -1]</span>
