@@ -13,7 +13,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 	  the result to another function.
 
 	Args:
-		y_n (np.ndarray): one-or-multi-dimensional array representing a function sampled at cosine-spaced points in the dimension
+		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
 			of differentiation.
 		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. If you're using
 			canonical Chebyshev points, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`).
@@ -21,10 +21,11 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 			np.pi / N) * (b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high
 			in :math:`n`. Also note both endpoints are *inclusive*.
 		nu (int): The order of derivative to take.
-		axis (int, optional): The dimension along which to take the derivative. Defaults to the first dimension (axis=0).
+		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
+			first dimension (axis=0).
  
 	Returns:
-		np.ndarray: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`t_n`
+		np.ndarray: :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
 	N = y_n.shape[axis] - 1; M = 2*N # We only have to care about the number of points in the dimension we're differentiating
 
@@ -94,20 +95,24 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 
 
 def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
-	"""For use with periodic functions.
+	"""Evaluate derivatives with complex exponentials via FFT. Caveats:
+
+	- Only for use with periodic functions.
+	- Taking the 1st derivative twice with a discrete method like this is not exactly the same as taking the second derivative.
  
 	Args:
-		y_n (np.ndarray): one-or-multi-dimensional array representing a period of a periodic function sampled at equispaced points
+		y_n (np.ndarray): one-or-multi-dimensional array, values of a period of a periodic function, sampled at equispaced points
 			in the dimension of differentiation.
 		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentiation. If you're using
 			canonical Fourier points, this will be :code:`th_n = np.arange(M) * 2*np.pi / M` (:math:`\\theta \\in [0, 2\\pi)`). If
 			you're sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.arange(0, M)/M * (b - a) + a`.
 			Note the lower, left bound is *inclusive* and the upper, right bound is *exclusive*.
 		nu (int): The order of derivative to take.
-		axis (int, optional): The dimension along which to take the derivative. Defaults to the first dimension (axis=0).
+		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
+			first dimension (axis=0).
 
 	Returns:
-		np.ndarray: :code:`dy`, data representing the :math:`\\nu^{th}` derivative of the function, sampled at points :math:`t_n`
+		np.ndarray: :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
 	#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.
 	if not np.all(np.diff(t_n) > 0):
