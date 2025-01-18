@@ -220,7 +220,7 @@ where
 	\item $Y$ denotes the signal in the frequency domain
 \end{itemize}
 
-To see where this comes from, see \href{https://atmos.washington.edu/~breth/classes/AM585/lect/DFT_FS_585_notes.pdf}{Bretherton}\cite{bretherton}, among others\cite{oppenheim}.\newline
+To see where this comes from, see \cite{bretherton} or \cite{oppenheim}.\newline
 
 For simplicity, we can collect $\frac{2\pi}{M}n$ as a single term, $\theta_n \in [0, 2\pi)$, or $\frac{2\pi}{M}k$ as a single term, $\theta_k$. We then get $y_n = y(\theta_n)$ and $Y_k = Y(\theta_k)$. This may help highlight the fact the \href{https://dsp.stackexchange.com/a/18931/40873}{original signal and transformed signal live on a domain which maps to the unit circle}\cite{bristow} (hence periodicity and aliasing) and are being sampled at equally-spaced angles.
 
@@ -866,49 +866,50 @@ So although \texttt{numpy} does provide the \texttt{fftn} function for transform
 \printendnotes
 
 \begin{thebibliography}{99} % https://tex.stackexchange.com/questions/198330/argument-in-thebibliography
-\raggedright 
+\raggedright
+\urlstyle{same}
 \bibitem{lebesgue}
-	Lebesgue Integrable, https://mathworld.wolfram.com/LebesgueIntegrable.html
+	Lebesgue Integrable, \url{https://mathworld.wolfram.com/LebesgueIntegrable.html}
 \bibitem{hamming}
 	Hamming, R., \textit{The Art of Doing Science and Engineering}
 \bibitem{taylor}
-	Pego, B., Simplest proof of Taylor's theorem, https://math.stackexchange.com/a/492165/278341
+	Pego, B., Simplest proof of Taylor's theorem, \url{https://math.stackexchange.com/a/492165/278341}
 \bibitem{complex}
-	Disintegration By Parts, Why do Fourier transforms use complex numbers?, https://math.stackexchange.com/a/1293127/278341
+	Disintegration By Parts, Why do Fourier transforms use complex numbers?, \url{https://math.stackexchange.com/a/1293127/278341}
 \bibitem{michigan}
-	Yagle, A., 2005, https://web.eecs.umich.edu/~aey/eecs206/lectures/fourier2.pdf
+	Yagle, A., 2005, \url{https://web.eecs.umich.edu/~aey/eecs206/lectures/fourier2.pdf}
 \bibitem{why}
-	https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work
+	\url{https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work}
 \bibitem{swarthmore}
-	Derivation of Fourier Series, http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html
+	Derivation of Fourier Series, \url{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}
 \bibitem{sego}
-	Sego, D., Demystifying Fourier analysis, https://dsego.github.io/demystifying-fourier/
+	Sego, D., Demystifying Fourier analysis, \url{https://dsego.github.io/demystifying-fourier/}
 \bibitem{medium}
-	Nakagome, S. Fourier Transform 101 — Part 4: Discrete Fourier Transform, https://medium.com/sho-jp/fourier-transform-101-part-4-discrete-fourier-transform-8fc3fbb763f3
+	Nakagome, S. Fourier Transform 101 — Part 4: Discrete Fourier Transform, \url{https://medium.com/sho-jp/fourier-transform-101-part-4-discrete-fourier-transform-8fc3fbb763f3}
 \bibitem{oppenheim}
 	Oppenheim, A. \& Willsky, A., 1996, \textit{Signals and Systems, 2nd Ed.}
 \bibitem{brunton}
-	Brunton, S., The Fourier Transform and Derivatives, https://www.youtube.com/watch?v=d5d0ORQHNYs
+	Brunton, S., The Fourier Transform and Derivatives, \url{https://www.youtube.com/watch?v=d5d0ORQHNYs}
 \bibitem{kutz}
-	Kutz, J.N., 2023, \textit{Data-Driven Modeling \& Scientific Computation}, Ch. 11, https://faculty.washington.edu/kutz/kutz\_book\_v2.pdf
+	Kutz, J.N., 2023, \textit{Data-Driven Modeling \& Scientific Computation}, Ch. 11, \url{https://faculty.washington.edu/kutz/kutz_book_v2.pdf}
 \bibitem{numpy}
-	Discrete Fourier Transform, https://numpy.org/doc/2.1/reference/routines.fft.html
+	Discrete Fourier Transform, \url{https://numpy.org/doc/2.1/reference/routines.fft.html}
 \bibitem{bretherton}
-	The Fourier spectral method, https://atmos.washington.edu/\%7Ebreth/classes/AM585/lect/DFT\_FS\_585\_notes.pdf
+	The Fourier spectral method, \url{https://atmos.washington.edu/~breth/classes/AM585/lect/DFT_FS_585_notes.pdf}
 \bibitem{bristow}
-	Bristow-Johnson, R., 2014, About Discrete Fourier Transform vs. Discrete Fourier Series, https://dsp.stackexchange.com/a/18931/40873
+	Bristow-Johnson, R., 2014, About Discrete Fourier Transform vs. Discrete Fourier Series, \url{https://dsp.stackexchange.com/a/18931/40873}
 \bibitem{johnson}
-	Johnson, S., 2011, Notes on FFT-based differentiation, https://math.mit.edu/\%7Estevenj/fft-deriv.pdf
+	Johnson, S., 2011, Notes on FFT-based differentiation, \url{https://math.mit.edu/~stevenj/fft-deriv.pdf}
 \bibitem{dct}
-	https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html
+	\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}
 \bibitem{dst}
-	https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dst.html
+	\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dst.html}
 \bibitem{trefethen}
-	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8
+	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, \url{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}
 \bibitem{cylinder}
-	https://www.researchgate.net/figure/Chebyshev-polynomials-a-can-be-viewed-as-cosine-functions-b-drawn-on-a-cylinder-and\_fig1\_340905766
+	\url{https://www.researchgate.net/figure/Chebyshev-polynomials-a-can-be-viewed-as-cosine-functions-b-drawn-on-a-cylinder-and_fig1_340905766}
 \bibitem{chainrule}
-	The Chain Rule for Multivariable Functions, https://math.libretexts.org/Bookshelves/Calculus/Calculus\newline\_(OpenStax)/14\%3A\_Differentiation\_of\_Functions\_of\_Several\_Variables/14.05\%3A\_The\_Chain\_Rule\_for\newline\_Multivariable\_Functions
+	The Chain Rule for Multivariable Functions, \url{https://math.libretexts.org/Bookshelves/Calculus/Calculus_(OpenStax)/14%3A_Differentiation_of_Functions_of_Several_Variables/14.05%3A_The_Chain_Rule_for_Multivariable_Functions}
 \end{thebibliography}
 
 \end{document}
