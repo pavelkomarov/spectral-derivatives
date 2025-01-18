@@ -15,7 +15,6 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Welcome to spectral-derivatives’ documentation!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -47,13 +46,13 @@ the result to another function.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – Data to transform, representing a function sampled at cosine-spaced points in the dimension of
-differentiation.</p></li>
-<li><p><strong>t_n</strong> (<em>np.ndarray</em>) – Where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentation. If you’re using canonical
-Chebyshev points, this will be <code class="code docutils literal notranslate"><span class="pre">x_n</span> <span class="pre">=</span> <span class="pre">np.cos(np.arange(N+1)</span> <span class="pre">*</span> <span class="pre">np.pi</span> <span class="pre">/</span> <span class="pre">N)</span></code> (<span class="math notranslate nohighlight">\(x \in [1, -1]\)</span>). If you’re
-sampling on a domain from <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(b\)</span>, this needs to be <code class="code docutils literal notranslate"><span class="pre">t_n</span> <span class="pre">=</span> <span class="pre">np.cos(np.arange(N+1)</span> <span class="pre">*</span> <span class="pre">np.pi</span> <span class="pre">/</span> <span class="pre">N)</span> <span class="pre">*</span>
-<span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)/2</span> <span class="pre">+</span> <span class="pre">(b</span> <span class="pre">+</span> <span class="pre">a)/2</span></code>. Note the order is high-to-low in the <span class="math notranslate nohighlight">\(x\)</span> or <span class="math notranslate nohighlight">\(t\)</span> domain, but low-to-high in
-<span class="math notranslate nohighlight">\(n\)</span>. Also note both endpoints are <em>inclusive</em>.</p></li>
+<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array representing a function sampled at cosine-spaced points in the dimension
+of differentiation.</p></li>
+<li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentation. If you’re using
+canonical Chebyshev points, this will be <code class="code docutils literal notranslate"><span class="pre">x_n</span> <span class="pre">=</span> <span class="pre">np.cos(np.arange(N+1)</span> <span class="pre">*</span> <span class="pre">np.pi</span> <span class="pre">/</span> <span class="pre">N)</span></code> (<span class="math notranslate nohighlight">\(x \in [1, -1]\)</span>).
+If you’re sampling on a domain from <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(b\)</span>, this needs to be <code class="code docutils literal notranslate"><span class="pre">t_n</span> <span class="pre">=</span> <span class="pre">np.cos(np.arange(N+1)</span> <span class="pre">*</span>
+<span class="pre">np.pi</span> <span class="pre">/</span> <span class="pre">N)</span> <span class="pre">*</span> <span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)/2</span> <span class="pre">+</span> <span class="pre">(b</span> <span class="pre">+</span> <span class="pre">a)/2</span></code>. Note the order is high-to-low in the <span class="math notranslate nohighlight">\(x\)</span> or <span class="math notranslate nohighlight">\(t\)</span> domain, but low-to-high
+in <span class="math notranslate nohighlight">\(n\)</span>. Also note both endpoints are <em>inclusive</em>.</p></li>
 <li><p><strong>nu</strong> (<em>int</em>) – The order of derivative to take.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The dimension along which to take the derivative. Defaults to the first dimension (axis=0).</p></li>
 </ul>
@@ -74,11 +73,11 @@ sampling on a domain from <span class="math notranslate nohighlight">\(a\)</span
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – Data to transform, representing a period of a periodic function sampled at equispaced points in the
-dimension of differentiation.</p></li>
-<li><p><strong>t_n</strong> (<em>np.ndarray</em>) – Where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentiation. If you’re using canonical
-Fourier points, this will be <code class="code docutils literal notranslate"><span class="pre">th_n</span> <span class="pre">=</span> <span class="pre">np.arange(M)</span> <span class="pre">*</span> <span class="pre">2*np.pi</span> <span class="pre">/</span> <span class="pre">M</span></code> (<span class="math notranslate nohighlight">\(\theta \in [0, 2\pi)\)</span>). If you’re
-sampling on a domain from <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(b\)</span>, this needs to be <code class="code docutils literal notranslate"><span class="pre">t_n</span> <span class="pre">=</span> <span class="pre">np.arange(0,</span> <span class="pre">M)/M</span> <span class="pre">*</span> <span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)</span> <span class="pre">+</span> <span class="pre">a</span></code>.
+<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array representing a period of a periodic function sampled at equispaced points
+in the dimension of differentiation.</p></li>
+<li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentiation. If you’re using
+canonical Fourier points, this will be <code class="code docutils literal notranslate"><span class="pre">th_n</span> <span class="pre">=</span> <span class="pre">np.arange(M)</span> <span class="pre">*</span> <span class="pre">2*np.pi</span> <span class="pre">/</span> <span class="pre">M</span></code> (<span class="math notranslate nohighlight">\(\theta \in [0, 2\pi)\)</span>). If
+you’re sampling on a domain from <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(b\)</span>, this needs to be <code class="code docutils literal notranslate"><span class="pre">t_n</span> <span class="pre">=</span> <span class="pre">np.arange(0,</span> <span class="pre">M)/M</span> <span class="pre">*</span> <span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)</span> <span class="pre">+</span> <span class="pre">a</span></code>.
 Note the lower, left bound is <em>inclusive</em> and the upper, right bound is <em>exclusive</em>.</p></li>
 <li><p><strong>nu</strong> (<em>int</em>) – The order of derivative to take.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The dimension along which to take the derivative. Defaults to the first dimension (axis=0).</p></li>
@@ -130,20 +129,11 @@ Note the lower, left bound is <em>inclusive</em> and the upper, right bound is <
     </div>
 </search>
 <script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">specderiv module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#specderiv.cheb_deriv"><code class="docutils literal notranslate"><span class="pre">cheb_deriv()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#specderiv.fourier_deriv"><code class="docutils literal notranslate"><span class="pre">fourier_deriv()</span></code></a></li>
-</ul>
-</li>
-</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to spectral-derivatives’ documentation!</a></li>
   </ul></li>
 </ul>
 </div>

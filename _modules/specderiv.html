@@ -48,13 +48,13 @@
 <span class="sd">	  the result to another function.</span>
 
 <span class="sd">	Args:</span>
-<span class="sd">		y_n (np.ndarray): Data to transform, representing a function sampled at cosine-spaced points in the dimension of</span>
-<span class="sd">			differentiation.</span>
-<span class="sd">		t_n (np.ndarray): Where the function :math:`y` is sampled in the dimension of differentation. If you&#39;re using canonical</span>
-<span class="sd">			Chebyshev points, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`). If you&#39;re</span>
-<span class="sd">			sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.cos(np.arange(N+1) * np.pi / N) *</span>
-<span class="sd">			(b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high in</span>
-<span class="sd">			:math:`n`. Also note both endpoints are *inclusive*.</span>
+<span class="sd">		y_n (np.ndarray): one-or-multi-dimensional array representing a function sampled at cosine-spaced points in the dimension</span>
+<span class="sd">			of differentiation.</span>
+<span class="sd">		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. If you&#39;re using</span>
+<span class="sd">			canonical Chebyshev points, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`).</span>
+<span class="sd">			If you&#39;re sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.cos(np.arange(N+1) *</span>
+<span class="sd">			np.pi / N) * (b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high</span>
+<span class="sd">			in :math:`n`. Also note both endpoints are *inclusive*.</span>
 <span class="sd">		nu (int): The order of derivative to take.</span>
 <span class="sd">		axis (int, optional): The dimension along which to take the derivative. Defaults to the first dimension (axis=0).</span>
 <span class="sd"> </span>
@@ -135,11 +135,11 @@
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;For use with periodic functions.</span>
 <span class="sd"> </span>
 <span class="sd">	Args:</span>
-<span class="sd">		y_n (np.ndarray): Data to transform, representing a period of a periodic function sampled at equispaced points in the</span>
-<span class="sd">			dimension of differentiation.</span>
-<span class="sd">		t_n (np.ndarray): Where the function :math:`y` is sampled in the dimension of differentiation. If you&#39;re using canonical</span>
-<span class="sd">			Fourier points, this will be :code:`th_n = np.arange(M) * 2*np.pi / M` (:math:`\\theta \\in [0, 2\\pi)`). If you&#39;re</span>
-<span class="sd">			sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.arange(0, M)/M * (b - a) + a`.</span>
+<span class="sd">		y_n (np.ndarray): one-or-multi-dimensional array representing a period of a periodic function sampled at equispaced points</span>
+<span class="sd">			in the dimension of differentiation.</span>
+<span class="sd">		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentiation. If you&#39;re using</span>
+<span class="sd">			canonical Fourier points, this will be :code:`th_n = np.arange(M) * 2*np.pi / M` (:math:`\\theta \\in [0, 2\\pi)`). If</span>
+<span class="sd">			you&#39;re sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.arange(0, M)/M * (b - a) + a`.</span>
 <span class="sd">			Note the lower, left bound is *inclusive* and the upper, right bound is *exclusive*.</span>
 <span class="sd">		nu (int): The order of derivative to take.</span>
 <span class="sd">		axis (int, optional): The dimension along which to take the derivative. Defaults to the first dimension (axis=0).</span>
@@ -205,10 +205,6 @@
     </div>
 </search>
 <script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../specderiv.html">specderiv module</a></li>
-</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
