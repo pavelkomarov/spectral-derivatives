@@ -59,8 +59,7 @@
 <span class="sd">		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the</span>
 <span class="sd">			first dimension (axis=0).</span>
 <span class="sd"> </span>
-<span class="sd">	Returns:</span>
-<span class="sd">		np.ndarray: :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function</span>
+<span class="sd">	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="n">N</span> <span class="o">=</span> <span class="n">y_n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">M</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">N</span> <span class="c1"># We only have to care about the number of points in the dimension we&#39;re differentiating</span>
 
@@ -151,8 +150,7 @@
 <span class="sd">		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the</span>
 <span class="sd">			first dimension (axis=0).</span>
 
-<span class="sd">	Returns:</span>
-<span class="sd">		np.ndarray: :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function</span>
+<span class="sd">	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="c1">#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.</span>
 	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t_n</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">t_n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">y_n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]:</span>
