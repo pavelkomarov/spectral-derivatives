@@ -46,7 +46,7 @@ the result to another function.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array representing a function sampled at cosine-spaced points in the dimension
+<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
 of differentiation.</p></li>
 <li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentation. If you’re using
 canonical Chebyshev points, this will be <code class="code docutils literal notranslate"><span class="pre">x_n</span> <span class="pre">=</span> <span class="pre">np.cos(np.arange(N+1)</span> <span class="pre">*</span> <span class="pre">np.pi</span> <span class="pre">/</span> <span class="pre">N)</span></code> (<span class="math notranslate nohighlight">\(x \in [1, -1]\)</span>).
@@ -54,11 +54,12 @@ If you’re sampling on a domain from <span class="math notranslate nohighlight"
 <span class="pre">np.pi</span> <span class="pre">/</span> <span class="pre">N)</span> <span class="pre">*</span> <span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)/2</span> <span class="pre">+</span> <span class="pre">(b</span> <span class="pre">+</span> <span class="pre">a)/2</span></code>. Note the order is high-to-low in the <span class="math notranslate nohighlight">\(x\)</span> or <span class="math notranslate nohighlight">\(t\)</span> domain, but low-to-high
 in <span class="math notranslate nohighlight">\(n\)</span>. Also note both endpoints are <em>inclusive</em>.</p></li>
 <li><p><strong>nu</strong> (<em>int</em>) – The order of derivative to take.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The dimension along which to take the derivative. Defaults to the first dimension (axis=0).</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to the
+first dimension (axis=0).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="code docutils literal notranslate"><span class="pre">dy</span></code>, data representing the <span class="math notranslate nohighlight">\(\nu^{th}\)</span> derivative of the function, sampled at points <span class="math notranslate nohighlight">\(t_n\)</span></p>
+<dd class="field-even"><p><code class="code docutils literal notranslate"><span class="pre">dy_n</span></code>, shaped like <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, samples of the <span class="math notranslate nohighlight">\(\nu^{th}\)</span> derivative of the function</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>np.ndarray</p>
@@ -69,22 +70,27 @@ in <span class="math notranslate nohighlight">\(n\)</span>. Also note both endpo
 <dl class="py function">
 <dt class="sig sig-object py" id="specderiv.fourier_deriv">
 <span class="sig-prename descclassname"><span class="pre">specderiv.</span></span><span class="sig-name descname"><span class="pre">fourier_deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/specderiv.html#fourier_deriv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#specderiv.fourier_deriv" title="Link to this definition">¶</a></dt>
-<dd><p>For use with periodic functions.</p>
+<dd><p>Evaluate derivatives with complex exponentials via FFT. Caveats:</p>
+<ul class="simple">
+<li><p>Only for use with periodic functions.</p></li>
+<li><p>Taking the 1st derivative twice with a discrete method like this is not exactly the same as taking the second derivative.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array representing a period of a periodic function sampled at equispaced points
+<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a period of a periodic function, sampled at equispaced points
 in the dimension of differentiation.</p></li>
 <li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentiation. If you’re using
 canonical Fourier points, this will be <code class="code docutils literal notranslate"><span class="pre">th_n</span> <span class="pre">=</span> <span class="pre">np.arange(M)</span> <span class="pre">*</span> <span class="pre">2*np.pi</span> <span class="pre">/</span> <span class="pre">M</span></code> (<span class="math notranslate nohighlight">\(\theta \in [0, 2\pi)\)</span>). If
 you’re sampling on a domain from <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(b\)</span>, this needs to be <code class="code docutils literal notranslate"><span class="pre">t_n</span> <span class="pre">=</span> <span class="pre">np.arange(0,</span> <span class="pre">M)/M</span> <span class="pre">*</span> <span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)</span> <span class="pre">+</span> <span class="pre">a</span></code>.
 Note the lower, left bound is <em>inclusive</em> and the upper, right bound is <em>exclusive</em>.</p></li>
 <li><p><strong>nu</strong> (<em>int</em>) – The order of derivative to take.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The dimension along which to take the derivative. Defaults to the first dimension (axis=0).</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to the
+first dimension (axis=0).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="code docutils literal notranslate"><span class="pre">dy</span></code>, data representing the <span class="math notranslate nohighlight">\(\nu^{th}\)</span> derivative of the function, sampled at points <span class="math notranslate nohighlight">\(t_n\)</span></p>
+<dd class="field-even"><p><code class="code docutils literal notranslate"><span class="pre">dy_n</span></code>, shaped like <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, samples of the <span class="math notranslate nohighlight">\(\nu^{th}\)</span> derivative of the function</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>np.ndarray</p>
