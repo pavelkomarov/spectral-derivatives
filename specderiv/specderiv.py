@@ -29,6 +29,8 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 	"""
 	N = y_n.shape[axis] - 1; M = 2*N # We only have to care about the number of points in the dimension we're differentiating
 
+	if len(t_n.shape) > 1 or t_n.shape[0] != y_n.shape[axis]:
+		raise ValueError("t_n should be 1D and have the same length as y_n along the axis of differentiation")
 	if not np.all(np.diff(t_n) < 0):
 		raise ValueError("The domain, t_n, should be ordered high-to-low, [b, ... a]. Try sampling with `np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`")
 	scale = (t_n[0] - t_n[N])/2; offset = (t_n[0] + t_n[N])/2 # Trying to be helpful, because sampling is tricky to get right
@@ -115,6 +117,8 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 		np.ndarray: :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
 	#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.
+	if len(t_n.shape) > 1 or t_n.shape[0] != y_n.shape[axis]:
+		raise ValueError("t_n should be 1D and have the same length as y_n along the axis of differentiation")
 	if not np.all(np.diff(t_n) > 0):
 		raise ValueError("The domain, t_n, should be ordered low-to-high, [a, ... b). Try sampling with `np.arange(0, M)/M * (b - a) + a`")
 

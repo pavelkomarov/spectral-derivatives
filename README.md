@@ -21,16 +21,16 @@ You should now be able to
 >>> import numpy as np
 >>>
 >>> x_n = np.cos(np.arange(21) * np.pi / 20) # cosine-spaced, includes last point
->>> yx_n = np.sin(x_n) # can be periodic or aperiodic on the domain [-1, 1]
->>> dyx_n = cheb_deriv(x_n, yx_n, 1)
+>>> y_n = np.sin(x_n) # can be periodic or aperiodic on the domain [-1, 1]
+>>> dy_n = cheb_deriv(y_n, x_n, 1)
 >>>
 >>> th_n = np.arange(20) * 2*np.pi / 20 # equispaced, excludes last point
->>> yth_n = np.sin(th_n) # must be periodic on the domain [0, 2pi)
->>> dyth_n = fourier_deriv(th_n, yth_n, 1)
+>>> y_n = np.sin(th_n) # must be periodic on the domain [0, 2pi)
+>>> dy_n = fourier_deriv(y_n, th_n, 1)
 ```
 For further usage examples, see the Jupyter notebooks: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/fourier.ipynb).
 
-Note that for accurate results you'll need to use equispaced samples on an open periodic interval for `fourier` and cosine-spaced points for `chebyshev`. For examples of using arbitrary domains, see [this notebook](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/arbitrary_domains.ipynb).
+Note that for accurate results you'll need to use equispaced samples on an open periodic interval for `fourier` and cosine-spaced points for `chebyshev`. For examples which use arbitrary domains, see [this notebook](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/arbitrary_domains.ipynb).
 
 ## References
 

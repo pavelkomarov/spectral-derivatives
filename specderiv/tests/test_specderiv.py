@@ -150,9 +150,11 @@ def test_user_errors():
 	"""A test that helpful errors are thrown when a user goofs up
 	"""
 	for t_n in [np.cos(np.arange(N+1) * np.pi / N)[::-1] * (4 - 1)/2 + (4 + 1)/2, # t_n ordered low-to-high
-				np.linspace(4, 1, N)]:											# t_n not cosine-spaced
+				np.linspace(4, 1, N+1),											# t_n not cosine-spaced
+				np.cos(np.arange(N) * np.pi / (N-1)) * (4 - 1)/2 + (4 + 1)/2]:	# t_n not the same length as y_n along axis
 		with pytest.raises(ValueError):
-			cheb_deriv(np.zeros(t_n.shape), t_n, 1)
-	t_n = np.linspace(8, 4, M) # t_n ordered high-to-low
-	with pytest.raises(ValueError):
-		fourier_deriv(np.zeros(t_n.shape), t_n, 1)
+			cheb_deriv(np.zeros(N+1), t_n, 1)
+	for t_n in [np.linspace(8, 4, M),	 	# t_n ordered high-to-low
+				np.linspace(4, 8, M-1)]:	# t_n not the same length as y_n along axis
+		with pytest.raises(ValueError):
+			fourier_deriv(np.zeros(M), t_n, 1)
