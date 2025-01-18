@@ -24,8 +24,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
 			first dimension (axis=0).
  
-	Returns:
-		np.ndarray: :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
+	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
 	N = y_n.shape[axis] - 1; M = 2*N # We only have to care about the number of points in the dimension we're differentiating
 
@@ -113,8 +112,7 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
 			first dimension (axis=0).
 
-	Returns:
-		np.ndarray: :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
+	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
 	#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.
 	if len(t_n.shape) > 1 or t_n.shape[0] != y_n.shape[axis]:
