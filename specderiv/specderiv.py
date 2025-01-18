@@ -91,7 +91,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 		dy_n[first] = np.nan
 		dy_n[last] = np.nan
 
-	# The above is agnostic to where the data came from, pretends it came from the domain [-1, 1], but the data is actually
+	# The above is agnostic to where the data came from, pretends it came from the domain [-1, 1], but the data may actually be
 	return dy_n/scale**nu # smooshed from some other domain. So scale the derivative by the relative size of the t and x intervals.
 
 
@@ -134,6 +134,6 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 	Y_nu = (1j * k[s])**nu * Y_k
 	dy_n = np.fft.ifft(Y_nu, axis=axis).real if not np.iscomplexobj(y_n) else np.fft.ifft(Y_nu, axis=axis)
 
-	# The above is agnostic to where the data came from, pretends it came from the domain [0, 2pi), but the data is actually
-	scale = (t_n[M-1] + t_n[1] - 2*t_n[0])/(2*np.pi) # smooshed from some other domain. So scale the derivative by the relative
-	return dy_n/scale**nu 							# size of the t and theta intervals.
+	# The above is agnostic to where the data came from, pretends it came from the domain [0, 2pi), but the data may actually
+	scale = (t_n[M-1] + t_n[1] - 2*t_n[0])/(2*np.pi) # be smooshed from some other domain. So scale the derivative by the
+	return dy_n/scale**nu 							# relative size of the t and theta intervals.
