@@ -123,8 +123,7 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 	M = y_n.shape[axis]
 	if M % 2 == 0: # if M has an even length, then we make k = [0, 1, ... M/2 - 1, 0 or M/2, -M/2 + 1, ... -1]
 		k = np.concatenate((np.arange(M//2 + 1), np.arange(-M//2 + 1, 0)))
-		if nu % 2 == 1: # odd derivatives get the M/2th element zeroed out
-			k[M//2] = 0
+		if nu % 2 == 1: k[M//2] = 0 # odd derivatives get the M/2th element zeroed out
 	else: # M has odd length, so k = [0, 1, ... floor(M/2), -floor(M/2), ... -1]
 		k = np.concatenate((np.arange(M//2 + 1), np.arange(-M//2 + 1, 0)))
 
