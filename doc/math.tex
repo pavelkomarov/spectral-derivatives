@@ -220,6 +220,8 @@ where
 	\item $Y$ denotes the signal in the frequency domain
 \end{itemize}
 
+To see where this comes from, see \href{https://atmos.washington.edu/~breth/classes/AM585/lect/DFT_FS_585_notes.pdf}{Bretherton}\cite{bretherton}, among others\cite{oppenheim}.\newline
+
 For simplicity, we can collect $\frac{2\pi}{M}n$ as a single term, $\theta_n \in [0, 2\pi)$, or $\frac{2\pi}{M}k$ as a single term, $\theta_k$. We then get $y_n = y(\theta_n)$ and $Y_k = Y(\theta_k)$. This may help highlight the fact the \href{https://dsp.stackexchange.com/a/18931/40873}{original signal and transformed signal live on a domain which maps to the unit circle}\cite{bristow} (hence periodicity and aliasing) and are being sampled at equally-spaced angles.
 
 \subsubsection{Interpolation}
@@ -891,6 +893,8 @@ So although \texttt{numpy} does provide the \texttt{fftn} function for transform
 	Kutz, J.N., 2023, \textit{Data-Driven Modeling \& Scientific Computation}, Ch. 11, https://faculty.washington.edu/kutz/kutz\_book\_v2.pdf
 \bibitem{numpy}
 	Discrete Fourier Transform, https://numpy.org/doc/2.1/reference/routines.fft.html
+\bibitem{bretherton}
+	The Fourier spectral method, https://atmos.washington.edu/\%7Ebreth/classes/AM585/lect/DFT\_FS\_585\_notes.pdf
 \bibitem{bristow}
 	Bristow-Johnson, R., 2014, About Discrete Fourier Transform vs. Discrete Fourier Series, https://dsp.stackexchange.com/a/18931/40873
 \bibitem{johnson}
