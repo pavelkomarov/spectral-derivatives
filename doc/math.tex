@@ -307,7 +307,7 @@ We now know that the contribution to the mean-squared slope from the $\frac{M}{2
 
 $$\frac{d}{du} |u|^2 + |1 - u|^2 = 2u - 2(1-u) = 0 \longrightarrow u = \frac{1}{2}$$
 
-So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} (DCT), which is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$, so we do have to worry about the Nyquist term.
+So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} (DCT), which \hyperref[fftdct]{is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$}, so we do have to worry about the Nyquist term.
 
 Now if we put it all together we get ``the \textbf{unique ``minimal-oscillation" trigonometric interpolation} of order N":
 
@@ -475,7 +475,7 @@ This all suggests a solution procedure:
 
 There are a lot of details left to be worked out here, which we'll tackle in sequence.
 
-\subsection{The Discrete Cosine Transform}
+\subsection{The Discrete Cosine Transform}\label{fftdct}
 
 Because the reconstruction of $y(\theta)$ (\autoref{equivalent}) only contains cosines, doing a full FFT, which tries to fit sines as well as cosines, would be doing double work. Instead we can use the DCT. There are actually \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{several possible definitions of the DCT}\cite{dct}, but I use the DCT-I, because it is in some sense closest to the interpolant (\autoref{interpolant}) we've already derived.
 
@@ -492,8 +492,8 @@ Y_{M-k} &= \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}n(M-k)} = \sum_{n=0}^{M-1} y
 \begin{tikzpicture}[overlay, remember picture]
 	\node at (11.5,3.25) {\footnotesize let $n_{new} = M - n_{old}$};
 	\node at (11,0) {\parbox{28mm}{\footnotesize because $e^{-j\frac{2\pi}{M}Mk} = e^0 = 1$ and $y_M = y_0$}};
-	\draw[->] (11.5,3) -- (11.4,2.5);
-	\draw[->] (10.7,0.4) -- (10.9,0.9);
+	\draw[->] (11.45,3.05) -- (11.37,2.5);
+	\draw[->] (10.7,0.35) -- (10.86,0.95);
 \end{tikzpicture}\newline
 
 So when $y_n$ are redundant this way, the $Y_k$ are too, in a very mirror way. We can now use the facts $Y_k = Y_{M-k}$ and $N = \frac{M}{2}$ in the FFT interpolation (\autoref{interpolant}):
@@ -567,7 +567,7 @@ Y_k^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{bla
 	\node at (4.4,0.25) {\footnotesize constant};
 	\node at (13.4,0.2) {\footnotesize palindromic};
 	\draw[->] (4.4,0.5) -- (4.4,1);
-	\draw[->] (12.8,0.35) -- (12,0.75);
+	\draw[->] (12.8,0.35) -- (12.05,0.83);
 	\draw[->] (14,0.35) -- (14.6,1);
 \end{tikzpicture}\vspace{2mm}
 
@@ -589,8 +589,8 @@ y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^\n
 \begin{tikzpicture}[overlay, remember picture]
 	\node at (7.2,7.25) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
 	\node at (7.25,4) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
-	\draw[->, blue] (7.7,7.6) -- (8,7.85);
-	\draw[->, red] (7.7,4.3) -- (8.1,4.5);
+	\draw[->, blue] (7.7,7.6) -- (7.95,7.9);
+	\draw[->, red] (7.7,4.3) -- (8.1,4.55);
 \end{tikzpicture}
 
 Brilliant! So we can use only the non-redundant $Y_k$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
