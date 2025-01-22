@@ -88,9 +88,10 @@ Note the lower, left bound is <em>inclusive</em> and the upper, right bound is <
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to the
 first dimension (axis=0).</p></li>
 <li><p><strong>filter</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function or <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> that takes the array of wavenumbers, <span class="math notranslate nohighlight">\(k = [0, ...
-\lfloor \frac{M}{2} \rfloor, -\lfloor \frac{M}{2} \rfloor, ... -1]\)</span>, and returns a same-shaped array of weights,
-which get multiplied in to the initial frequency transform of the data, <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking
-derivatives of noisy data. The default is to apply #nofilter.</p></li>
+\frac{M}{2} , -\frac{M}{2} + 1, ... -1]\)</span> for even <span class="math notranslate nohighlight">\(M\)</span> or <span class="math notranslate nohighlight">\(k = [0, ... \lfloor \frac{M}{2} \rfloor,
+-\lfloor \frac{M}{2} \rfloor, ... -1]\)</span> for odd <span class="math notranslate nohighlight">\(M\)</span>, and returns a same-shaped array of weights, which get
+multiplied in to the initial frequency transform of the data, <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking derivatives
+of noisy data. The default is to apply #nofilter.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
