@@ -222,7 +222,7 @@ where
 
 To see where this comes from, see \cite{bretherton} or \cite{oppenheim}.\newline
 
-For simplicity, we can collect $\frac{2\pi}{M}n$ as a single term, $\theta_n \in [0, 2\pi)$, or $\frac{2\pi}{M}k$ as a single term, $\theta_k$. We then get $y_n = y(\theta_n)$ and $Y_k = Y(\theta_k)$. This may help highlight the fact the \href{https://dsp.stackexchange.com/a/18931/40873}{original signal and transformed signal live on a domain which maps to the unit circle}\cite{bristow} (hence periodicity and aliasing) and are being sampled at equally-spaced angles.
+For simplicity, we can collect $\frac{2\pi}{M}n$ as a single term, $\theta_n \in [0, 2\pi)$, or $\frac{2\pi}{M}k$ as a single term, $\omega_k$. We then get $y_n = y(\theta_n)$ and $Y_k = Y(\omega_k)$. This may help highlight the fact the \href{https://dsp.stackexchange.com/a/18931/40873}{original signal and transformed signal live on a domain which maps to the unit circle}\cite{bristow} (hence periodicity and aliasing) and are being sampled at equally-spaced angles/angular velocities.
 
 \subsubsection{Interpolation}
 
@@ -321,12 +321,12 @@ y(\theta) = \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big(Y_k e^{j k \t
 
 Now at last, with this interpolation between integer $n$ in hand, we can take a derivative w.r.t. the spatial variable:
 
-$$\frac{d}{d\theta} y(\theta) = \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} j k (Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}) - \frac{M}{2} Y_{M/2} \sin(\frac{M}{2}\theta) \Big)$$
+$$\frac{d}{d\theta} y(\theta) = \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} j k (Y_k e^{j k \theta} - Y_{M-k} e^{-j k \theta}) - \frac{M}{2} Y_{M/2} \sin(\frac{M}{2}\theta) \Big)$$
 
 Evaluating at $\theta_n = \frac{2\pi}{M}n, n \in \mathbb{Z}$, we get:
 
 \begin{align*}
-y'_n &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} j k (Y_k e^{j k \frac{2\pi}{M}n} + Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \overset{\text{\large 0}}{\cancel{\frac{M}{2} Y_{M/2} \sin(\pi n)}} \Big) = \frac{1}{M} \sum_{k = 0}^{M-1} Y'_k e^{j\frac{2\pi}{M}kn} \\
+y'_n &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} j k (Y_k e^{j k \frac{2\pi}{M}n} - Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \overset{\text{\large 0}}{\cancel{\frac{M}{2} Y_{M/2} \sin(\pi n)}} \Big) = \frac{1}{M} \sum_{k = 0}^{M-1} Y'_k e^{j\frac{2\pi}{M}kn} \\
 & \text{where} \quad Y'_k = \begin{cases} j k \cdot Y_k & k < \frac{M}{2} \\ 0 & k = \frac{M}{2} \\ j(k - M) \cdot Y_k & k > \frac{M}{2} \leftarrow \text{comes from: } k_{new} = M - k_{old}, 0 < k_{old} < \frac{M}{2} \end{cases}\\ & \hspace{5cm} \rightarrow \frac{M}{2} < k_{new} < M; -jk_{old} \cdot Y_{M - k_{old}} \rightarrow -j(M - k_{new}) \cdot Y_{k_{new}}
 \end{align*}
 
