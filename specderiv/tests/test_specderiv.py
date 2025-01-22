@@ -158,3 +158,36 @@ def test_user_errors():
 				np.linspace(4, 8, M-1)]:	# t_n not the same length as y_n along axis
 		with pytest.raises(ValueError):
 			fourier_deriv(np.zeros(M), t_n, 1)
+
+def test_fourier_filter():
+	"""A test that applying a filter helps take noise-resistant derivatives of a noisy periodic function
+	"""
+	for th_n_ in (th_n, np.arange(0, M+1) * 2*np.pi / (M+1)): # Test for an odd M too!
+		y_n_with_noise = np.cos(th_n_) + 2*np.sin(3*th_n_) + 0.1*np.random.randn(*th_n_.shape) # add in some gaussian noise
+		analytic_truth = [-np.sin(th_n_) + 6*np.cos(3*th_n_),		# 1st
+							-np.cos(th_n_) - 18*np.sin(3*th_n_),	# 2nd
+							np.sin(th_n_) - 54*np.cos(3*th_n_)]		# 3rd
+
+		for nu in range(1,4): # Things get less accurate for higher derivatives, so check < 10^f(nu)
+			computed_noisy = fourier_deriv(y_n_with_noise, th_n_, nu)
+			computed_noisy_with_filter = fourier_deriv(y_n_with_noise, th_n_, nu, filter=lambda k: np.abs(k) < 5) # only keep lower-frequency modes
+			assert np.nanmean((analytic_truth[nu-1] - computed_noisy_with_filter)**2) < np.nanmean((analytic_truth[nu-1] - computed_noisy)**2)
+			assert np.nanmax(np.abs(analytic_truth[nu-1] - computed_noisy_with_filter)) < np.nanmax(np.abs(analytic_truth[nu-1] - computed_noisy))
+
+@pytest.mark.filterwarnings('ignore::UserWarning') # Not worrying about warnings in this test
+def test_cheb_filter():
+	"""A test that applying a filter helps take noise-resistant derivatives of a noisy aperiodic function
+	"""
+	y_n_with_noise = np.exp(x_n) * np.sin(5*x_n) + 0.1*np.random.randn(*x_n.shape)
+	analytic_truth = [5*np.exp(x_n) * np.cos(5*x_n) + np.exp(x_n) * np.sin(5*x_n),	# 1st
+						2*np.exp(x_n) * (5*np.cos(5*x_n) - 12*np.sin(5*x_n)),		# 2nd
+						-2*np.exp(x_n) * (37*np.sin(5*x_n) + 55*np.cos(5*x_n)),		# 3rd
+						4*np.exp(x_n) * (119*np.sin(5*x_n) - 120*np.cos(5*x_n)),	# 4th
+						4*np.exp(x_n) * (719*np.sin(5*x_n) + 475*np.cos(5*x_n)),	# 5th
+						8*np.exp(x_n) * (2035*np.cos(5*x_n) - 828*np.sin(5*x_n))]	# 6th
+
+	for nu in range(1,7):
+		computed_noisy = cheb_deriv(y_n_with_noise, x_n, nu)
+		computed_noisy_with_filter = cheb_deriv(y_n_with_noise, x_n, nu, filter=lambda k: k < 10)
+		assert np.nanmean((analytic_truth[nu-1] - computed_noisy_with_filter)**2) < np.nanmean((analytic_truth[nu-1] - computed_noisy)**2)
+		assert np.nanmax(np.abs(analytic_truth[nu-1] - computed_noisy_with_filter)) < np.nanmax(np.abs(analytic_truth[nu-1] - computed_noisy))

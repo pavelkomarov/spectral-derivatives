@@ -5,7 +5,7 @@ from collections import deque
 from warnings import warn
 
 
-def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
+def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter: callable=None):
 	"""Evaluate derivatives with Chebyshev polynomials via discrete cosine and sine transforms. Caveats:
 
 	- Taking the 1st derivative twice with a discrete method like this is not exactly the same as taking the second derivative.
@@ -23,6 +23,9 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 		nu (int): The order of derivative to take.
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
 			first dimension (axis=0).
+		filter (callable, optional): A function or lambda that takes the 1D array of wavenumbers, :math:`k = [0, ... N+1]`, and
+			returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of the data,
+			:math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.
  
 	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
@@ -43,6 +46,8 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 
 	Y_k = dct(y_n, 1, axis=axis) # Transform to frequency domain using the 1st definition of the discrete cosine transform
 	k = np.arange(1, N) # [1, ... N-1], wavenumber iterator/indices
+	k_with_ends = np.arange(0, N+1) # [0, ... N], wavenumbers including endpoints
+	if filter: Y_k *= filter(k_with_ends)
 
 	y_primes = [] # Store all derivatives in theta up to the nu^th, because we need them all for reconstruction.
 	for order in range(1, nu+1):
@@ -51,7 +56,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 			y_primes.append(dst(1j * Y_order, 1, axis=axis).real / M) # d/dtheta y = the inverse transform of DST-1 
 				# = 1/M * DST-1. Extra j for equivalence with IFFT. Im{y_prime} = 0 for real y, so just keep real.
 		else: # even derivative
-			Y_order = (1j * np.arange(0, N+1)[s])**order * Y_k # Include terms for wavenumbers 0 and N, becase the DCT uses them
+			Y_order = (1j * k_with_ends[s])**order * Y_k # Include terms for wavenumbers 0 and N, becase the DCT uses them
 			y_primes.append(dct(Y_order, 1, axis=axis)[middle].real / M) # the inverse transform of DCT-1 is 1/M * DCT-1.
 				# Slice off ends. Im{y_prime} = 0 for real y, so just keep real.
 
@@ -95,7 +100,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 	return dy_n/scale**nu # smooshed from some other domain. So scale the derivative by the relative size of the t and x intervals.
 
 
-def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
+def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter: callable=None):
 	"""Evaluate derivatives with complex exponentials via FFT. Caveats:
 
 	- Only for use with periodic functions.
@@ -111,6 +116,9 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 		nu (int): The order of derivative to take.
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
 			first dimension (axis=0).
+		filter (callable, optional): A function or lambda that takes the array of wavenumbers, :math:`k = [0, ... M/2, -M/2 ... -1]`,
+			and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of the data,
+			:math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.
 
 	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
@@ -130,6 +138,7 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0):
 	s = [np.newaxis for dim in y_n.shape]; s[axis] = slice(None); s = tuple(s) # for elevating vectors to have same dimension as data
 
 	Y_k = np.fft.fft(y_n, axis=axis)
+	if filter: Y_k *= filter(k)
 	Y_nu = (1j * k[s])**nu * Y_k
 	dy_n = np.fft.ifft(Y_nu, axis=axis).real if not np.iscomplexobj(y_n) else np.fft.ifft(Y_nu, axis=axis)
 
