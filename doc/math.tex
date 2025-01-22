@@ -344,7 +344,7 @@ y''_n &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^2 (Y_k e^{j k \frac{2
 
 It's important to realize ``this [second derivative] procedure is \textit{not} equivalent to performing the spectral first-derivative procedure twice (unless $M$ is odd so that there is no $Y_{M/2}$ term) because the first derivative operation omits the $Y_{M/2}$ term entirely."\cite{johnson}
 
-We can repeat for higher derivatives, but the punchline is that for odd derivatives the $\frac{M}{2}$ term goes away\footnote{For \textit{real} signals it is common (e.g. in the kind of code ChatGPT might generate to do this) not to worry about zeroing out the Nyquist term and \textit{instead} throw away the imaginary part of the inverse transform. This works because $Y_{M/2} = \sum_{n=0}^{M-1} y_n e^{-j\frac{2\pi}{M} n \frac{M}{2}} = \sum_{n=0}^{M-1} y_n (-1)^n$, which will be purely real for real $y_n$, and when we mulitply by $(jk)^\nu$ for odd $\nu$, then $Y_{M/2}^{(\nu)}$ ends up multiplied by an odd power of $j$, which makes it purely imaginary. Then its contribution to the inverse transform (i.e. to each sample of the derivative $y_n^{(\nu)}$) is $+Y_{M/2}^{(\nu)} e^{j\frac{2\pi}{M}n\frac{M}{2}} = +Y_{M/2}^{(\nu)} (-1)^n$, which will also be purely imaginary. Whereas other imaginary components in the transform of a real signal have twins at negative frequency to pair with and become \textit{real} sines in the inverse transform, the Nyquist term has no twin, so it's the \textit{only} imaginary thing left over. Thus for \textit{real} signals keeping only the \texttt{ifft().real} is \textit{equivalent} to zeroing out the Nyquist term.}, and for even derivatives it comes back. In general:
+We can repeat for higher derivatives, but the punchline is that for odd derivatives the $\frac{M}{2}$ term goes away\footnote{For \textit{real} signals it is common (e.g. in the kind of code ChatGPT might generate to do this) not to worry about zeroing out the Nyquist term and \textit{instead} throw away the imaginary part of the inverse transform. This works because $Y_{M/2} = \sum_{n=0}^{M-1} y_n e^{-j\frac{2\pi}{M} n \frac{M}{2}} = \sum_{n=0}^{M-1} y_n (-1)^n$, which will be purely real for real $y_n$, and when we mulitply by $(jk)^\nu$ for odd $\nu$, then $Y_{M/2}^{(\nu)}$ gets a constituent odd power of $j$, which makes it purely imaginary. Then its contribution to the inverse transform (i.e. to each sample of the derivative $y_n^{(\nu)}$) is $+Y_{M/2}^{(\nu)} e^{j\frac{2\pi}{M}n\frac{M}{2}} = +Y_{M/2}^{(\nu)} (-1)^n$, which will also be purely imaginary. Whereas other imaginary components in the transform of a real signal have negated twins at negative frequency to pair with and become \textit{real} sines in the inverse transform, the Nyquist term has no twin, so it's the \textit{only} imaginary thing left over. Thus for \textit{real} signals keeping only the \texttt{ifft().real} is \textit{equivalent} to zeroing out the Nyquist term.}, and for even derivatives it comes back. In general:
 
 \begin{equation}\label{Y_nu}
 Y^{(\nu)}_k = \begin{cases} (j k)^\nu \cdot Y_k & k < \frac{M}{2} \\ (j \frac{M}{2})^\nu \cdot Y_k & k = \frac{M}{2} \text{ and } \nu \text{ even} \\ 0 & k = \frac{M}{2} \text{ and } \nu \text{ odd} \\ (j(k - M))^\nu \cdot Y_k & k > \frac{M}{2} \end{cases}
@@ -436,13 +436,13 @@ Due to the relationship between $\theta$ and $x$ on their respective domains, yo
 
 Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a $2\pi$-periodic cosine in the domain $[0, \pi]$.
 
-We can reconstruct a function using the different variables/basis-formulations, and as long as our variables are related as in \autoref{domains}, these reconstructions are \textit{equivalent}:
+We can reconstruct a function using the different variables/basis formulations, and as long as our variables are related as in \autoref{domains}, these reconstructions are \textit{equivalent}:
 
 \begin{equation}\label{equivalent}
 y(x) = \sum_{k=0}^N a_k T_k(x)\ ;\quad y(z) = \sum_{k=0}^N a_k \frac{1}{2}(z^k + z^{-k})\ ;\quad y(\theta) = \sum_{k=0}^N a_k \cos(k \theta)
 \end{equation}
 
-Note the set of $\{a_k\}$ is for $k \in \{0, .. N\}$ and therefore has cardinality $N+1$.\newline
+Note the set of $\{a_k\}$ is for $k \in \{0, ... N\}$ and therefore has cardinality $N+1$.\newline
 
 Because the polynomials/projected cosines are \textit{asymmetrical}, we can natually use this basis to model arbitrary, lopsided functions without having to worry about phase shifts \hyperref[phase]{like we did for the Fourier basis}.
 
@@ -514,7 +514,7 @@ At samples $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N}n$, this becomes:
 y(\theta_n) = \frac{1}{M} \Big(Y_0 + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} + 2 \sum_{k = 1}^{N-1} Y_k \cos(\frac{\pi nk}{N}) \Big) \tag{DCT$^{-1}$}
 \]
 
-This is exactly the DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT$^{-1}$ operates on the shorter set of $Y = [Y_0, ... Y_N]$, without redundant information. Thus
+This is exactly the DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT and DCT$^{-1}$ operate on the shorter set of $Y = [Y_0, ... Y_N]$, without redundant information. Thus
 
 \begin{equation}\label{ifftidct}
 \text{FFT}^{-1}([Y_0, ... Y_N, Y_{N-1}, ... Y_1])[:N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
