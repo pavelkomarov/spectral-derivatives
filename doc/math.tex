@@ -51,7 +51,7 @@ So I had to think of basics, just as I told you I had done when using an error-d
 
 Second, linear systems, which is what we want at this stage, also have the same eigenfunctions—the complex exponentials which are equivalent to the real trigonometric functions. Hence a simple rule: if you have either a time-invariant system or a linear system, then you should use the complex exponentials.
 
-On further digging into the matter I found yet a third reason for using them in the field of digital filters. There is a theorem, often called Nyquist's sampling theorem (though it was known long before and even published by Whittaker, in a form you can hardly realize what it is saying, even when you know Nyquist's theorem), which says that if you have a band-limited signal and sample at equal spaces at a rate of at least two in the highest frequency, then the original signal can be reconstructed from the samples. Hence the sampling process loses no information when we replace the continuous signal with the equally spaced samples, provided the samples cover the whole real line. The sampling rate is often known as the Nyquist rate after Harry Nyquist, also of servo stability fame, as well as other things [also reputed to have been just a really great guy who often had productive lunches with his colleagues, giving them feedback and asking questions that brought out the best in them]. If you sample a non-band-limited function, then the higher frequencies are ``aliased" into lower ones, a word devised by Tukey to describe the fact that a single high frequency will appear later as a single low frequency in the Nyquist band. The same is not true for any other set of functions, say powers of $t$. Under equally spaced sampling and reconstruction a single high power of t will go into a polynomial (many terms) of lower powers of $t$.
+On further digging into the matter I found yet a third reason for using them in the field of digital filters. There is a theorem, often called Nyquist's sampling theorem (though it was known long before and even published by Whittaker, in a form you can hardly realize what it is saying, even when you know Nyquist's theorem), which says that if you have a band-limited signal and sample at equal spaces at a rate of at least two in the highest frequency, then the original signal can be reconstructed from the samples. Hence the sampling process loses no information when we replace the continuous signal with the equally spaced samples, provided the samples cover the whole real line. The sampling rate is often known as the Nyquist rate after Harry Nyquist, also of servo stability fame, as well as other things [also reputed to have been just a really great guy who often had productive lunches with his colleagues, giving them feedback and asking questions that brought out the best in them]. If you sample a non-band-limited function, then the higher frequencies are ``aliased" into lower ones, a word devised by Tukey to describe the fact that a single high frequency will appear later as a single low frequency in the Nyquist band. The same is not true for any other set of functions, say powers of $t$. Under equally spaced sampling and reconstruction a single high power of $t$ will go into a polynomial (many terms) of lower powers of $t$.
 
 Thus there are three good reasons for the Fourier functions: (1) time invariance, (2) linearity, and (3) the reconstruction of the original function from the equally spaced samples is simple and easy to understand.
 
@@ -101,7 +101,7 @@ Beware that the terminology ``transform" and ``domain" is not always used to des
 
 \subsection{The Fourier Transform}\label{fourier}
 
-Using Fourier's original real-sinusoid-based formulation, we can write the reconstruction expression as\footnote{It's worth considering how weird it is this is true. In fact, it's so weird that Joseph Lagrange publicly declared Fourier was wrong at a meeting of the Paris Academy in 1807!\cite{michigan} It's valuable to ask \href{https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work}{why this works}\cite{why} and sift through some analysis.}:
+Using Fourier's original real-sinusoid-based formulation, we can write the reconstruction expression as\footnote{It's worth considering how weird it is this is true. In fact, it's so weird that Joseph Lagrange publicly declared Fourier was wrong at a meeting of the Paris Academy in 1807!\cite{michigan} It's valuable to ask \href{https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work}{why this works}\cite{why} and sift through \href{https://math.uchicago.edu/~may/REU2017/REUPapers/Xue.pdf}{some analysis}.\cite{chicago}}:
 
 $$ f(x) = a_0 + \sum_{k=1}^{\infty} (a_k \cos(k \omega_0 x) + b_k \sin(k \omega_0 x))$$
 
@@ -434,7 +434,7 @@ Due to the relationship between $\theta$ and $x$ on their respective domains, yo
 	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{cylinder}. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen}), but I prefer $k$ to enumerate basis modes, for consistency.}
 \end{figure}
 
-Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a $2\pi$-periodic cosine in the domain $[0, \pi]$.
+Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a horizontally-reversed $2\pi$-periodic cosine in the domain $[0, \pi]$.
 
 We can reconstruct a function using the different variables/basis formulations, and as long as our variables are related as in \autoref{domains}, these reconstructions are \textit{equivalent}:
 
@@ -442,9 +442,7 @@ We can reconstruct a function using the different variables/basis formulations, 
 y(x) = \sum_{k=0}^N a_k T_k(x)\ ;\quad y(z) = \sum_{k=0}^N a_k \frac{1}{2}(z^k + z^{-k})\ ;\quad y(\theta) = \sum_{k=0}^N a_k \cos(k \theta)
 \end{equation}
 
-Note the set of $\{a_k\}$ is for $k \in \{0, ... N\}$ and therefore has cardinality $N+1$.\newline
-
-Because the polynomials/projected cosines are \textit{asymmetrical}, we can natually use this basis to model arbitrary, lopsided functions without having to worry about phase shifts \hyperref[phase]{like we did for the Fourier basis}.
+Note the set of $\{a_k\}$ is for $k \in \{0, ... N\}$ and therefore has cardinality $N+1$.
 
 \subsection{The Advantage of Chebyshev}
 
@@ -460,6 +458,8 @@ Why might we prefer this basis to the Fourier basis? Well, the advantage of a po
 However, there is something we can do about the Runge phenomenon: By clustering fit points at the edges of the domain, the wild wobbles go away.
 
 If we take $x = \cos(\theta)$ with $\theta$ equispaced $\in [0, \pi]$, then we get a very natural clustering at the edges of $[-1, 1]$ in $x$. What's more, if we have equispaced $\theta$ and a reconstruction expression built up out of sinusoids, we're back in a Fourier paradigm (at least in variable $\theta$) and can exploit the efficiency of the FFT, or, better, the discrete cosine and sine transforms!\cite{dct}\cite{dst}
+
+Notice too that the polynomials/projected cosines are \textit{asymmetrical}, so we can natually use this basis to model arbitrary, lopsided functions without having to worry about \hyperref[phase]{phase shifts like we did for the Fourier basis}.
 
 \section{An Algorithm}\label{algo}
 
@@ -883,6 +883,8 @@ So although \texttt{numpy} does provide the \texttt{fftn} function for transform
 	Yagle, A., 2005, \url{https://web.eecs.umich.edu/~aey/eecs206/lectures/fourier2.pdf}
 \bibitem{why}
 	\url{https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work}
+\bibitem{chicago}
+	Xue, S., 2017, Convergence of Fourier Series, \url{https://math.uchicago.edu/~may/REU2017/REUPapers/Xue.pdf}
 \bibitem{swarthmore}
 	Derivation of Fourier Series, \url{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}
 \bibitem{sego}
