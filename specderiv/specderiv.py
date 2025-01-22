@@ -47,7 +47,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter: c
 	Y_k = dct(y_n, 1, axis=axis) # Transform to frequency domain using the 1st definition of the discrete cosine transform
 	k = np.arange(1, N) # [1, ... N-1], wavenumber iterator/indices
 	k_with_ends = np.arange(0, N+1) # [0, ... N], wavenumbers including endpoints
-	if filter: Y_k *= filter(k_with_ends)
+	if filter: Y_k *= filter(k_with_ends)[s]
 
 	y_primes = [] # Store all derivatives in theta up to the nu^th, because we need them all for reconstruction.
 	for order in range(1, nu+1):
@@ -140,7 +140,7 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter
 	s = [np.newaxis for dim in y_n.shape]; s[axis] = slice(None); s = tuple(s) # for elevating vectors to have same dimension as data
 
 	Y_k = np.fft.fft(y_n, axis=axis)
-	if filter: Y_k *= filter(k)
+	if filter: Y_k *= filter(k)[s]
 	Y_nu = (1j * k[s])**nu * Y_k
 	dy_n = np.fft.ifft(Y_nu, axis=axis).real if not np.iscomplexobj(y_n) else np.fft.ifft(Y_nu, axis=axis)
 
