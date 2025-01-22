@@ -117,9 +117,10 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
 			first dimension (axis=0).
 		filter (callable, optional): A function or :code:`lambda` that takes the array of wavenumbers, :math:`k = [0, ...
-			\\lfloor \\frac{M}{2} \\rfloor, -\\lfloor \\frac{M}{2} \\rfloor, ... -1]`, and returns a same-shaped array of weights,
-			which get multiplied in to the initial frequency transform of the data, :math:`Y_k`. Can be helpful when taking
-			derivatives of noisy data. The default is to apply #nofilter.
+			\\frac{M}{2} , -\\frac{M}{2} + 1, ... -1]` for even :math:`M` or :math:`k = [0, ... \\lfloor \\frac{M}{2} \\rfloor,
+			-\\lfloor \\frac{M}{2} \\rfloor, ... -1]` for odd :math:`M`, and returns a same-shaped array of weights, which get
+			multiplied in to the initial frequency transform of the data, :math:`Y_k`. Can be helpful when taking derivatives
+			of noisy data. The default is to apply #nofilter.
 
 	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
