@@ -371,7 +371,7 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 
 \section{The Chebyshev Basis}
 
-\href{https://www.youtube.com/watch?v=HloOBYPwlmU}{There is another} basis which we can use to represent arbitrary functions, called the \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Chebyshev polynomials}\cite{trefethen}, which have a really neat relationship to the Fourier basis.
+\href{https://www.youtube.com/watch?v=HloOBYPwlmU}{There is another} basis which we can use to represent arbitrary functions, called the \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Chebyshev polynomials}\cite{trefethen}, which has a really neat relationship to the Fourier basis.
 
 \begin{figure}[h!]
 \begin{center}
@@ -433,7 +433,7 @@ Due to the relationship between $\theta$ and $x$ on their respective domains, yo
 	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{cylinder}. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen}), but I prefer $k$ to enumerate basis modes, for consistency.}
 \end{figure}
 
-Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a $2\pi$-periodic cosine in the domain $[0, \pi]$.
+Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a $2\pi$-periodic cosine in the domain $[0, \pi]$. And because they're \textit{asymmetrical} on $[0, \pi]$, we can use them to model arbitrary, lopsided functions!
 
 We can reconstruct a function using these different variables and bases, and as long as our variables are related as in \autoref{domains}, these reconstructions are \textit{equivalent}:
 
@@ -441,7 +441,7 @@ We can reconstruct a function using these different variables and bases, and as 
 y(x) = \sum_{k=0}^N a_k T_k(x)\ ;\quad y(z) = \sum_{k=0}^N a_k \frac{1}{2}(z^k + z^{-k})\ ;\quad y(\theta) = \sum_{k=0}^N a_k \cos(k \theta)
 \end{equation}
 
-Note the set of $\{a_k\}$ is for $k \in {0, .. N}$ and therefore has cardinality $N+1$.\newline
+Note the set of $\{a_k\}$ is for $k \in {0, .. N}$ and therefore has cardinality $N+1$.
 
 \subsection{The Advantage of Chebyshev}
 
