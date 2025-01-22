@@ -23,7 +23,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter: c
 		nu (int): The order of derivative to take.
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
 			first dimension (axis=0).
-		filter (callable, optional): A function or :code:`lambda` that takes the 1D array of wavenumbers, :math:`k = [0, ... N+1]`,
+		filter (callable, optional): A function or :code:`lambda` that takes the 1D array of wavenumbers, :math:`k = [0, ... N]`,
 			and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of the data,
 			:math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.
  
