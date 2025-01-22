@@ -119,6 +119,7 @@ f(x) &= a_0 + \sum_{k=1}^{\infty} (a_k \frac{e^{j k \omega_0 x} + e^{-j k \omega
 &= a_0 + \sum_{k = -\infty}^{-1} (\frac{a_{-k}}{2} - \frac{b_{-k}}{2j}) e^{j k \omega_0 x} + \sum_{k = 1}^{\infty} (\frac{a_k}{2} + \frac{b_k}{2j}) e^{j k \omega_0 x} = \sum_{k = -\infty}^{\infty} c_k e^{j k \omega_0 x}
 \end{align*}
 
+\phantomsection\label{phase}
 So if we choose $c_0 = a_0$ and $c_k = \overline{c_{-k}} = \frac{a_k}{2} + \frac{b_k}{2j}$, then the complex exponential formulation is \href{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}{exactly equivalent to the trigonometric formulation}\cite{swarthmore}. That is, we can choose \textit{complex} $c_k$ such that when multiplied by \textit{complex} exponentials, we get back only \textit{real} signal! Essentially, the relative balance of real and complex in $c_k$ affects how much cosine and sine are present at the $k^{th}$ frequency, \href{https://dsego.github.io/demystifying-fourier/}{thereby accomplishing a phase shift}\cite{sego}. Without accounting for phase shifts, we would only be able to model \textit{symmetric} signals!
 
 If instead of a fundamental frequency $\omega_0 = \frac{2\pi}{T}$, where $T$ is a period of repetition, the signal contains dense frequencies (because it has no repetition, $T \rightarrow \infty$, $\omega_0 \rightarrow 0$), and if we care about a domain of the entire set of $\mathbb{R}$, then it makes more sense to express the transformed coefficients as a function in $\omega$ and to make both our inner product and reconstruction expression integrals from $-\infty$ to $+\infty$:
@@ -433,15 +434,17 @@ Due to the relationship between $\theta$ and $x$ on their respective domains, yo
 	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{cylinder}. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen}), but I prefer $k$ to enumerate basis modes, for consistency.}
 \end{figure}
 
-Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a $2\pi$-periodic cosine in the domain $[0, \pi]$. And because they're \textit{asymmetrical} on $[0, \pi]$, we can use them to model arbitrary, lopsided functions!
+Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a $2\pi$-periodic cosine in the domain $[0, \pi]$.
 
-We can reconstruct a function using these different variables and bases, and as long as our variables are related as in \autoref{domains}, these reconstructions are \textit{equivalent}:
+We can reconstruct a function using the different variables/basis-formulations, and as long as our variables are related as in \autoref{domains}, these reconstructions are \textit{equivalent}:
 
 \begin{equation}\label{equivalent}
 y(x) = \sum_{k=0}^N a_k T_k(x)\ ;\quad y(z) = \sum_{k=0}^N a_k \frac{1}{2}(z^k + z^{-k})\ ;\quad y(\theta) = \sum_{k=0}^N a_k \cos(k \theta)
 \end{equation}
 
-Note the set of $\{a_k\}$ is for $k \in {0, .. N}$ and therefore has cardinality $N+1$.
+Note the set of $\{a_k\}$ is for $k \in {0, .. N}$ and therefore has cardinality $N+1$.\newline
+
+Because the polynomials/projected cosines are \textit{asymmetrical}, we can natually use this basis to model arbitrary, lopsided functions without having to worry about phase shifts \hyperref[phase]{like we did for the Fourier basis}.
 
 \subsection{The Advantage of Chebyshev}
 
