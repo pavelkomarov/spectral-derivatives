@@ -38,7 +38,7 @@ $$ \langle f,g \rangle = \langle g,f \rangle = \int\limits_{a}^{b} f(x) \overlin
 
 Note that if we set $a$ and $b$ at $\pm \infty$, this integral could diverge. If it doesn't diverge with infinite bounds, we say the argument is \href{https://mathworld.wolfram.com/LebesgueIntegrable.html}{``Lebesgue integrable"}\cite{lebesgue}. Some of what we'll do only makes sense for this class of functions, so be aware.
 
-\subsection{The Fourier Basis}
+\subsection{The Fourier Basis}\label{fourierB}
 
 The most famous basis is the \textit{Fourier} basis\endnote{There's a great passage in Richard Hamming's book \textit{The Art of Doing Science and Engineering}\cite{hamming} where he wonders why we use the Fourier basis so much:
 
@@ -59,7 +59,7 @@ Therefore we are going to analyze the signals in terms of the Fourier functions,
 
 Lo and behold, the famous transfer function [contains] exactly the eigenvalues of the corresponding eigenfunctions! Upon asking various electrical engineers what the transfer function was, no one has ever told me that! Yes, when pointed out to them that it is the same idea they have to agree, but the fact it is the same idea never seemed to have crossed their minds! The same, simple idea, in two or more different disguises in their minds, and they knew of no connection between them! Get down to the basics every time!"\end{quotation}
 
-In that spirit, with Patron Saint Hamming watching over us, let's continue.}, which is the set of complex exponentials
+In that spirit, with Patron Saint Hamming watching over us, let's continue: \autoref{fourierB}}, which is the set of complex exponentials:
 
 \begin{equation}\label{euler}
 e^{j \omega} = \cos(\omega) + j \sin(\omega)
@@ -81,7 +81,7 @@ $$ \cos(\omega) = 1 - \frac{\omega^2}{2!} + \frac{\omega^4}{4!} - \frac{\omega^6
 
 Notice all of the even-power terms appear with alternating sign as in the cosine expansion, and the odd-power terms appear with alternating sign as in the sine expansion, but with an extra $j$ multiplied in.
 
-The presence of complex numbers to make this work can be confusing at first, but don't be scared! All we're really doing is using a compressed representation of a sine plus a cosine, where the real and imaginary parts (orthogonal in the complex plane, and therefore independent and non-interfering) allow us to describe the contributions of sine and cosine simultaneously. In fact, \href{https://math.stackexchange.com/a/1293127/278341}{Joseph Fourier originally used only real trigonometric functions}\cite{complex}, and it wasn't until later someone decided it would be easier to work with complex exponentials. Later (\autoref{fourier}) we'll see that for real signals all the complex numbers cancel, leaving only a \textit{real} sine and \textit{real} cosine, which when added together make \textit{a single, phase-shifted sinusoid!} So think of $e^{j \omega}$ as oscillations at a particular frequency, $\omega$.
+The presence of complex numbers to make this work can be confusing at first, but don't be scared! All we're really doing is using a compressed representation of a sine plus a cosine, where the real and imaginary parts (orthogonal in the complex plane, and therefore independent and non-interfering) allow us to describe the contributions of sine and cosine simultaneously. In fact, \href{https://math.stackexchange.com/a/1293127/278341}{Joseph Fourier originally used only real trigonometric functions}\cite{complex}, and it wasn't until later someone decided it would be easier to work with complex exponentials. Later (\autoref{fourierT}) we'll see that for real signals all the complex numbers cancel, leaving only a \textit{real} sine and \textit{real} cosine, which when added together make \textit{a single, phase-shifted sinusoid!} So think of $e^{j \omega}$ as oscillations at a particular frequency, $\omega$.
 
 If we inner product mismatched wiggles, they misalign and integrate to 0, but if we inner product matched wiggles, they align, multiply to 1 because of the complex conjugate, and integrate to $2\pi$ over a period.
 
@@ -101,7 +101,7 @@ The set of numbers $c_k$ is now \textit{an alternative representation} of the or
 
 Beware that the terminology ``transform" and ``domain" is not always used to describe transforming a continuous function to a discrete set of $c_k$ like this, because ``domain" technically refers to a ``connected" set, not just a collection of $k$ things. However, it is possible for members of the basis set to be related through a continuous parameter which in some sense makes the set dense, having infinitely many members which are infinitesimally close together. This is the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain.
 
-\subsection{The Fourier Transform}\label{fourier}
+\subsection{The Fourier Transform}\label{fourierT}
 
 Using Fourier's original real-sinusoid-based formulation, we can write the reconstruction expression as\footnote{It's worth considering how weird it is this is true. In fact, it's so weird that Joseph Lagrange publicly declared Fourier was wrong at a meeting of the Paris Academy in 1807!\cite{michigan} It's valuable to ask \href{https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work}{why this works}\cite{why} and sift through \href{https://math.uchicago.edu/~may/REU2017/REUPapers/Xue.pdf}{some analysis}.\cite{chicago}}:
 
