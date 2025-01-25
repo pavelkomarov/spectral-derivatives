@@ -2,7 +2,7 @@ import numpy as np
 from numpy.polynomial import Polynomial as poly
 from scipy.fft import dct, dst
 from collections import deque
-from warnings import warn
+from warnings import warn, catch_warnings, simplefilter
 
 
 def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter: callable=None):
@@ -20,7 +20,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter: c
 			If you're sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.cos(np.arange(N+1) *
 			np.pi / N) * (b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high
 			in :math:`n`. Also note both endpoints are *inclusive*.
-		nu (int): The order of derivative to take.
+		nu (int): The order of derivative to take, must be :math:`\\geq 1`.
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
 			first dimension (axis=0).
 		filter (callable, optional): A function or :code:`lambda` that takes the 1D array of wavenumbers, :math:`k = [0, ... N]`,
@@ -31,6 +31,8 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter: c
 	"""
 	N = y_n.shape[axis] - 1; M = 2*N # We only have to care about the number of points in the dimension we're differentiating
 
+	if nu < 1:
+		raise ValueError("nu, derivative order, should be >= 1")
 	if len(t_n.shape) > 1 or t_n.shape[0] != y_n.shape[axis]:
 		raise ValueError("t_n should be 1D and have the same length as y_n along the axis of differentiation")
 	if not np.all(np.diff(t_n) < 0):
@@ -50,24 +52,24 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter: c
 	if filter: Y_k *= filter(k_with_ends)[s]
 
 	y_primes = [] # Store all derivatives in theta up to the nu^th, because we need them all for reconstruction.
-	for order in range(1, nu+1):
-		if order % 2: # odd derivative
-			Y_order = (1j * k[s])**order * Y_k[middle] # Y_prime[k=0 and N] = 0 and so are not needed for the DST
-			y_primes.append(dst(1j * Y_order, 1, axis=axis).real / M) # d/dtheta y = the inverse transform of DST-1 
+	for mu in range(1, nu+1):
+		if mu % 2: # odd derivative
+			Y_mu = (1j * k[s])**mu * Y_k[middle] # Y_mu[k=0 and N] = 0 and so are not needed for the DST
+			y_primes.append(dst(1j * Y_mu, 1, axis=axis).real / M) # d/dtheta y = the inverse transform of DST-1 
 				# = 1/M * DST-1. Extra j for equivalence with IFFT. Im{y_prime} = 0 for real y, so just keep real.
 		else: # even derivative
-			Y_order = (1j * k_with_ends[s])**order * Y_k # Include terms for wavenumbers 0 and N, becase the DCT uses them
-			y_primes.append(dct(Y_order, 1, axis=axis)[middle].real / M) # the inverse transform of DCT-1 is 1/M * DCT-1.
+			Y_mu = (1j * k_with_ends[s])**mu * Y_k # Include terms for wavenumbers 0 and N, becase the DCT uses them
+			y_primes.append(dct(Y_mu, 1, axis=axis)[middle].real / M) # the inverse transform of DCT-1 is 1/M * DCT-1.
 				# Slice off ends. Im{y_prime} = 0 for real y, so just keep real.
 
 	# Calculate the polynomials in x necessary for transforming back to the Chebyshev domain
 	numers = deque([poly([-1])]) # just -1 to start, at order 1
 	denom = poly([1, 0, -1]) # 1 - x^2
-	for order in range(2, nu + 1): #
+	for mu in range(2, nu + 1): # initialization takes care of order 1, so iterate from order 2
 		q = 0
-		for term in range(1, order): # Terms come from the previous derivative, so there are order-1 of them here.
-			p = numers.popleft() # c = order - term/2
-			numers.append(denom * p.deriv() + (order - term/2 - 1) * poly([0, 2]) * p - q)
+		for term in range(1, mu): # Terms come from the previous derivative, so there are mu - 1 of them here.
+			p = numers.popleft() # c = mu - term/2
+			numers.append(denom * p.deriv() + (mu - term/2 - 1) * poly([0, 2]) * p - q)
 			q = p
 		numers.append(-q)
 	
@@ -113,7 +115,7 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter
 			canonical Fourier points, this will be :code:`th_n = np.arange(M) * 2*np.pi / M` (:math:`\\theta \\in [0, 2\\pi)`). If
 			you're sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.arange(0, M)/M * (b - a) + a`.
 			Note the lower, left bound is *inclusive* and the upper, right bound is *exclusive*.
-		nu (int): The order of derivative to take.
+		nu (int): The order of differentiation, can be positive (derivative) or negative (antiderivative, raises warning).
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
 			first dimension (axis=0).
 		filter (callable, optional): A function or :code:`lambda` that takes the array of wavenumbers, :math:`k = [0, ...
@@ -141,7 +143,8 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, nu: int, axis: int=0, filter
 
 	Y_k = np.fft.fft(y_n, axis=axis)
 	if filter: Y_k *= filter(k)[s]
-	Y_nu = (1j * k[s])**nu * Y_k
+	with catch_warnings(): simplefilter("ignore", category=RuntimeWarning); Y_nu = (1j * k[s])**nu * Y_k # if nu < 0, we're dividing by 0
+	if nu < 0: Y_nu[np.where(k==0)] = 0; warn("+c information lost in antiderivative") # Get rid of NaNs. Enables taking the antiderivative.
 	dy_n = np.fft.ifft(Y_nu, axis=axis).real if not np.iscomplexobj(y_n) else np.fft.ifft(Y_nu, axis=axis)
 
 	# The above is agnostic to where the data came from, pretends it came from the domain [0, 2pi), but the data may actually

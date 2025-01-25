@@ -70,10 +70,24 @@ def test_fourier_deriv_accurate_to_3rd():
 							-np.cos(th_n_) - 18*np.sin(3*th_n_),	# 2nd
 							np.sin(th_n_) - 54*np.cos(3*th_n_)]		# 3rd
 
-		for nu in range(1,4): # Things get less accurate for higher derivatives, so check < 10^f(nu)
+		for nu in range(1,4):
 			computed = fourier_deriv(y_n, th_n_, nu)
 			assert np.nanmean((analytic_truth[nu-1] - computed)**2) < 1e-25
 			assert np.nanmax(np.abs(analytic_truth[nu-1] - computed)) < 1e-12
+
+@pytest.mark.filterwarnings('ignore::UserWarning')
+def test_fourier_antiderivative_0_to_3rd():
+	for th_n_ in (th_n, np.arange(0, M+1) * 2*np.pi / (M+1)): # Test for an odd M too!
+		y_n = np.cos(th_n_) + 2*np.sin(3*th_n_)
+		analytic_truth = [y_n,											# 0th
+							np.sin(th_n_) - (2/3)*np.cos(3*th_n_),		# -1st
+							-np.cos(th_n_) - (2/9)*np.sin(3*th_n_),		# -2nd
+							-np.sin(th_n_) + (2/27)*np.cos(3*th_n_)]	# -3rd
+
+		for nu in range(0,4):
+			computed = fourier_deriv(y_n, th_n_, -nu)
+			assert np.nanmean((analytic_truth[nu] - computed)**2) < 1e-25
+			assert np.nanmax(np.abs(analytic_truth[nu] - computed)) < 1e-12
 
 def test_cheb_multidimensional():
 	"""A test for multidimensional derivatives in the aperiodic case
