@@ -671,11 +671,10 @@ This relationship holds no matter which, $\mu, c, p, q$ we're addressing, which 
 	\node[anchor=west] at (0, 2) {$-2x^2-1$};\node[anchor=west] at (2.75, 2) {$3x$};\node[anchor=west] at (4.5, 2) {$-1$};
 	\node[anchor=west] at (0, 1) {$-6x^3-9x$};\node[anchor=west] at (2.75, 1) {$11x^2+4$};\node[anchor=west] at (4.5, 1) {$-6x$};\node[anchor=west] at (6.5, 1) {$1$};
 	\node[anchor=west] at (0, 0) {$-24x^4-72x^2-9$};\node[anchor=west] at (2.75, 0) {$50x^3+55x$};\node[anchor=west] at (4.5, 0) {$-35x^2-10$};\node[anchor=west] at (6.5, 0) {$10x$};\node[anchor=west] at (7.5, 0) {$-1$};
-	\node at (0.5, -0.75) {lower $\frac{d}{d\theta}$ of y};
-	\node at (8, -0.75) {higher $\frac{d}{d\theta}$ of y};
-	\node at (-0.8, 2) {\parbox{15mm}{increasing $\frac{d}{dx}$ of y}};
+	\node at (0.5, -0.75) {lower $\frac{d}{d\theta}$ of $y$};
+	\node at (8, -0.75) {higher $\frac{d}{d\theta}$ of $y$};
 	\node at (-1, 4) {\parbox{15mm}{\normalsize numerator $p$ and $q$:}};
-	\draw[->] (0,3.8) -- (0,0.2);
+	\draw[->] (0,3.8) -- (0,0.2) node[midway, left, xshift=2mm] {\parbox{15mm}{increasing $\frac{d}{dx}$ of $y$}};
 	\draw[->] (0.5,-0.55) -- (0.75,-0.2);
 	\draw[->] (8,-0.55) -- (7.75,-0.2);
 	\draw[->] (3,1.25) -- (3,1.75) node[midway, right] {p};
@@ -692,6 +691,8 @@ This relationship holds no matter which, $\mu, c, p, q$ we're addressing, which 
 	\node[anchor=west] at (0, 0) {$\frac{9}{2}$};\node[anchor=west] at (1, 0) {$4$};\node[anchor=west] at (2, 0) {$\frac{7}{2}$};\node[anchor=west] at (3, 0) {$3$};\node[anchor=west] at (4, 0) {$\frac{5}{2}$};
 	\node at (1, -0.75) {...};\node at (4, -0.75) {...};
 	\node at (-1, 4) {\parbox{15mm}{\normalsize $c$ at each location:}};
+	\draw[->] (0,3.8) -- (0,0.2) node[midway, left, xshift=2mm] {\parbox{15mm}{\footnotesize increasing $\nu$}};
+	\draw[->] (0.5,-0.5) -- (4.25,-0.5) node[midway, below, xshift=2mm] {\parbox{17mm}{\footnotesize increasing $\mu$}};
 \end{tikzpicture}
 \end{minipage}
 \end{center}
