@@ -18,7 +18,6 @@ One of the happiest accidents in all math is the ease of taking derivatives in t
 
 This document sets out the math behind the \texttt{spectral-derivatives} package, all the way down to the bones, as much as I can manage. I try to get in to the real \textit{whys} behind what we're doing here, touching on fundamental signal processing and calculus concepts as necessary, and building upwards to more general cases.
 
-% Add an enumerate here to outline things? Or a table of contents?
 \tableofcontents
 \pagebreak
 
@@ -411,7 +410,7 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 \end{center}
 \end{figure}
 
-The $k^{th}$ Chebyshev polynomial is defined as $T_k(x) = Re\{z^k\} = \frac{1}{2}(z^k + z^{-k}) = \cos(k\theta)$ by Euler formula.
+The $k^{th}$ Chebyshev polynomial is defined as $T_k(x) = Re\{z^k\} = \frac{1}{2}(z^k + z^{-k}) = \cos(k\theta)$ by Euler formula:
 
 \begin{align*}
 T_0(x) &= Re\{z^0\} = 1\\
@@ -484,7 +483,7 @@ There are a lot of details left to be worked out here, which we'll tackle in seq
 
 Because the reconstruction of $y(\theta)$ (\autoref{equivalent}) only contains cosines, doing a full FFT, which tries to fit sines as well as cosines, would be doing double work. Instead we can use the DCT. There are actually \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{several possible definitions of the DCT}\cite{dct}, but I use the DCT-I, because it is in some sense closest to the interpolant (\autoref{interpolant}) we've already derived.
 
-Say
+Say\vspace{-5mm}
 
 $$y = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N-1}, ... y_1}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2N, necessarily even!}}, \text{ that is: } y_n = y_{M-n},\ 0 \leq n \leq N$$
 
@@ -546,7 +545,7 @@ Where $[:N+1]$ truncates to only the first $N$ elements. Given the equality abov
 \end{minipage}
 \begin{minipage}{0.25\textwidth} where truncate$^{-1}$ stacks back in redundant information\end{minipage}
 \end{center}
-\end{figure}
+\end{figure}\vspace{-2mm}
 
 We can now easily see that in addition to the inverse relationship (\autoref{ifftidct}), we also have the forward relationship:
 
@@ -628,7 +627,7 @@ Let's see it for the second derivative:
 &= \frac{-\frac{d}{d\theta}y'(\theta)\cdot \frac{d\theta}{dx}}{\sqrt{1-x^2}} - \frac{y'(\theta)\frac{x}{\sqrt{1-x^2}}}{1 - x^2} = \frac{y''(\theta)}{1-x^2} - \frac{x y'(\theta)}{(1 - x^2)^{3/2}} \\
 \longrightarrow [\frac{d^2}{dx^2} y(\theta)]_n &= \frac{1}{1-x_n^2} \odot y''_n - \frac{x_n}{(1 - x_n^2)^{3/2}} \odot y'_n
 \end{aligned}
-\end{equation}
+\end{equation}\vspace{2mm}
 
 Notice that the $2^{nd}$ derivative in $x$ requires \textit{both} the $1^{st}$ and $2^{nd}$ derivatives in $\theta$! This pattern will turn out to hold for higher derivatives as well: For the $\nu^{th}$ derivative in $x$ we require all derivatives up to order $\nu$ in $\theta$.
 
