@@ -379,7 +379,7 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 \begin{center}
 \begin{minipage}{0.45\textwidth}
 \begin{tikzpicture}
-	\begin{axis}[axis lines=middle, xlabel={Re$\{z\}$}, xlabel style={xshift=12mm, yshift=-3mm},
+	\begin{axis}[axis lines=middle, xlabel={Re$\{z\}$}, xlabel style={right},
 		ylabel={Im$\{z\}$}, ylabel style={yshift=3mm}, xmin=-1.1, xmax=1.2, xtick={1},
 		xticklabels={1}, xticklabel style={xshift=1mm, yshift=5mm}, ymin=-1.1, ymax=1.2, ytick=\empty,
 		axis line style={->}, width=8cm, height=8cm]
@@ -428,14 +428,14 @@ $$ T_{k+1} = \frac{1}{2}(z^{k+1} + z^{-(k+1)}) = \frac{1}{2}(z^k + z^{-k})(z + z
 
 Due to the relationship between $\theta$ and $x$ on their respective domains, you can think of these polynomials as cosine waves ``wrapped around a cylinder and viewed from the side."\cite{trefethen}
 
-\begin{figure}[h]
+\begin{figure}[h]\label{cylinder}
 	\centering
 	\includegraphics[width=0.5\textwidth]{cylinder.png}
 	\captionsetup{width=0.65\textwidth}
-	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{cylinder}. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen}), but I prefer $k$ to enumerate basis modes, for consistency.}
+	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{dedalus}. Notice the cosines are horizontally flipped. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen}), but I prefer $k$ to enumerate basis modes, for consistency.}
 \end{figure}
 
-Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a horizontally-reversed $2\pi$-periodic cosine in the domain $[0, \pi]$.
+Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a horizontally-reversed $2\pi$-periodic cosine in the domain $[0, \pi]$. When we use $\cos(\theta)$ to sample a function instead of $x$, we're effectively moving, horizontally flipping, and \textit{warping} the function (by expanding near the edges and compressing in the middle) in to the new $\theta$ domain.
 
 We can reconstruct a function using the different variables/basis formulations, and as long as our variables are related as in \autoref{domains}, these reconstructions are \textit{equivalent}:
 
@@ -460,7 +460,7 @@ However, there is something we can do about the Runge phenomenon: By clustering 
 
 If we take $x = \cos(\theta)$ with $\theta$ equispaced $\in [0, \pi]$, then we get a very natural clustering at the edges of $[-1, 1]$ in $x$. What's more, if we have equispaced $\theta$ and a reconstruction expression built up out of sinusoids, we're back in a Fourier paradigm (at least in variable $\theta$) and can exploit the efficiency of the FFT, or, better, the discrete cosine and sine transforms!\cite{dct}\cite{dst}
 
-Notice too that the polynomials/projected cosines are \textit{asymmetrical}, so we can natually use this basis to model arbitrary, lopsided functions without having to worry about \hyperref[phase]{phase shifts like we did for the Fourier basis}.
+Notice too that the polynomials/projected cosines are \textit{asymmetrical}, so we can natually use this basis to model arbitrary, lopsided functions without having to worry about \hyperref[phase]{phase shifts like we did for a Fourier basis of discrete harmonics}.
 
 \section{An Algorithm}\label{algo}
 
@@ -469,7 +469,7 @@ This all suggests a solution procedure:
 \begin{algorithm}
 \caption*{\textbf{Chebyshev Derivatives}}
 \begin{algorithmic}[1] % the [1] numbers the steps, starting from 1
-	\STATE Sample $y$ at $\{x_n = \cos(\theta_n)\}$ rather than at equally spaced $\{x_n\}$. This accomplishes a change of variables.
+	\STATE Sample $y$ at $\{x_n = \cos(\theta_n)\}$ rather than at equally spaced $\{x_n\}$. This accomplishes a change of variables and effectively \textit{warps} the function, flips it horizontally, and changes its domain from $[-1, 1]$ to $[0, \pi]$.
 	\STATE Use the DCT to transform to frequency domain.
 	\STATE Multiply by appropriate $(jk)^\nu$ to accomplish taking derivatives.
 	\STATE Inverse transform using the DST if odd function, DCT if even function.
@@ -483,7 +483,7 @@ There are a lot of details left to be worked out here, which we'll tackle in seq
 
 Because the reconstruction of $y(\theta)$ (\autoref{equivalent}) only contains cosines, doing a full FFT, which tries to fit sines as well as cosines, would be doing double work. Instead we can use the DCT. There are actually \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{several possible definitions of the DCT}\cite{dct}, but I use the DCT-I, because it is in some sense closest to the interpolant (\autoref{interpolant}) we've already derived.
 
-Say\vspace{-5mm}
+Say\vspace{-8mm}
 
 $$y = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N-1}, ... y_1}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2N, necessarily even!}}, \text{ that is: } y_n = y_{M-n},\ 0 \leq n \leq N$$
 
@@ -521,7 +521,7 @@ This is exactly the DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a
 \text{FFT}^{-1}([Y_0, ... Y_N, Y_{N-1}, ... Y_1])[:N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
 \end{equation}
 
-Where $[:N+1]$ truncates to only the first $N$ elements. Given the equality above, we can line up everything we now know in a diagram:
+Where $[:N+1]$ truncates to only the first $N$ elements. Given the equality above, we can line up everything we now know in a diagram:\vspace{-3mm}
 
 \begin{figure}[h!]
 \begin{center}
@@ -537,15 +537,15 @@ Where $[:N+1]$ truncates to only the first $N$ elements. Given the equality abov
 	\draw[->, bend right=40] (Y_long) to node[midway] {FFT$^{-1}$} (y_long);
 	\draw[->, bend right=40] (y_short) to node[midway] {DCT-I} (Y_short);
 	\draw[->, bend right=40] (Y_short) to node[midway] {DCT-I$^{-1}$} (y_short);
-	\draw[->, bend left=20] (y_long) to node[midway, above] {truncate} (y_short);
-	\draw[->, bend left=20] (y_short) to node[midway, below] {truncate$^{-1}$} (y_long);
-	\draw[->, bend left=20] (Y_long) to node[midway, above] {truncate} (Y_short);
-	\draw[->, bend left=20] (Y_short) to node[midway, below] {truncate$^{-1}$} (Y_long);
+	\draw[->, bend left=20] (y_long) to node[midway, above, yshift=-0.5mm] {truncate} (y_short);
+	\draw[->, bend left=20] (y_short) to node[midway, below, yshift=1mm] {truncate$^{-1}$} (y_long);
+	\draw[->, bend left=20] (Y_long) to node[midway, above, yshift=-0.5mm] {truncate} (Y_short);
+	\draw[->, bend left=20] (Y_short) to node[midway, below, yshift=1mm] {truncate$^{-1}$} (Y_long);
 \end{tikzpicture}
 \end{minipage}
 \begin{minipage}{0.25\textwidth} where truncate$^{-1}$ stacks back in redundant information\end{minipage}
 \end{center}
-\end{figure}\vspace{-2mm}
+\end{figure}\vspace{-5mm}
 
 We can now easily see that in addition to the inverse relationship (\autoref{ifftidct}), we also have the forward relationship:
 
@@ -573,7 +573,7 @@ Y_k^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{bla
 	\draw[->] (4.4,0.5) -- (4.4,1);
 	\draw[->] (12.8,0.35) -- (12.05,0.83);
 	\draw[->] (14,0.35) -- (14.6,1);
-\end{tikzpicture}\vspace{2mm}
+\end{tikzpicture}
 
 where $\odot$ is a Hadamard, or element-wise, product, and raising a vector to a power is also element-wise. We can see
 
@@ -868,6 +868,134 @@ Worst of all, we then still have to take limits as different \textit{combination
 
 So although \texttt{numpy} does provide the \texttt{fftn} function for transforming in multiple dimensions at once, and \texttt{scipy} provides similar \texttt{dctn} and \texttt{dstn} functions, they wouldn't confer a computational-complexity benefit and would require the math and code to get massively more complicated, so I have chosen not to use them. From a user-friendliness perspective, I also judge it to be somewhat more confusing to specify multiple derivatives at once (although generalizing the \texttt{nu} and \texttt{axis} parameters to vectors is possible). For all these reasons, I have chosen to limit the package to taking derivatives along a single dimension at once. Multidimensional \textit{data} can still be handled, however, via clever indexing and use of \texttt{fft}, \texttt{dct}, and \texttt{dst}'s \texttt{axis} parameter.
 
+\section{Arbitrary Domains}
+
+So far we've only used the domain $[0, 2\pi)$ in \hyperref[dft]{the Fourier case}, because this is the domain assumed by the DFT, and the domain $[-1, 1]$ in \hyperref[cylinder]{the Chebyshev case}, because this is the where a cosine wrapped around a cylinder casts a shadow. As you may have guessed, this hasn't curtailed the generality of the methods at all, because we can \textit{map} any domain from $a$ to $b$ onto a canonical domain.
+
+\subsection{Fourier}
+
+Say we have $t \in [a, b)$ that we need to map to $\theta \in [0, 2\pi)$. We can accomplish this with:
+
+$$\theta \in [0, 2\pi) \leftrightarrow t \in [a, b) = \underbrace{[0, 2\pi)}_{\theta} \cdot \frac{b - a}{2\pi} + a$$
+
+To get a real sense this is true, let's see an example:\vspace{2mm}
+
+\begin{figure}[h!]
+\begin{center}
+\begin{minipage}{0.49\textwidth}
+\centering
+\begin{tikzpicture}
+	\begin{axis}[axis lines=middle, xlabel={$t$}, xlabel style={right},
+		xmin=0, xmax=8,
+		ymin=-4, ymax=4,
+		grid=both,
+		width=8cm,
+		height=6cm]
+		\addplot[domain=4:8, samples=100, thick] {cos(deg(pi/2*x)) + 3*sin(deg(3*pi/2*x))};
+	\end{axis}
+	\node at (3,4.75) {$\cos(\frac{\pi}{2}t) + 2\sin(\frac{3\pi}{2}t),\ t \in [4, 8)$};
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.49\textwidth}
+\centering
+\begin{tikzpicture}
+	\begin{axis}[axis lines=middle, xlabel={$\theta$}, xlabel style={right},
+		xmin=0, xmax=8,
+		ymin=-4, ymax=4,
+		grid=both,
+		width=8cm,
+		height=6cm]
+		\addplot[domain=0:2*pi, samples=100, thick] {cos(deg(x + 2*pi)) + 3*sin(deg(3*x + 6*pi))};
+	\end{axis}
+	\node at (3.25,4.75) {$\cos(\theta + 2\pi) + 2\sin(3\theta + 6\pi),\ \theta \in [0, 2\pi)$};
+\end{tikzpicture}
+\end{minipage}
+\begin{tikzpicture}[overlay, remember picture]
+  \draw[->, thick] (-11, 2.4) -- (-7.6, 2.4) node[midway, above] {$t = \theta \frac{8-4}{2\pi} + 4$};
+\end{tikzpicture}
+\end{center}
+\end{figure}\vspace{-2mm}
+
+In the discrete case, where we have $M$ samples on $[a, b)$, then we can map $t_n$ with:
+
+$$ \theta_n \in \frac{\{0, ... M-1\} \cdot 2\pi}{M} \leftrightarrow t_n \in \frac{\{0, ... M-1\} \cdot \cancel{2\pi}}{M} \cdot \frac{b - a}{\cancel{2\pi}} + a$$
+
+In other words, if we want to take a spectral derivative of a function that's periodic on $[a, b)$, then we need to sample it at \texttt{t\char`_n = np.arange(M)/M * (b - a) + a}.
+
+\subsection{Chebyshev}
+
+Here both ends are \textit{inclusive}, so we have $t \in [a, b]$ that we need to map to $x \in [-1, 1]$. We can accomplish this with:
+
+$$x \in [-1, 1] \leftrightarrow t \in [a,b] = \underbrace{[-1, 1]}_{x} \cdot \frac{b - a}{2} + \frac{b + a}{2}$$
+
+To get a real sense this is true, let's see an example:\vspace{2mm}
+
+\begin{figure}[h!]
+\begin{center}
+\begin{minipage}{0.49\textwidth}
+\centering
+\begin{tikzpicture}
+	\begin{axis}[axis lines=middle, xlabel={$t$}, xlabel style={right},
+		xmin=-1, xmax=4,
+		ymin=-35, ymax=55,
+		grid=both,
+		width=8cm,
+		height=6cm]
+		\addplot[domain=1:4, samples=100, thick] {e^x*sin(deg(5*x))};
+	\end{axis}
+	\node at (3,4.75) {$e^t\sin(5t),\ t \in [1, 4)$};
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.49\textwidth}
+\centering
+\begin{tikzpicture}
+	\begin{axis}[axis lines=middle, xlabel={$x$}, xlabel style={right},
+		xmin=-1, xmax=4,
+		ymin=-35, ymax=55,
+		grid=both,
+		width=8cm,
+		height=6cm]
+		\addplot[domain=-1:1, samples=100, thick] {e^(3/2*x + 5/2)*sin(deg(5*(3/2*x + 5/2)))};
+	\end{axis}
+	\node at (3.25,4.75) {$e^{(\frac{3}{2}x + \frac{5}{2})}\sin(5(\frac{3}{2}x+\frac{5}{2})),\ x \in [-1,1]$};
+\end{tikzpicture}
+\end{minipage}
+\begin{tikzpicture}[overlay, remember picture]
+  \draw[->, thick] (-11, 2.3) -- (-7.6, 2.3) node[midway, above] {$t = x \frac{4-1}{2} + \frac{4+1}{2}$};
+\end{tikzpicture}
+\end{center}
+\end{figure}\vspace{-2mm}
+
+In the discrete case, where we have $N+1$ samples on $[a, b]$, then we can map $t_n$ with:
+
+$$x_n \in \cos(\frac{\pi \{0, ... N\}}{N}) \leftrightarrow t_n \in \cos(\frac{\pi \{0, ... N\}}{N}) \cdot \frac{b - a}{2} + \frac{b + a}{2} $$
+
+Notice the order has flipped here, that counting \textit{up} in $n$ means we traverse $x$ from $+1 \rightarrow -1$. This is actually what we want; it corresponds to the \hyperref[cylinder]{horizontal flip} necessary to make cosine shadows equate with Chebyshev polynomails.
+
+In simple code terms, if we want to take a spectral derivative of a function on $[a, b]$, then we need to sample it at \texttt{t\char`_n = np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2}.
+
+\subsection{Accounting for Smoosh}
+
+When a function is sampled at one of the $t_n$ above, then it is \textit{as if} the function lives on the canonical domain. The actual mapping is purely notional, and the spectral differentation procedure proceeds completely agnostic to where the data really came from.
+
+This means the result will actually be the derivative of the smooshed or stretched version of the function on the canonical domain. As the examples hopefully clarified, the \textit{height} of this smooshed function is exactly as it was before, but the \textit{width} is \textit{scaled} by
+
+$$\text{smoosh} = \frac{\text{length of new interval}}{\text{length of old interval}} = \begin{cases} \frac{2\pi}{b-a} & \text{for Fourier} \\ \frac{2}{b-a} & \text{for Chebyshev} \end{cases}$$
+
+Because a derivative is calculating slope, and slope is rise over run, the answer is effectively now
+
+$$\frac{dy}{dx \cdot \frac{2 \text{ or } 2\pi}{b-a}} = \frac{dy}{dx} \cdot \underbrace{\frac{b-a}{2 \text{ or } 2\pi}}_{\text{scale}}$$
+
+In other words, the overall derivative is scaled by the inverse of the width-smoosh. So to recover the true derivative we want, $\frac{dy}{dx}$, we have to divide by this \textit{scale}, which is a familiar term from our variable transformations $t \leftrightarrow \theta \text{ or } x$.
+
+For higher derivatives:
+
+$$\frac{d^\nu y}{\big( dx \cdot \text{smoosh})^\nu} = \frac{d^\nu y}{dx^\nu} \cdot \text{scale}^\nu$$
+
+So we always correct the derivative by \textit{dividing} by scale$^\nu$.\newline
+
+To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter}.\pagebreak
+
 \printendnotes
 
 \begin{thebibliography}{99} % https://tex.stackexchange.com/questions/198330/argument-in-thebibliography
@@ -913,7 +1041,7 @@ So although \texttt{numpy} does provide the \texttt{fftn} function for transform
 	\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dst.html}
 \bibitem{trefethen}
 	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, \url{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}
-\bibitem{cylinder}
+\bibitem{dedalus}
 	Burns, K., et al., 2020, Dedalus: A flexible framework for numerical simulations with spectral methods, \url{https://www.researchgate.net/publication/340905766_Dedalus_A_flexible_framework_for_numerical_simulations_with_spectral_methods}
 \bibitem{chainrule}
 	The Chain Rule for Multivariable Functions, \url{https://math.libretexts.org/Bookshelves/Calculus/Calculus_(OpenStax)/14%3A_Differentiation_of_Functions_of_Several_Variables/14.05%3A_The_Chain_Rule_for_Multivariable_Functions}
