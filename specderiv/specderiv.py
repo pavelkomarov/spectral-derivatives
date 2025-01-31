@@ -93,8 +93,8 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 	elif order == 4:
 		dy_n[first] = np.sum((k**8 - 14*k**6 + 49*k**4 - 36*k**2)[s] * Y_k[middle], axis=axis)/(105*N) + N*(N**6 - 14*N**4 + 49*N**2 - 36)/210 * Y_k[last]
 		dy_n[last] = np.sum(((k**8 - 14*k**6 + 49*k**4 - 36*k**2)*np.power(-1, k))[s] * Y_k[middle], axis=axis)/(105*N) + (N*(N**6 - 14*N**4 + 49*N**2 - 36)*(-1)**N)/210 * Y_k[last]
-	else: # For higher derivatives, leave the endpoints uncalculated
-		warn("endpoints set to NaN, only calculated for 4th derivatives and below")
+	else: # For higher derivatives, leave the endpoints uncalculated, but direct the user to my analysis of this problem.
+		warn("endpoints set to NaN, only calculated for 4th derivatives and below. For help with higher derivatives, see https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb")
 		dy_n[first] = np.nan
 		dy_n[last] = np.nan
 
