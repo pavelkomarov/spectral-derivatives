@@ -65,11 +65,11 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 	# Calculate the polynomials in x necessary for transforming back to the Chebyshev domain
 	numers = deque([poly([-1])]) # just -1 to start, at order 1
 	denom = poly([1, 0, -1]) # 1 - x^2
-	for mu in range(2, order + 1): # initialization takes care of order 1, so iterate from order 2
+	for nu in range(2, order + 1): # initialization takes care of order 1, so iterate from order 2
 		q = 0
-		for term in range(1, mu): # Terms come from the previous derivative, so there are mu - 1 of them here.
-			p = numers.popleft() # c = mu - term/2
-			numers.append(denom * p.deriv() + (mu - term/2 - 1) * poly([0, 2]) * p - q)
+		for mu in range(1, nu): # Terms come from the previous derivative, so there are nu - 1 of them here.
+			p = numers.popleft() # c = nu - mu/2
+			numers.append(denom * p.deriv() + (nu - mu/2 - 1) * poly([0, 2]) * p - q)
 			q = p
 		numers.append(-q)
 	
@@ -87,7 +87,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 	elif order == 2: # And they're not short formulas either :(
 		dy_n[first] = np.sum((k**4 - k**2)[s] * Y_k[middle], axis=axis)/(3*N) + (N/6)*(N**2 - 1) * Y_k[last]
 		dy_n[last] = np.sum(((k**4 - k**2)*np.power(-1, k))[s] * Y_k[middle], axis=axis)/(3*N) + (N/6)*(N**2 - 1)*(-1)**N * Y_k[last] 
-	elif order == 3:
+	elif order == 3: # Each line is effectively calculating a single output of a specially-weighted inverse DCT
 		dy_n[first] = np.sum((k**6 - 5*k**4 + 4*k**2)[s] * Y_k[middle], axis=axis)/(15*N) + N*((N**4)/30 - (N**2)/6 + 2/15)*Y_k[last]
 		dy_n[last] = -np.sum(((k**6 - 5*k**4 + 4*k**2)*np.power(-1, k))[s] * Y_k[middle], axis=axis)/(15*N) - N*((N**4)/30 - (N**2)/6 + 2/15)*(-1)**N * Y_k[last]
 	elif order == 4:
