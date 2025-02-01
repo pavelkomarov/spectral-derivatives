@@ -737,11 +737,23 @@ Now we can evaluate these and the factor $\frac{1}{6x^2 - 3}$ at the limit value
 \begin{cases} \frac{1}{3M} \Big((N^4 - N^2) Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{3M} \Big((N^4 - N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$2^{nd}$ endpoints}
 \]\vspace{2mm}
 
-It's possible to do this for higher derivatives too. I actually did it for the $3^{rd}$ and $4^{th}$ derivatives and put the answers in \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{the code}. However, in general to find the endpoints for the $\nu^{th}$ derivative takes $\nu$ applications of L'Hôpital's rule, and the algebra gets to be pretty gnarly.
+\subsubsection{Endpoints for Higher Derivatives}
 
-In principle it is possible to build up the formulas via a similar process to the \hyperref[pyramid]{pyramid scheme} from earlier, because $f(x)$ factors multiplying respective orders of $y^{(\mu)}(\theta)$ come from at most two terms in the previous expression (before the latest application of L'Hôpital). But this time the $f(x)$s involve fractional powers of $\sqrt{1-x^2}$, which can't be as easily represented in \texttt{numpy}. So for now a neat scheme \href{https://github.com/pavelkomarov/spectral-derivatives/issues/1}{hasn't been invented}.
+We can do the above for higher derivatives too. However, in general finding the endpoints for the $\nu^{th}$ derivative involves $\nu$ applications of L'Hôpital's rule, slowly cancelling one power of $\sqrt{1-x^2}$ at a time after each. The algebra gets to be pretty gnarly.
 
-It is possible to sidestep these ballooningly-complicated variable mappings and higher derivative limit-evaluations by building up to higher derivatives from lower ones in stages (being careful to only use even derivatives if our end goal is even, so we preserve the Nyquist term). This would involve more forward transforms but actually no more inverse ones, since we have to remember the results of all the inverse transforms up to the $\nu^{th}$ order anyway.
+But there is some hope: We can see a pattern like the \hyperref[pyramid]{pyramid scheme} from earlier, because the functions multiplying each $y^{(\mu)}(\theta)$ in the numerator of the limit argument depend only on one or two terms from before the latest L'Hôpital. We can additionally use the relationship between variables $x = \cos(\theta)$ to recognize $\sqrt{1-x^2} = \sin(\theta)$ and substitute to put everything in terms of a single variable, and then just as well perform L'Hôpital's derivatives more simply w.r.t. $\theta$ rather than $x$.
+
+When we proceed, the denominator eventually acquires a single standalone term of the form $D\cos^\nu(\theta)$, which at the domain endpoints $0$ and $\pi$ will be something nonzero, $D_0 = \pm D_\pi$, thereby ending our \textit{journey}. At the same iteration, the numerator reduces to a set of constants, $C$, multiplying even-order $\theta$-derivatives of $y(\theta)$ up to the $2\nu^{th}$. Putting it all together, the endpoint formulas can be found as:
+
+$$\begin{cases}
+\frac{1}{D_0 M} \Big((... - C_3 N^6 + C_2 N^4 - C_1 N^2) Y_N + 2 \sum_{k=1}^{N-1} (... - C_3 k^6 + C_2 k^4 - C_1 k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{D_\pi M} \Big((... - C_3 N^6 + C_2 N^4 - C_1 N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (... - C_3 k^6 + C_2 k^4 - C_1 k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi
+\end{cases}$$
+
+where the alternating plus and minus in the $k$ and $N$ terms comes from the fact the $2^{nd}$ derivative contains $-$cosines, the $4^{th}$ +cosines, the $6^{th}$ $-$cosines again, and so on.
+
+Because the act of cancellation and the functions containing powers of $\sqrt{1-x^2} = \sin(\theta)$ can't be easily represented in \texttt{numpy}, computing $C$ and $D$ requires a symbolic solver like \texttt{sympy}. I've devised \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb}{an implementation} to construct expressions for the endpoints, up to arbitrary order. But due to its complexity, I've opted to keep this full process out of the main \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{package code}. Instead, I've hard-coded the solutions up to $4^{th}$ order and raise a warning with reference to the notebook if users try to go higher.
+
+It is possible to sidestep all these ballooningly-complicated variable mappings and higher derivative limit-evaluations by building up to higher derivatives from lower ones in stages (being careful to only use even derivatives if our end goal is even, so we preserve the Nyquist term). This would entail more forward transforms but actually no more inverse ones, since we have to remember the results of all the inverse transforms up to the $\nu^{th}$ order anyway.
 
 \section{Multidimensionality}
 
@@ -866,7 +878,9 @@ We could generalize the original conception (\autoref{equivalent}), which has a 
 
 Worst of all, we then still have to take limits as different \textit{combinations} of dimensions reach the edges, which becomes a combinatorial nightmare. This was \hyperref[endpoints]{already hard enough in 1D}!
 
-So although \texttt{numpy} does provide the \texttt{fftn} function for transforming in multiple dimensions at once, and \texttt{scipy} provides similar \texttt{dctn} and \texttt{dstn} functions, they wouldn't confer a computational-complexity benefit and would require the math and code to get massively more complicated, so I have chosen not to use them. From a user-friendliness perspective, I also judge it to be somewhat more confusing to specify multiple derivatives at once (although generalizing the \texttt{nu} and \texttt{axis} parameters to vectors is possible). For all these reasons, I have chosen to limit the package to taking derivatives along a single dimension at once. Multidimensional \textit{data} can still be handled, however, via clever indexing and use of \texttt{fft}, \texttt{dct}, and \texttt{dst}'s \texttt{axis} parameter.
+So although \texttt{numpy} does provide the \texttt{fftn} function for transforming in multiple dimensions at once, and \texttt{scipy} provides similar \texttt{dctn} and \texttt{dstn} functions, they wouldn't confer a computational-complexity benefit and would require the math and code to get massively more complicated, so I have chosen not to use them. From a user-friendliness perspective, I also judge it to be somewhat more confusing to specify multiple derivatives at once (although generalizing the \texttt{nu} and \texttt{axis} parameters to vectors is possible). For all these reasons, I have chosen to limit the package to taking derivatives along a single dimension at once.
+
+Multidimensional \textit{data} can still be handled, however, via clever indexing and use of \texttt{fft}, \texttt{dct}, and \texttt{dst}'s \texttt{axis} parameter.
 
 \section{Arbitrary Domains}
 
@@ -978,7 +992,7 @@ In simple code terms, if we want to take a spectral derivative of a function on 
 
 When a function is sampled at one of the $t_n$ above, then it is \textit{as if} the function lives on the canonical domain. The actual mapping is purely notional, and the spectral differentation procedure proceeds completely agnostic to where the data really came from.
 
-This means the result will actually be the derivative of the smooshed or stretched version of the function on the canonical domain. As the examples hopefully clarified, the \textit{height} of this smooshed function is exactly as it was before, but the \textit{width} is smooshed by
+This means the result will actually be the derivative of the smooshed or stretched version of the function on the canonical domain. As the examples hopefully clarified, the \textit{height} of this smooshed function is exactly as it was before, but the \textit{width} is compressed or expanded by a factor of:
 
 $$\text{smoosh} = \frac{\text{length of new interval}}{\text{length of old interval}} = \begin{cases} \frac{2\pi}{b-a} & \text{for Fourier} \\ \frac{2}{b-a} & \text{for Chebyshev} \end{cases}$$
 
@@ -986,15 +1000,15 @@ Because a derivative is calculating slope, and slope is rise over run, the answe
 
 $$\frac{dy}{dx \cdot \frac{2 \text{ or } 2\pi}{b-a}} = \frac{dy}{dx} \cdot \underbrace{\frac{b-a}{2 \text{ or } 2\pi}}_{\text{scale}}$$
 
-In other words, the overall derivative is scaled by the inverse of the width-smoosh. So to recover the true derivative we want, $\frac{dy}{dx}$, we have to divide by this \textit{scale}, which is a familiar term from our variable transformations $t \leftrightarrow \theta \text{ or } x$.
+In other words, the overall derivative is scaled by the inverse of the width-smoosh. So to recover the true derivative we want, $\frac{dy}{dx}$, we have to divide by this scale, which is a familiar term from our variable transformations $t \leftrightarrow \theta \text{ or } x$.
 
 For higher derivatives:
 
 $$\frac{d^\nu y}{\big( dx \cdot \text{smoosh})^\nu} = \frac{d^\nu y}{dx^\nu} \cdot \text{scale}^\nu$$
 
-So we always correct the derivative by \textit{dividing} by scale$^\nu$.\newline
+So we can always correct the derivative by dividing by scale$^\nu$.\newline
 
-To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter}.\pagebreak
+To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter}.
 
 \printendnotes
 
