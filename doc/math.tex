@@ -892,7 +892,7 @@ Say we have $t \in [a, b)$ that we need to map to $\theta \in [0, 2\pi)$. We can
 
 $$\theta \in [0, 2\pi) \leftrightarrow t \in [a, b) = \underbrace{[0, 2\pi)}_{\theta} \cdot \frac{b - a}{2\pi} + a$$
 
-To get a real sense this is true, let's see an example:\vspace{2mm}
+To get a sense this is true, let's see an example:\vspace{2mm}
 
 \begin{figure}[h!]
 \begin{center}
@@ -934,7 +934,7 @@ In the discrete case, where we have $M$ samples on $[a, b)$, then we can map $t_
 
 $$ \theta_n \in \frac{\{0, ... M-1\} \cdot 2\pi}{M} \leftrightarrow t_n \in \frac{\{0, ... M-1\} \cdot \cancel{2\pi}}{M} \cdot \frac{b - a}{\cancel{2\pi}} + a$$
 
-In other words, if we want to take a spectral derivative of a function that's periodic on $[a, b)$, then we need to sample it at \texttt{t\char`_n = np.arange(M)/M * (b - a) + a}.
+In other words, if we want to take a spectral derivative of a function that's periodic on $[a, b)$, then we need to sample it at \texttt{t\char`_n = np.arange(M)/M * (b - a) + a = np.linspace(a, b, M, endpoint=False)}.
 
 \subsection{Chebyshev}
 
@@ -942,7 +942,7 @@ Here both ends are \textit{inclusive}, so we have $t \in [a, b]$ that we need to
 
 $$x \in [-1, 1] \leftrightarrow t \in [a,b] = \underbrace{[-1, 1]}_{x} \cdot \frac{b - a}{2} + \frac{b + a}{2}$$
 
-To get a real sense this is true, let's see an example:\vspace{2mm}
+To get a sense this is true, let's see an example:\vspace{2mm}
 
 \begin{figure}[h!]
 \begin{center}
@@ -982,7 +982,7 @@ To get a real sense this is true, let's see an example:\vspace{2mm}
 
 In the discrete case, where we have $N+1$ samples on $[a, b]$, then we can map $t_n$ with:
 
-$$x_n \in \cos(\frac{\pi \{0, ... N\}}{N}) \leftrightarrow t_n \in \cos(\frac{\pi \{0, ... N\}}{N}) \cdot \frac{b - a}{2} + \frac{b + a}{2} $$
+$$x_n \in \cos\big(\frac{\pi \{0, ... N\}}{N}\big) \leftrightarrow t_n \in \cos\big(\frac{\pi \{0, ... N\}}{N}\big) \cdot \frac{b - a}{2} + \frac{b + a}{2} $$
 
 Notice the order has flipped here, that counting \textit{up} in $n$ means we traverse $x$ from $+1 \rightarrow -1$. This is actually what we want; it corresponds to the \hyperref[cylinder]{horizontal flip} necessary to make cosine shadows equate with Chebyshev polynomails.
 
