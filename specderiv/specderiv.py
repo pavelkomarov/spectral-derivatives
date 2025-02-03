@@ -38,7 +38,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 	if not np.all(np.diff(t_n) < 0):
 		raise ValueError("The domain, t_n, should be ordered high-to-low, [b, ... a]. Try sampling with `np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`")
 	scale = (t_n[0] - t_n[N])/2; offset = (t_n[0] + t_n[N])/2 # Trying to be helpful, because sampling is tricky to get right
-	if not np.allclose(t_n, np.cos(np.arange(N+1) * np.pi / N) * scale + offset):
+	if not np.allclose(t_n, np.cos(np.arange(N+1) * np.pi / N) * scale + offset, atol=1e-5):
 		raise ValueError("Your function is not sampled at cosine-spaced points! Try sampling with `np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`")
 
 	first = [slice(None) for dim in y_n.shape]; first[axis] = 0; first = tuple(first) # for accessing different parts of data
