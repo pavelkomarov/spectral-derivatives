@@ -549,7 +549,7 @@ Where $[:\!N+1]$ truncates to only the first $N$ elements. Given the equality ab
 
 We can now easily see that in addition to the inverse relationship (\autoref{ifftidct}), we also have the forward relationship:
 
-$$\text{FFT}([y_0, ... y_N, y_{N-1}, ... y_1])[:N+1] = \text{DCT-I}([y_0, ... y_N])$$
+$$\text{FFT}([y_0, ... y_N, y_{N-1}, ... y_1])[:\!N+1] = \text{DCT-I}([y_0, ... y_N])$$
 
 Before we wrap up discussion of the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{DCT-I}\cite{dct}, note that the $0^{th}$ and $N^{th}$ terms appear \textit{outside the sum}, and that the sum \textit{is multiplied by 2}. In our original conception of the cosine series for $y(\theta)$ (\autoref{equivalent}), all the cosines appear equally within the sum, so our $Y_k$ are subtly different from the $a_k$ in that formulation (some scaled by a factor of $\frac{1}{2}$ and all scaled by $M$). This will be important when we later transform back to the Chebyshev domain, because we will use \textit{the DCT-I version} of $y(\theta)$, not the original conception.
 
