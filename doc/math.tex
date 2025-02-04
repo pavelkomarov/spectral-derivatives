@@ -485,7 +485,7 @@ Because the reconstruction of $y(\theta)$ (\autoref{equivalent}) only contains c
 
 Say\vspace{-8mm}
 
-$$y = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N-1}, ... y_1}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2N, necessarily even!}}, \text{ that is: } y_n = y_{M-n},\ 0 \leq n \leq N$$
+$$\vec{y} = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N-1}, ... y_1}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2N, necessarily even!}}, \text{ that is: } y_n = y_{M-n},\ 0 \leq n \leq N$$
 
 Then using $M-k$ for $k$ in the DFT equation (\autoref{dft}), we get:
 
@@ -528,10 +528,10 @@ Where $[:N+1]$ truncates to only the first $N$ elements. Given the equality abov
 \begin{minipage}{0.5\textwidth}
 \centering
 \begin{tikzpicture}
-	\node (y_long) at (0, 3) {$y_{long}$};
-	\node (Y_long) at (0, 0) {$Y_{long}$};
-	\node (y_short) at (4, 3) {$y_{short}$};
-	\node (Y_short) at (4, 0) {$Y_{short}$};
+	\node (y_long) at (0, 3) {$\vec{y}_{long}$};
+	\node (Y_long) at (0, 0) {$\vec{Y}_{long}$};
+	\node (y_short) at (4, 3) {$\vec{y}_{short}$};
+	\node (Y_short) at (4, 0) {$\vec{Y}_{short}$};
 
 	\draw[->, bend right=40] (y_long) to node[midway] {FFT} (Y_long);
 	\draw[->, bend right=40] (Y_long) to node[midway] {FFT$^{-1}$} (y_long);
@@ -564,8 +564,8 @@ The derivative of an even function is an \textit{odd} function, $f(-x) = -f(x)$,
 To see this more granularly, let's look in more detail at the multiplication by $(jk)^\nu$ that produces $Y_k^{(\nu)}$ (\autoref{Y_nu}) (the longer, not truncated version):
 
 \begin{align*}
-\vec{Y}_k^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{black} \text{ or } \color{red}(jN)^\nu\color{black})}_{\parbox{20mm}{\footnotesize \centering depending on $\nu$ \color{blue}odd \color{black} or \color{red}even}}, (-j(N-1))^\nu, ... (-j)^\nu] \odot \vec{Y}_k\\
-&= j^\nu \cdot {\underbrace{[0, 1, ... 1, (\color{blue}0 \color{black}\text{ or }\color{red} 1\color{black}), -1, ..., -1]}_{\text{\large $\tilde{\mathbbm{1}}$}}}^\nu \odot \underbrace{[0, 1, ... N-1, N, N-1, ... 1]^\nu} \odot \vec{Y}_k
+\vec{Y}^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{black} \text{ or } \color{red}(jN)^\nu\color{black})}_{\parbox{20mm}{\footnotesize \centering depending on $\nu$ \color{blue}odd \color{black} or \color{red}even}}, (-j(N-1))^\nu, ... (-j)^\nu] \odot \vec{Y}\\
+&= j^\nu \cdot {\underbrace{[0, 1, ... 1, (\color{blue}0 \color{black}\text{ or }\color{red} 1\color{black}), -1, ..., -1]}_{\text{\large $\tilde{\mathbbm{1}}$}}}^\nu \odot \underbrace{[0, 1, ... N-1, N, N-1, ... 1]^\nu} \odot \vec{Y}
 \end{align*}
 \begin{tikzpicture}[overlay, remember picture]
 	\node at (4.4,0.25) {\footnotesize constant};
