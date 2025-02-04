@@ -435,7 +435,7 @@ Due to the relationship between $\theta$ and $x$ on their respective domains, yo
 	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{dedalus}. Notice the cosines are horizontally flipped. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen8}), but I prefer $k$ to enumerate basis modes, for consistency.}
 \end{figure}
 
-Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a horizontally-reversed $2\pi$-periodic cosine in the domain $[0, \pi]$. When we sample a function at $x = \cos(\theta)$ for equispaced $\theta$ instead of at equispaced $x$, we're effectively moving, horizontally flipping, and \textit{warping} it (by expanding near the edges and compressing in the middle) to a new $\theta$ domain.
+Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadows} of horizontally-reversed $2\pi$-periodic cosines in the domain $[0, \pi]$. If we trace a function's value over $x = \cos(\theta)$ for linearly-increasing $\theta \in [0, \pi]$ instead of tracing it for linearly-increasing $x \in [-1, 1]$, it's as if we're walking along the arc of the cylinder instead of along the shadow. We're effectively moving, horizontally flipping, and \textit{warping} the function (by expanding near the edges and compressing in the middle) to a new $\theta$ domain.
 
 We can reconstruct a function using the different variables/basis formulations, and as long as our variables are related as in \autoref{domains}, these reconstructions are \textit{equivalent}:
 
@@ -458,7 +458,7 @@ Why might we prefer this basis to the Fourier basis? Well, the advantage of a po
 
 However, there is something we can do about the Runge phenomenon: By clustering fit points at the edges of the domain, the wild wobbles go away.
 
-If we take $x = \cos(\theta)$ with $\theta$ equispaced $\in [0, \pi]$, then we get a very natural clustering at the edges of $[-1, 1]$ in $x$. What's more, if we have equispaced $\theta$ and a reconstruction expression built up out of sinusoids, we're back in a Fourier paradigm (at least in variable $\theta$) and can exploit the efficiency of the FFT, or, better, the discrete cosine and sine transforms!\cite{dct}\cite{dst}
+If we take $x_n = \cos(\overbrace{\frac{\pi}{N} n}^{\theta_n})$, then we get a very natural clustering at the edges of $[-1, 1]$. What's more, if we have equispaced $\theta_n$ and a reconstruction expression built up out of sinusoids, we're back in a Fourier paradigm (at least in variable $\theta$) and can exploit the efficiency of the FFT, or, better, the discrete cosine and sine transforms!\cite{dct}\cite{dst}
 
 Notice too that the polynomials/projected cosines are \textit{asymmetrical}, so we can natually use this basis to model arbitrary, lopsided functions without having to worry about \hyperref[phase]{phase shifts like we did for a Fourier basis of discrete harmonics}.
 
