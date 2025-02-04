@@ -591,10 +591,10 @@ y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^\n
 &= \frac{1}{M} \Big( \underbrace{(j0)^\nu Y_0 + (jN)^\nu Y_N (-1)^n + 2 \sum_{k=1}^{N-1} (jk)^\nu Y_k \cos(\frac{\pi nk}{N})}_{\text{\normalsize = a DCT-I of $\vec{Y}_{\text{short}}^{(\nu)}$!}} \Big) \label{y_prime_even}
 \end{align}
 \begin{tikzpicture}[overlay, remember picture]
-	\node at (7.2,7.15) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
-	\node at (7.25,3.9) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
-	\draw[->, blue] (7.7,7.45) -- (7.95,7.7);
-	\draw[->, red] (7.8,4.15) -- (8.1,4.4);
+	\node at (7.2,7.3) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
+	\node at (7.25,4.05) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
+	\draw[->, blue] (7.7,7.6) -- (7.95,7.9);
+	\draw[->, red] (7.8,4.3) -- (8.1,4.55);
 \end{tikzpicture}
 
 Brilliant! So we can use only the non-redundant $Y_k^{(\nu)}$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
