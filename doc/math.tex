@@ -509,29 +509,29 @@ y(\theta) &= \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big( Y_k e^{j k 
 \end{aligned}
 \end{equation}
 
-At samples $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N}n$, this becomes:
+At samples $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N}n$, this becomes:\vspace{-2mm}
 
 \[
 y(\theta_n) = \frac{1}{M} \Big(Y_0 + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} + 2 \sum_{k = 1}^{N-1} Y_k \cos(\frac{\pi nk}{N}) \Big) \tag{DCT$^{-1}$}
 \]
 
-This is exactly the DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT and DCT$^{-1}$ operate on the shorter set of $Y = [Y_0, ... Y_N]$, without redundant information. Thus
+This is exactly the DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT and DCT$^{-1}$ operate on the shorter set of $\vec{Y} = [Y_0, ... Y_N]$, without redundant information. Thus
 
 \begin{equation}\label{ifftidct}
 \text{FFT}^{-1}([Y_0, ... Y_N, Y_{N-1}, ... Y_1])[:\!N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
 \end{equation}
 
-Where $[:\!N+1]$ truncates to only the first $N+1$ elements. Given the equality above, we can line up everything we now know in a diagram:\vspace{-3mm}
+Where $[:\!N+1]$ truncates to only the first $N+1$ elements ($\{0, ... N\}$). Given the equality above, we can line up everything we now know in a diagram:\vspace{-3mm}
 
 \begin{figure}[h!]
 \begin{center}
 \begin{minipage}{0.5\textwidth}
 \centering
 \begin{tikzpicture}
-	\node (y_long) at (0, 3) {$\vec{y}_{long}$};
-	\node (Y_long) at (0, 0) {$\vec{Y}_{long}$};
-	\node (y_short) at (4, 3) {$\vec{y}_{short}$};
-	\node (Y_short) at (4, 0) {$\vec{Y}_{short}$};
+	\node (y_long) at (0, 3) {$\vec{y}_{\text{long}}$};
+	\node (Y_long) at (0, 0) {$\vec{Y}_{\text{long}}$};
+	\node (y_short) at (4, 3) {$\vec{y}_{\text{short}}$};
+	\node (Y_short) at (4, 0) {$\vec{Y}_{\text{short}}$};
 
 	\draw[->, bend right=40] (y_long) to node[midway] {FFT} (Y_long);
 	\draw[->, bend right=40] (Y_long) to node[midway] {FFT$^{-1}$} (y_long);
@@ -561,7 +561,7 @@ If we look at the full $Y_{long}$ with redundant information, we have a palindro
 
 The derivative of an even function is an \textit{odd} function, $f(-x) = -f(x)$, which in principle should be constructable from purely sines, which are odd. And the derivative of an odd function is an even function again.
 
-To see this more granularly, let's look in more detail at the multiplication by $(jk)^\nu$ that produces $Y_k^{(\nu)}$ (\autoref{Y_nu}) (the longer, not truncated version):
+To see this more granularly, let's look in more detail at the multiplication by $(jk)^\nu$ that produces all the $Y_k^{(\nu)}$ (\autoref{Y_nu}), for $k \in \{0, ... M-1\}$ (the longer, not truncated version):\vspace{-2mm}
 
 \begin{align*}
 \vec{Y}^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{black} \text{ or } \color{red}(jN)^\nu\color{black})}_{\parbox{20mm}{\footnotesize \centering depending on $\nu$ \color{blue}odd \color{black} or \color{red}even}}, (-j(N-1))^\nu, ... (-j)^\nu] \odot \vec{Y}\\
@@ -581,23 +581,23 @@ $$\tilde{\mathbbm{1}}^\nu = \begin{cases} [0, 1, ... 1, 0, -1, ..., -1] & \text{
 
 $[0, 1, ... 1, 0, -1, ..., -1]$ is odd around entries $0$ and $N$, and $[0, 1, ... 1, 1, 1, ... 1]$ is even around entry $0$.\newline
 
-Let's now use this to reconstruct samples in the $\theta$ domain, $y_n$, for odd and even derivatives:
+Let's now use this to reconstruct samples in the $\theta$ domain, $y_n^{(\nu)}$, for odd and even derivatives:\vspace{-4mm}
 
 \begin{align}
 y_n^{(\text{odd } \nu)} &= \frac{1}{M} \sum_{0 < k < \frac{M}{2}} (jk)^\nu (Y_k e^{jk\theta_n} \color{blue}-\color{black} \underbrace{Y_{M-k}}_{= Y_k} e^{-jk\theta_n}) = \frac{1}{M} \sum_{k=1}^{N-1} (jk)^\nu Y_k \underbrace{(e^{jk\theta_n} - e^{-jk\theta_n})}_{2j\sin(k\theta_n)} \notag \\
-&= \frac{1}{M} \underbrace{2 \sum_{k=1}^{N-1} (jk)^\nu Y_k j \sin(\frac{\pi nk}{N})}_{\text{\normalsize = a DST-I of $Y_k^{(\nu)} \cdot j$!}} \label{y_prime_odd}\\
+&= \frac{1}{M} \underbrace{2 \sum_{k=1}^{N-1} (jk)^\nu Y_k j \sin(\frac{\pi nk}{N})}_{\text{\normalsize = a DST-I of $\vec{Y}^{(\nu)} \cdot j$!}} \label{y_prime_odd}\\
 y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^\nu (Y_k e^{jk\theta_n} \color{red}+\color{black} \underbrace{Y_{M-k}}_{= Y_k} e^{-jk\theta_n}) + (j\frac{M}{2})^\nu Y_{M/2} \cos(\frac{M}{2}\theta_n) \Big) \notag \\
 &= \frac{1}{M} \Big( (jN)^\nu Y_N \cos(\pi n) + \sum_{k=1}^{N-1} (jk)^\nu Y_k \underbrace{(e^{jk\theta_n} + e^{-jk\theta_n})}_{2\cos(k\theta_n)} \Big) \notag \\
-&= \frac{1}{M} \Big( \underbrace{(j0)^\nu Y_0 + (jN)^\nu Y_N (-1)^n + 2 \sum_{k=1}^{N-1} (jk)^\nu Y_k \cos(\frac{\pi nk}{N})}_{\text{\normalsize = a DCT-I of $Y_k^{(\nu)}$!}} \Big) \label{y_prime_even}
+&= \frac{1}{M} \Big( \underbrace{(j0)^\nu Y_0 + (jN)^\nu Y_N (-1)^n + 2 \sum_{k=1}^{N-1} (jk)^\nu Y_k \cos(\frac{\pi nk}{N})}_{\text{\normalsize = a DCT-I of $\vec{Y}^{(\nu)}$!}} \Big) \label{y_prime_even}
 \end{align}
 \begin{tikzpicture}[overlay, remember picture]
-	\node at (7.2,7.25) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
-	\node at (7.25,4) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
-	\draw[->, blue] (7.7,7.6) -- (7.95,7.9);
-	\draw[->, red] (7.7,4.3) -- (8.1,4.55);
+	\node at (7.2,7.15) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
+	\node at (7.25,3.9) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
+	\draw[->, blue] (7.7,7.45) -- (7.95,7.7);
+	\draw[->, red] (7.8,4.15) -- (8.1,4.4);
 \end{tikzpicture}
 
-Brilliant! So we can use only the non-redundant $Y_k$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
+Brilliant! So we can use only the non-redundant $Y_k^{(\nu)}$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
 
 Note that the DCT-I and DST-I definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing than in my definitions here, which can be a point of confusion. I consistently take $N$ to be the \textit{index} of the last element of the non-redundant $y_n$, not its length, following \cite{trefethen8}. Note too that the DST-I only takes the $k = \{1, ... N-1\}$ elements, whereas the DCT-I takes all $k = \{0, ... N\}$ elements!
 
