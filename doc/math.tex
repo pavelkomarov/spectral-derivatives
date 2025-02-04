@@ -198,7 +198,7 @@ $$\frac{d}{dx} f(x) = \frac{d}{dx} \frac{1}{2\pi} \int\limits_{-\infty}^{\infty}
 
 So a derivative in the $x$ domain can be accomplished by a \textit{multiplication} in the frequency domain. We can raise to higher derivatives simply by multiplying by $j \omega$ more times.
 
-This is great because taking derivatives in the spatial domain is actually pretty hard, especially if we're working with discrete samples of a signal, whereas taking the derivative this way in the frequency domain, the \textit{spectral derivative}, gives us much better fidelity.\cite{kutz} The cost is that we have to do a Fourier transform and inverse Fourier transform to sandwich the actual differentiation, but there is an $O(N \log N)$ algorithm to accompish the DFT (\autoref{family}, \autoref{dft}) for discrete signals called the Cooley-Tukey algorithm, also known as the Fast Fourier Transform (FFT)\cite{kutz}.
+This is great because taking derivatives in the spatial domain is actually pretty hard, especially if we're working with discrete samples of a signal, whereas taking the derivative this way in the frequency domain, the \textit{spectral derivative}, gives us much better fidelity.\cite{trefethen4}\cite{kutz} The cost is that we have to do a Fourier transform and inverse Fourier transform to sandwich the actual differentiation, but there is an $O(N \log N)$ algorithm to accompish the DFT (\autoref{family}, \autoref{dft}) for discrete signals called the Cooley-Tukey algorithm, also known as the Fast Fourier Transform (FFT)\cite{kutz}.
 
 \subsection{Taking Derivatives in the Discrete Case}
 
@@ -373,7 +373,7 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 
 \section{The Chebyshev Basis}
 
-\href{https://www.youtube.com/watch?v=HloOBYPwlmU}{There is another} basis which we can use to represent arbitrary functions, called the \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Chebyshev polynomials}\cite{trefethen}, which has a really neat relationship to the Fourier basis.
+\href{https://www.youtube.com/watch?v=HloOBYPwlmU}{There is another} basis which we can use to represent arbitrary functions, called the \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Chebyshev polynomials}\cite{trefethen8}, which has a really neat relationship to the Fourier basis.
 
 \begin{figure}[h!]
 \begin{center}
@@ -426,13 +426,13 @@ It turns out there is a recurrent pattern:
 
 $$ T_{k+1} = \frac{1}{2}(z^{k+1} + z^{-(k+1)}) = \frac{1}{2}(z^k + z^{-k})(z + z^{-1}) - \frac{1}{2}(z^{k-1} + z^{-(k-1)}) = 2xT_k(x) - T_{k-1}(x) $$
 
-Due to the relationship between $\theta$ and $x$ on their respective domains, you can think of these polynomials as cosine waves ``wrapped around a cylinder and viewed from the side."\cite{trefethen}
+Due to the relationship between $\theta$ and $x$ on their respective domains, you can think of these polynomials as cosine waves ``wrapped around a cylinder and viewed from the side."\cite{trefethen8}
 
 \begin{figure}[h]\label{cylinder}
 	\centering
 	\includegraphics[width=0.5\textwidth]{cylinder.png}
 	\captionsetup{width=0.65\textwidth}
-	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{dedalus}. Notice the cosines are horizontally flipped. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen}), but I prefer $k$ to enumerate basis modes, for consistency.}
+	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{dedalus}. Notice the cosines are horizontally flipped. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen8}), but I prefer $k$ to enumerate basis modes, for consistency.}
 \end{figure}
 
 Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadow} of a horizontally-reversed $2\pi$-periodic cosine in the domain $[0, \pi]$. When we use $\cos(\theta)$ to sample a function instead of $x$, we're effectively moving, horizontally flipping, and \textit{warping} the function (by expanding near the edges and compressing in the middle) in to the new $\theta$ domain.
@@ -599,7 +599,7 @@ y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^\n
 
 Brilliant! So we can use only the non-redundant $Y_k$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
 
-Note that the DCT-I and DST-I definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing than in my definitions here, which can be a point of confusion. I consistently take $N$ to be the \textit{index} of the last element of the non-redundant $y_n$, not its length, following \cite{trefethen}. Note too that the DST-I only takes the $k = \{1, ... N-1\}$ elements, whereas the DCT-I takes all $k = \{0, ... N\}$ elements!
+Note that the DCT-I and DST-I definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing than in my definitions here, which can be a point of confusion. I consistently take $N$ to be the \textit{index} of the last element of the non-redundant $y_n$, not its length, following \cite{trefethen8}. Note too that the DST-I only takes the $k = \{1, ... N-1\}$ elements, whereas the DCT-I takes all $k = \{0, ... N\}$ elements!
 
 \subsection{Transforming Back to the Chebyshev Domain}
 
@@ -1039,6 +1039,8 @@ To enable calculation of the \texttt{scale}, and to double check the user sample
 	Oppenheim, A. \& Willsky, A., 1996, \textit{Signals and Systems, 2nd Ed.}
 \bibitem{brunton}
 	Brunton, S., The Fourier Transform and Derivatives, \url{https://www.youtube.com/watch?v=d5d0ORQHNYs}
+\bibitem{trefethen4}
+	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, Chapter 4, \url{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch4}
 \bibitem{kutz}
 	Kutz, J.N., 2023, \textit{Data-Driven Modeling \& Scientific Computation}, Ch. 11, \url{https://faculty.washington.edu/kutz/kutz_book_v2.pdf}
 \bibitem{numpy}
@@ -1053,8 +1055,8 @@ To enable calculation of the \texttt{scale}, and to double check the user sample
 	\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}
 \bibitem{dst}
 	\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dst.html}
-\bibitem{trefethen}
-	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, \url{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}
+\bibitem{trefethen8}
+	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, Chapter 8, \url{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}
 \bibitem{dedalus}
 	Burns, K., et al., 2020, Dedalus: A flexible framework for numerical simulations with spectral methods, \url{https://www.researchgate.net/publication/340905766_Dedalus_A_flexible_framework_for_numerical_simulations_with_spectral_methods}
 \bibitem{chainrule}
