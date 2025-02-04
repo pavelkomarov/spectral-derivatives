@@ -458,7 +458,7 @@ Why might we prefer this basis to the Fourier basis? Well, the advantage of a po
 
 However, there is something we can do about the Runge phenomenon: By clustering fit points at the edges of the domain, the wild wobbles go away.
 
-If we take $x_n = \cos(\overbrace{\frac{\pi}{N} n}^{\theta_n})$, then we get a very natural clustering at the edges of $[-1, 1]$. What's more, if we have equispaced $\theta_n$ and a reconstruction expression built up out of sinusoids, we're back in a Fourier paradigm (at least in variable $\theta$) and can exploit the efficiency of the FFT, or, better, the discrete cosine and sine transforms!\cite{dct}\cite{dst}
+If we take $x_n = \cos(\theta_n = \pi n/N)$, then we get a very natural clustering at the edges of $[-1, 1]$. What's more, if we have equispaced $\theta_n$ and a reconstruction expression built up out of sinusoids, we're back in a Fourier paradigm (at least in variable $\theta$) and can exploit the efficiency of the FFT, or, better, the discrete cosine and sine transforms!\cite{dct}\cite{dst}
 
 Notice too that the polynomials/projected cosines are \textit{asymmetrical}, so we can natually use this basis to model arbitrary, lopsided functions without having to worry about \hyperref[phase]{phase shifts like we did for a Fourier basis of discrete harmonics}.
 
@@ -469,7 +469,7 @@ This all suggests a solution procedure:
 \begin{algorithm}
 \caption*{\textbf{Chebyshev Derivatives}}
 \begin{algorithmic}[1] % the [1] numbers the steps, starting from 1
-	\STATE Sample $y$ at $\{x_n = \cos(\theta_n)\}$ rather than at equally spaced $\{x_n\}$. This accomplishes a change of variables and effectively \textit{warps} the function, flips it horizontally, and changes its domain from $[-1, 1]$ to $[0, \pi]$.
+	\STATE Sample $y$ at $\{x_n = \cos(\theta_n)\}$ rather than at equally spaced $\{x_n\}$, thereby warping the function over the arc of a cylinder.
 	\STATE Use the DCT to transform to frequency domain.
 	\STATE Multiply by appropriate $(jk)^\nu$ to accomplish taking derivatives.
 	\STATE Inverse transform using the DST if odd function, DCT if even function.
@@ -564,8 +564,8 @@ The derivative of an even function is an \textit{odd} function, $f(-x) = -f(x)$,
 To see this more granularly, let's look in more detail at the multiplication by $(jk)^\nu$ that produces $Y_k^{(\nu)}$ (\autoref{Y_nu}) (the longer, not truncated version):
 
 \begin{align*}
-Y_k^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{black} \text{ or } \color{red}(jN)^\nu\color{black})}_{\parbox{20mm}{\footnotesize \centering depending on $\nu$ \color{blue}odd \color{black} or \color{red}even}}, (-j(N-1))^\nu, ... (-j)^\nu] \odot Y_k\\
-&= j^\nu \cdot {\underbrace{[0, 1, ... 1, (\color{blue}0 \color{black}\text{ or }\color{red} 1\color{black}), -1, ..., -1]}_{\text{\large $\tilde{\mathbbm{1}}$}}}^\nu \odot \underbrace{[0, 1, ... N-1, N, N-1, ... 1]^\nu} \odot Y_k
+\vec{Y}_k^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{black} \text{ or } \color{red}(jN)^\nu\color{black})}_{\parbox{20mm}{\footnotesize \centering depending on $\nu$ \color{blue}odd \color{black} or \color{red}even}}, (-j(N-1))^\nu, ... (-j)^\nu] \odot \vec{Y}_k\\
+&= j^\nu \cdot {\underbrace{[0, 1, ... 1, (\color{blue}0 \color{black}\text{ or }\color{red} 1\color{black}), -1, ..., -1]}_{\text{\large $\tilde{\mathbbm{1}}$}}}^\nu \odot \underbrace{[0, 1, ... N-1, N, N-1, ... 1]^\nu} \odot \vec{Y}_k
 \end{align*}
 \begin{tikzpicture}[overlay, remember picture]
 	\node at (4.4,0.25) {\footnotesize constant};
