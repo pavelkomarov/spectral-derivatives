@@ -518,10 +518,10 @@ y(\theta_n) = \frac{1}{M} \Big(Y_0 + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} + 2 \s
 This is exactly the DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT and DCT$^{-1}$ operate on the shorter set of $Y = [Y_0, ... Y_N]$, without redundant information. Thus
 
 \begin{equation}\label{ifftidct}
-\text{FFT}^{-1}([Y_0, ... Y_N, Y_{N-1}, ... Y_1])[:N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
+\text{FFT}^{-1}([Y_0, ... Y_N, Y_{N-1}, ... Y_1])[:\!N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
 \end{equation}
 
-Where $[:N+1]$ truncates to only the first $N$ elements. Given the equality above, we can line up everything we now know in a diagram:\vspace{-3mm}
+Where $[:\!N+1]$ truncates to only the first $N$ elements. Given the equality above, we can line up everything we now know in a diagram:\vspace{-3mm}
 
 \begin{figure}[h!]
 \begin{center}
