@@ -599,7 +599,7 @@ y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^\n
 
 Brilliant! So we can use only the non-redundant $Y_k^{(\nu)}$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
 
-Note that the DCT-I and DST-I definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing than in my definitions here, which can be a point of confusion. I consistently take $N$ to be the \textit{index} of the last element of the non-redundant $y_n$, not its length, following \cite{trefethen8}. Note too that the DST-I only takes the $k = \{1, ... N-1\}$ elements, whereas the DCT-I takes all $k = \{0, ... N\}$ elements!
+Note that the DCT-I and DST-I definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing than in my definitions here, which can be a point of confusion. I consistently take $N$ to be the \textit{index} of the last element of the non-redundant $y_n$, not its length, following \cite{trefethen8}. Note too that the DST-I only takes the $k = \{1, ... N-1\}$ elements, since sines will result in zero crossings at $k = 0$ and $N$ (no informational content), whereas the DCT-I takes all $k = \{0, ... N\}$ elements!
 
 \subsection{Transforming Back to the Chebyshev Domain}
 
