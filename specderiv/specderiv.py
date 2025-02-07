@@ -134,11 +134,10 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, fil
 		raise ValueError("The domain, t_n, should be ordered low-to-high, [a, ... b). Try sampling with `np.arange(0, M)/M * (b - a) + a`")
 
 	M = y_n.shape[axis]
-	if M % 2 == 0: # if M has an even length, then we make k = [0, 1, ... M/2 - 1, 0 or M/2, -M/2 + 1, ... -1]
-		k = np.concatenate((np.arange(M//2 + 1), np.arange(-M//2 + 1, 0)))
-		if order % 2 == 1: k[M//2] = 0 # odd derivatives get the M/2th element zeroed out
-	else: # M has odd length, so k = [0, 1, ... floor(M/2), -floor(M/2), ... -1]
-		k = np.concatenate((np.arange(M//2 + 1), np.arange(-M//2 + 1, 0)))
+	# if M has an even length, then we make k = [0, 1, ... M/2 - 1, 0 or M/2, -M/2 + 1, ... -1]
+	# if M has odd length, k = [0, 1, ... floor(M/2), -floor(M/2), ... -1]
+	k = np.concatenate((np.arange(M//2 + 1), np.arange(-M//2 + 1, 0)))
+	if M % 2 == 0 and order % 2 == 1: k[M//2] = 0 # odd derivatives get the Nyquist element zeroed out, if there is one
 
 	s = [np.newaxis for dim in y_n.shape]; s[axis] = slice(None); s = tuple(s) # for elevating vectors to have same dimension as data
 
