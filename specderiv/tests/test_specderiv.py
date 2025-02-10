@@ -203,5 +203,5 @@ def test_cheb_filter():
 	for nu in range(1,7):
 		computed_noisy = cheb_deriv(y_n_with_noise, x_n, nu)
 		computed_noisy_with_filter = cheb_deriv(y_n_with_noise, x_n, nu, filter=lambda k: k < 10)
-		assert np.nanmean((analytic_truth[nu-1] - computed_noisy_with_filter)**2) < np.nanmean((analytic_truth[nu-1] - computed_noisy)**2)
+		assert np.nanmean((analytic_truth[nu-1] - computed_noisy_with_filter)**2) < np.nanmean((analytic_truth[nu-1] - computed_noisy)**2) # I've seen this assertion fail in CI before. Tests based on randomness are handwavy.
 		assert np.nanmax(np.abs(analytic_truth[nu-1] - computed_noisy_with_filter)) < np.nanmax(np.abs(analytic_truth[nu-1] - computed_noisy))
