@@ -311,7 +311,7 @@ $$\frac{d}{du} |u|^2 + |1 - u|^2 = 2u - 2(1-u) = 0 \longrightarrow u = \frac{1}{
 
 So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} (DCT), which \hyperref[fftdct]{is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$}, so we do have to worry about the Nyquist term.
 
-Now if we put it all together we get ``the \textbf{unique ``minimal-oscillation" trigonometric interpolation} of order N":
+Now if we put it all together we get ``the \textbf{unique ``minimal-oscillation" trigonometric interpolation} of order $M$":
 
 \begin{equation}\label{interpolant}
 y(\theta) = \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big(Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}\big) + Y_{M/2}\cos(\frac{M}{2}\theta) \Big)
@@ -905,9 +905,9 @@ To get a sense this is true, let's see an example:\vspace{2mm}
 		grid=both,
 		width=8cm,
 		height=5cm]
-		\addplot[domain=4:8, samples=100, thick] {cos(deg(pi/2*x)) + 3*sin(deg(3*pi/2*x))};
+		\addplot[domain=4:8, samples=100, thick] {cos(deg(pi/2*x + pi/6)) + 3*sin(deg(3*pi/2*x + pi/4))};
 	\end{axis}
-	\node at (3,3.75) {$\cos(\frac{\pi}{2}t) + 2\sin(\frac{3\pi}{2}t),\ t \in [4, 8)$};
+	\node at (3,3.75) {$\cos(\frac{\pi}{2}t + \frac{\pi}{6}) + 2\sin(\frac{3\pi}{2}t + \frac{\pi}{4}),\ t \in [4, 8)$};
 \end{tikzpicture}
 \end{minipage}
 \begin{minipage}{0.49\textwidth}
@@ -919,13 +919,16 @@ To get a sense this is true, let's see an example:\vspace{2mm}
 		grid=both,
 		width=8cm,
 		height=5cm]
-		\addplot[domain=0:2*pi, samples=100, thick] {cos(deg(x + 2*pi)) + 3*sin(deg(3*x + 6*pi))};
+		\addplot[domain=0:2*pi, samples=100, thick] {cos(deg(x + pi/6)) + 3*sin(deg(3*x + pi/4))};
 	\end{axis}
-	\node at (3.25,3.75) {$\cos(\theta + 2\pi) + 2\sin(3\theta + 6\pi),\ \theta \in [0, 2\pi)$};
+	\node at (3.25,3.75) {$\cos(\theta + \cancel{2\pi} + \frac{\pi}{6}) + 2\sin(3\theta + \cancel{6\pi} + \frac{\pi}{4}),\ \theta \in [0, 2\pi)$};
 \end{tikzpicture}
 \end{minipage}
 \begin{tikzpicture}[overlay, remember picture]
-  \draw[->, thick] (-11, 1.9) -- (-7.6, 1.9) node[midway, above] {$t = \theta \frac{8-4}{2\pi} + 4$};
+  \draw[->, thick] (-10.2, 1.9) -- (-8.4, 1.9) node[midway, above] {$t = \theta \frac{8-4}{2\pi} + 4$};
+  \node at (-5.3, 2.7) {\parbox{20mm}{\footnotesize \centering phase is same modulo $2\pi$}};
+  \draw[->] (-6.1, 2.5) -- (-6.6, 2.2);
+  \draw[->] (-4.5, 2.5) -- (-3.8, 2.2);
 \end{tikzpicture}
 \end{center}
 \end{figure}\vspace{-2mm}
@@ -975,7 +978,7 @@ To get a sense this is true, let's see an example:\vspace{2mm}
 \end{tikzpicture}
 \end{minipage}
 \begin{tikzpicture}[overlay, remember picture]
-  \draw[->, thick] (-11, 1.75) -- (-7.6, 1.75) node[midway, above] {$t = x \frac{4-1}{2} + \frac{4+1}{2}$};
+  \draw[->, thick] (-11, 1.8) -- (-7.6, 1.8) node[midway, above] {$t = x \frac{4-1}{2} + \frac{4+1}{2}$};
 \end{tikzpicture}
 \end{center}
 \end{figure}\vspace{-2mm}
