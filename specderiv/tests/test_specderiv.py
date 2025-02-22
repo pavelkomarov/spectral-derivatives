@@ -8,13 +8,15 @@ from ..specderiv import cheb_deriv, fourier_deriv
 # for use with Chebyshev
 N = 20
 x_n = np.cos(np.arange(N+1) * np.pi / N) # length N+1, in keeping with the usage of N in Trefethen.
+x_n2 = np.concatenate(([1], np.cos(np.pi/(N+1) * (np.arange(N+1) + 0.5)), [-1])) # use half-indices for DCT-II
 
 # for use with Fourier
 M = 20					# It's important this be an *open* periodic domain, or we get artefacting
 th_n = np.arange(0, M) * 2*np.pi / M # e.g. th_n = np.linspace(0, M, M)*2*np.pi/M is no good
 
 @pytest.mark.filterwarnings('ignore::UserWarning') # Not worrying about warnings in this test
-def test_cheb_deriv_accurate_to_6th():
+@pytest.mark.parametrize("dct_type, x_n", [(1, x_n), (2, x_n2)]) # Test using DCT-I and DCT-II
+def test_cheb_deriv_accurate_to_6th(dct_type, x_n):
 	"""A test that the MSE of derivatives of a non-periodic function vs truth is suitably low up to some
 	high power. Implicitly tests the middle polynomial-finding code, the endpoints-finding code, and even
 	derivatives as well as odd derivatives.
@@ -27,13 +29,13 @@ def test_cheb_deriv_accurate_to_6th():
 						4*np.exp(x_n) * (719*np.sin(5*x_n) + 475*np.cos(5*x_n)),	# 5th
 						8*np.exp(x_n) * (2035*np.cos(5*x_n) - 828*np.sin(5*x_n))]	# 6th
 	# Things get less accurate for higher derivatives, so check < 10^f(nu)
-	L2_powers = [-19, -14, -10, -6, -3, 0]
-	L1_powers = [-9, -6, -4, -2, -1, 1]
+	L2_powers = [[-19, -14, -10, -6, -3, 0], [-17, -13, -9, -6, -2, 0]]
+	L1_powers = [[-9, -6, -4, -2, -1, 1], [-8, -6, -4, -2, 0, 1]]
 
 	for nu in range(1,7):
-		computed = cheb_deriv(y_n, x_n, nu)
-		assert np.nanmean((analytic_truth[nu-1] - computed)**2) < 10**L2_powers[nu-1]
-		assert np.nanmax(np.abs(analytic_truth[nu-1] - computed)) < 10**L1_powers[nu-1]
+		computed = cheb_deriv(y_n, x_n, nu, dct_type=dct_type)
+		assert np.nanmean((analytic_truth[nu-1] - computed)**2) < 10**L2_powers[dct_type-1][nu-1]
+		assert np.nanmax(np.abs(analytic_truth[nu-1] - computed)) < 10**L1_powers[dct_type-1][nu-1]
 
 def test_cheb_endpoints():
 	"""A test of the endpoints code, specifically. Endpoints should be found accurately up to the
@@ -190,7 +192,8 @@ def test_fourier_filter():
 
 @pytest.mark.filterwarnings('ignore::UserWarning') # Not worrying about warnings in this test
 def test_cheb_filter():
-	"""A test that applying a filter helps take noise-resistant derivatives of a noisy aperiodic function
+	"""A test that applying a filter helps take noise-resistant derivatives of a noisy aperiodic function.
+	This test can occasionally fail, related to https://github.com/pavelkomarov/spectral-derivatives/issues/14
 	"""
 	y_n_with_noise = np.exp(x_n) * np.sin(5*x_n) + 0.1*np.random.randn(*x_n.shape)
 	analytic_truth = [5*np.exp(x_n) * np.cos(5*x_n) + np.exp(x_n) * np.sin(5*x_n),	# 1st

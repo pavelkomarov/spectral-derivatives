@@ -5,7 +5,7 @@ from collections import deque
 from warnings import warn, catch_warnings, simplefilter
 
 
-def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter: callable=None):
+def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter: callable=None, dct_type=1, calc_endpoints=True):
 	"""Evaluate derivatives with Chebyshev polynomials via discrete cosine and sine transforms. Caveats:
 
 	- Taking the 1st derivative twice with a discrete method like this is not exactly the same as taking the second derivative.
@@ -26,41 +26,51 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 		filter (callable, optional): A function or :code:`lambda` that takes the 1D array of wavenumbers, :math:`k = [0, ... N]`,
 			and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of the data,
 			:math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.
+		dct_type (int, optional): 1 or 2, whether to use DCT-I or DCT-II. Defaults to DCT-I.
+		calc_endpoints (bool, optional): Whether to calculate the endpoints of the answer, in case they are unnecessary for a
+			particular use case. Defaults to True.
  
 	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
-	N = y_n.shape[axis] - 1; M = 2*N # We only have to care about the number of points in the dimension we're differentiating
+	# We only have to care about the number of points in the dimension we're differentiating
+	N = y_n.shape[axis] - 1 if dct_type == 1 else y_n.shape[axis] - 3 # if type is 1, we count [0, ... N], if type 2, the endpoints are tacked on additionally
+	M = 2*N if dct_type == 1 else 2*(N+1) # Normalization factor is larger for DCT-II based on repeats of endpoints in equivalent FFT
+	x_n = np.cos(np.arange(N+1) * np.pi/N) if dct_type == 1 else np.concatenate(([1], np.cos((np.arange(N+1) + 0.5) * np.pi/(N+1)), [-1])) # canonical sampling
 
 	if order < 1:
 		raise ValueError("derivative order, nu, should be >= 1")
+	if dct_type not in (1, 2):
+		raise ValueError("DCT type must be 1 or 2")
 	if len(t_n.shape) > 1 or t_n.shape[0] != y_n.shape[axis]:
 		raise ValueError("t_n should be 1D and have the same length as y_n along the axis of differentiation")
 	if not np.all(np.diff(t_n) < 0):
 		raise ValueError("The domain, t_n, should be ordered high-to-low, [b, ... a]. Try sampling with `np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`")
-	scale = (t_n[0] - t_n[N])/2; offset = (t_n[0] + t_n[N])/2 # Trying to be helpful, because sampling is tricky to get right
-	if not np.allclose(t_n, np.cos(np.arange(N+1) * np.pi / N) * scale + offset, atol=1e-5):
-		raise ValueError("Your function is not sampled at cosine-spaced points! Try sampling with `np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`")
+	scale = (t_n[0] - t_n[-1])/2; offset = (t_n[0] + t_n[-1])/2 # Trying to be helpful, because sampling is tricky to get right
+	if not np.allclose(t_n, x_n * scale + offset, atol=1e-5):
+		raise ValueError(f"""Your function is not sampled appropriately for the DCT-{'I'*dct_type} Try sampling with
+			{'`np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`' if dct_type == 1 else
+			'`np.concatenate(([b], np.cos((np.arange(N+1) + 0.5) * np.pi/(N+1)) * (b - a)/2 + (b + a)/2, [a]))'}""")
 
 	first = [slice(None) for dim in y_n.shape]; first[axis] = 0; first = tuple(first) # for accessing different parts of data
-	last = [slice(None) for dim in y_n.shape]; last[axis] = N; last = tuple(last)
+	last = [slice(None) for dim in y_n.shape]; last[axis] = y_n.shape[axis] - 1; last = tuple(last)
 	middle = [slice(None) for dim in y_n.shape]; middle[axis] = slice(1, -1); middle = tuple(middle)
 	s = [np.newaxis for dim in y_n.shape]; s[axis] = slice(None); s = tuple(s) # for elevating vectors to have same dimension as data
 
-	Y_k = dct(y_n, 1, axis=axis) # Transform to frequency domain using the 1st definition of the discrete cosine transform
-	k = np.arange(1, N) # [1, ... N-1], wavenumber iterator/indices
-	k_with_ends = np.arange(0, N+1) # [0, ... N], wavenumbers including endpoints
-	if filter: Y_k *= filter(k_with_ends)[s]
+	Y_k = dct(y_n, 1, axis=axis) if dct_type == 1 else dct(y_n[middle], 2, axis=axis) # Transform to frequency domain using the 1st definition of the discrete cosine transform
+	k = np.arange(N+1) # [0, ... N], Chebyshev basis polynomial (in x)/wavenumber (in theta) iterator
+	if filter: Y_k *= filter(k)[s]
 
 	y_primes = [] # Store all derivatives in theta up to the nu^th, because we need them all for reconstruction.
 	for mu in range(1, order + 1):
+		Y_mu = (1j * k[s])**mu * Y_k
 		if mu % 2: # odd derivative
-			Y_mu = (1j * k[s])**mu * Y_k[middle] # Y_mu[k=0 and N] = 0 and so are not needed for the DST
-			y_primes.append(dst(1j * Y_mu, 1, axis=axis).real / M) # d/dtheta y = the inverse transform of DST-1 
-				# = 1/M * DST-1. Extra j for equivalence with IFFT. Im{y_prime} = 0 for real y, so just keep real.
+			# In DST-I case Y_mu[k=0 and N] = 0 and so are not needed for the DST, so only pass the [middle] entries
+			# In DST-III case, Y_mu[0 and N+1] = 0. roll() shifts to the left, so Y'_0 is treated like Y'_{N+1}, and we pass in starting at k=1
+			y_primes.append(dst(1j * Y_mu[middle], 1, axis=axis).real / M if dct_type == 1 # d/dtheta y = the inverse transform of DST-1 = 1/M * DST-1. Extra j for equivalence with IFFT.
+				else dst(1j * np.roll(Y_mu, -1), 3, axis=axis).real / M) # inverse of DST-II is 1/M * DST-III. Im{y_prime} = 0 for real y, so just keep real.
 		else: # even derivative
-			Y_mu = (1j * k_with_ends[s])**mu * Y_k # Include terms for wavenumbers 0 and N, becase the DCT uses them
-			y_primes.append(dct(Y_mu, 1, axis=axis)[middle].real / M) # the inverse transform of DCT-1 is 1/M * DCT-1.
-				# Slice off ends. Im{y_prime} = 0 for real y, so just keep real.
+			y_primes.append(dct(Y_mu, 1, axis=axis)[middle].real / M if dct_type == 1 # the inverse transform of DCT-1 is 1/M * DCT-1. Slice off ends to get same length as DST-I result.
+				else dct(Y_mu, 3, axis=axis).real / M) # inverse of DCT-II is 1/M * DCT-III. Im{y_prime} = 0 for real y, so just keep real.
 
 	# Calculate the polynomials in x necessary for transforming back to the Chebyshev domain
 	numers = deque([poly([-1])]) # just -1 to start, at order 1
@@ -75,26 +85,23 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 	
 	# Calculate x derivative as a sum of x polynomials * theta-domain derivatives
 	dy_n = np.zeros(y_n.shape) # The middle of dy will get filled with a derivative expression in terms of y_primes
-	x_n = np.cos(np.pi * np.arange(1, N) / N) # leave off +/-1, because they need to be treated specially anyway
-	denom_x = denom(x_n) # only calculate this once
+	denom_x = denom(x_n[1:-1]) # only calculate this once; leave off +/-1, because they need to be treated specially anyway
 	for term,(numer,y_prime) in enumerate(zip(numers, y_primes), 1): # iterating from lower derivatives to higher
 		c = order - term/2 # c starts at nu - 1/2 and then loses 1/2 for each subsequent term
-		dy_n[middle] += (numer(x_n)/(denom_x**c))[s] * y_prime
+		dy_n[middle] += (numer(x_n[1:-1])/(denom_x**c))[s] * y_prime
 
-	if order == 1: # Fill in the endpoints. Unfortunately this takes special formulas for each nu.
-		dy_n[first] = np.sum((k**2)[s] * Y_k[middle], axis=axis)/N + (N/2) * Y_k[last]
-		dy_n[last] = -np.sum((k**2 * np.power(-1, k))[s] * Y_k[middle], axis=axis)/N - (N/2)*(-1)**N * Y_k[last]
-	elif order == 2: # And they're not short formulas either :(
-		dy_n[first] = np.sum((k**4 - k**2)[s] * Y_k[middle], axis=axis)/(3*N) + (N/6)*(N**2 - 1) * Y_k[last]
-		dy_n[last] = np.sum(((k**4 - k**2)*np.power(-1, k))[s] * Y_k[middle], axis=axis)/(3*N) + (N/6)*(N**2 - 1)*(-1)**N * Y_k[last] 
-	elif order == 3: # Each line is effectively calculating a single output of a specially-weighted inverse DCT
-		dy_n[first] = np.sum((k**6 - 5*k**4 + 4*k**2)[s] * Y_k[middle], axis=axis)/(15*N) + N*((N**4)/30 - (N**2)/6 + 2/15)*Y_k[last]
-		dy_n[last] = -np.sum(((k**6 - 5*k**4 + 4*k**2)*np.power(-1, k))[s] * Y_k[middle], axis=axis)/(15*N) - N*((N**4)/30 - (N**2)/6 + 2/15)*(-1)**N * Y_k[last]
-	elif order == 4:
-		dy_n[first] = np.sum((k**8 - 14*k**6 + 49*k**4 - 36*k**2)[s] * Y_k[middle], axis=axis)/(105*N) + N*(N**6 - 14*N**4 + 49*N**2 - 36)/210 * Y_k[last]
-		dy_n[last] = np.sum(((k**8 - 14*k**6 + 49*k**4 - 36*k**2)*np.power(-1, k))[s] * Y_k[middle], axis=axis)/(105*N) + (N*(N**6 - 14*N**4 + 49*N**2 - 36)*(-1)**N)/210 * Y_k[last]
+	# Calculate the endpoints
+	if order <= 4 and calc_endpoints:
+		C, D = {1: [(-1,), 1], 2: [(1, 1), 3], 3: [(-4, -5, -1), 15], 4: [(36, 49, 14, 1), 105]}[order] # Constants from the math. See the notebook in the warning.
+		LH = 0 # L'Hôpital numerator terms
+		for i,C_i in enumerate(C, 1): # i starts at 1
+			LH += 2 * C_i * (-1)**i * np.power(k, 2*i)
+			if dct_type == 1: LH[-1] -= C_i * (-1)**i * np.power(N, 2*i) # because Nth element is outside the 2\sum in the DCT-I
+		dy_n[first] = np.sum(LH[s] * Y_k, axis=axis)/ (D*M)
+		dy_n[last] = np.sum((LH * np.power(-1, k))[s] * Y_k, axis=axis) / ((-1)**order * D*M)
 	else: # For higher derivatives, leave the endpoints uncalculated, but direct the user to my analysis of this problem.
-		warn("endpoints set to NaN, only calculated for 4th derivatives and below. For help with higher derivatives, see https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb")
+		if calc_endpoints: warn("""endpoints set to NaN, only calculated for 4th derivatives and below. For help with higher derivatives,
+			see https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb""")
 		dy_n[first] = np.nan
 		dy_n[last] = np.nan
 
