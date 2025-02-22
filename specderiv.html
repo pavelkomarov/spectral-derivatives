@@ -57,12 +57,12 @@ endpoints are <em>inclusive</em>.</p></li>
 <li><p><strong>order</strong> (<em>int</em>) – The order of differentiation, also called <span class="math notranslate nohighlight">\(\nu\)</span>. Must be <span class="math notranslate nohighlight">\(\geq 1\)</span>.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to the
 first dimension (axis=0).</p></li>
-<li><p><strong>filter</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function or <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> that takes the 1D array of wavenumbers, <span class="math notranslate nohighlight">\(k = [0, ... N]\)</span>,
-and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of the data,
-<span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.</p></li>
+<li><p><strong>filter</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function or <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> that takes the 1D array of Chebyshev polynomial numbers, <span class="math notranslate nohighlight">\(k
+= [0, ... N]\)</span>, and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of
+the data, <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.</p></li>
 <li><p><strong>dct_type</strong> (<em>int</em><em>, </em><em>optional</em>) – 1 or 2, whether to use DCT-I or DCT-II. Defaults to DCT-I.</p></li>
 <li><p><strong>calc_endpoints</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate the endpoints of the answer, in case they are unnecessary for a
-particular use case. Defaults to True. False silences the <code class="code docutils literal notranslate"><span class="pre">NaN</span></code> warning for <code class="code docutils literal notranslate"><span class="pre">order</span></code> <span class="math notranslate nohighlight">\(&gt; 4\)</span>.</p></li>
+particular use case. Defaults to <code class="code docutils literal notranslate"><span class="pre">True</span></code>. <code class="code docutils literal notranslate"><span class="pre">False</span></code> silences the <code class="code docutils literal notranslate"><span class="pre">NaN</span></code> warning for <code class="code docutils literal notranslate"><span class="pre">order</span></code> <span class="math notranslate nohighlight">\(&gt; 4\)</span>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
