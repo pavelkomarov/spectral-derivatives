@@ -61,7 +61,7 @@ and returns a same-shaped array of weights, which get multiplied in to the initi
 <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.</p></li>
 <li><p><strong>dct_type</strong> (<em>int</em><em>, </em><em>optional</em>) – 1 or 2, whether to use DCT-I or DCT-II. Defaults to DCT-I.</p></li>
 <li><p><strong>calc_endpoints</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate the endpoints of the answer, in case they are unnecessary for a
-particular use case. Defaults to True.</p></li>
+particular use case. Defaults to True. False silences the NaN warning for order &gt; 4.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
