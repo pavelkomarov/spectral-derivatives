@@ -367,7 +367,7 @@ If there are discontinuities or corners, we get what's called the Gibbs Phenomen
 	\caption*{An example of the Gibbs phenomenon, from \cite{kutz}}
 \end{figure}
 
-This is a bigger problem than it may first appear, because when we do this on a computer, we're using the DFT, which implicitly periodically extends the function (\autoref{family}). So we not only need the function to have no jumps and corners internal to its domain; we need it to match up smoothly \textit{at the edges} of its domain too!
+This is a bigger problem than it may first appear, because when we do this on a computer, we're using the DFT, which implicitly periodically extends the function (\autoref{family}). So we not only need the function to have no jumps or corners internal to its domain; we need it to match up smoothly \textit{at the edges} of its domain too!
 
 This rules out the above spectral method for all but ``periodic boundary conditions"\cite{kutz}. But if the story ended right there, I wouldn't have thought it worth building \href{https://pypi.org/project/spectral-derivatives/}{this package}.
 
