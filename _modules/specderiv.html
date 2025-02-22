@@ -51,10 +51,12 @@
 <span class="sd">		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension</span>
 <span class="sd">			of differentiation.</span>
 <span class="sd">		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. If you&#39;re using</span>
-<span class="sd">			canonical Chebyshev points, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`).</span>
-<span class="sd">			If you&#39;re sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.cos(np.arange(N+1) *</span>
-<span class="sd">			np.pi / N) * (b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high</span>
-<span class="sd">			in :math:`n`. Also note both endpoints are *inclusive*.</span>
+<span class="sd">			canonical Chebyshev points with the DCT-I, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x</span>
+<span class="sd">			\\in [1, -1]`), which on a domain from :math:`a` to :math:`b` is stretched to :code:`t_n = np.cos(np.arange(N+1) *</span>
+<span class="sd">			np.pi / N) * (b - a)/2 + (b + a)/2`. With the DCT-II, :code:`x_n = np.concatenate(([1], np.cos((np.arange(N+1) + 0.5)</span>
+<span class="sd">			* np.pi/(N+1)), [-1]))` and :code:`t_n = np.concatenate(([b], np.cos((np.arange(N+1) + 0.5) * np.pi/(N+1)), [a])) *</span>
+<span class="sd">			(b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high in </span>
+<span class="sd">			:math:`n`. Also note both endpoints are *inclusive*.</span>
 <span class="sd">		order (int): The order of differentiation, also called :math:`\\nu`. Must be :math:`\\geq 1`.</span>
 <span class="sd">		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the</span>
 <span class="sd">			first dimension (axis=0).</span>
@@ -63,7 +65,7 @@
 <span class="sd">			:math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.</span>
 <span class="sd">		dct_type (int, optional): 1 or 2, whether to use DCT-I or DCT-II. Defaults to DCT-I.</span>
 <span class="sd">		calc_endpoints (bool, optional): Whether to calculate the endpoints of the answer, in case they are unnecessary for a</span>
-<span class="sd">			particular use case. Defaults to True. False silences the NaN warning for order &gt; 4.</span>
+<span class="sd">			particular use case. Defaults to True. False silences the :code:`NaN` warning for :code:`order` :math:`&gt; 4`.</span>
 <span class="sd"> </span>
 <span class="sd">	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function</span>
 <span class="sd">	&quot;&quot;&quot;</span>
@@ -137,8 +139,7 @@
 	<span class="k">else</span><span class="p">:</span> <span class="c1"># For higher derivatives, leave the endpoints uncalculated, but direct the user to my analysis of this problem.</span>
 		<span class="k">if</span> <span class="n">calc_endpoints</span><span class="p">:</span> <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;endpoints set to NaN, only calculated for 4th derivatives and below. For help with higher derivatives,</span>
 <span class="s2">			see https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb&quot;&quot;&quot;</span><span class="p">)</span>
-		<span class="n">dy_n</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-		<span class="n">dy_n</span><span class="p">[</span><span class="n">last</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+		<span class="n">dy_n</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">=</span> <span class="n">dy_n</span><span class="p">[</span><span class="n">last</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
 	<span class="c1"># The above is agnostic to where the data came from, pretends it came from the domain [-1, 1], but the data may actually be</span>
 	<span class="k">return</span> <span class="n">dy_n</span><span class="o">/</span><span class="n">scale</span><span class="o">**</span><span class="n">order</span> <span class="c1"># smooshed from some other domain. So scale the derivative by the relative size of the t and x intervals.</span></div>
