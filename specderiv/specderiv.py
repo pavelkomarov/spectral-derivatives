@@ -24,12 +24,12 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 		order (int): The order of differentiation, also called :math:`\\nu`. Must be :math:`\\geq 1`.
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
 			first dimension (axis=0).
-		filter (callable, optional): A function or :code:`lambda` that takes the 1D array of wavenumbers, :math:`k = [0, ... N]`,
-			and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of the data,
-			:math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.
+		filter (callable, optional): A function or :code:`lambda` that takes the 1D array of Chebyshev polynomial numbers, :math:`k
+			= [0, ... N]`, and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of
+			the data, :math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.
 		dct_type (int, optional): 1 or 2, whether to use DCT-I or DCT-II. Defaults to DCT-I.
 		calc_endpoints (bool, optional): Whether to calculate the endpoints of the answer, in case they are unnecessary for a
-			particular use case. Defaults to True. False silences the :code:`NaN` warning for :code:`order` :math:`> 4`.
+			particular use case. Defaults to :code:`True`. :code:`False` silences the :code:`NaN` warning for :code:`order` :math:`> 4`.
  
 	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
