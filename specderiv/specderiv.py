@@ -16,10 +16,12 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
 			of differentiation.
 		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. If you're using
-			canonical Chebyshev points, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x \\in [1, -1]`).
-			If you're sampling on a domain from :math:`a` to :math:`b`, this needs to be :code:`t_n = np.cos(np.arange(N+1) *
-			np.pi / N) * (b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high
-			in :math:`n`. Also note both endpoints are *inclusive*.
+			canonical Chebyshev points with the DCT-I, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x
+			\\in [1, -1]`), which on a domain from :math:`a` to :math:`b` is stretched to :code:`t_n = np.cos(np.arange(N+1) *
+			np.pi / N) * (b - a)/2 + (b + a)/2`. With the DCT-II, :code:`x_n = np.concatenate(([1], np.cos((np.arange(N+1) + 0.5)
+			* np.pi/(N+1)), [-1]))` and :code:`t_n = np.concatenate(([b], np.cos((np.arange(N+1) + 0.5) * np.pi/(N+1)), [a])) *
+			(b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high in 
+			:math:`n`. Also note both endpoints are *inclusive*.
 		order (int): The order of differentiation, also called :math:`\\nu`. Must be :math:`\\geq 1`.
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the
 			first dimension (axis=0).
@@ -28,7 +30,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 			:math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.
 		dct_type (int, optional): 1 or 2, whether to use DCT-I or DCT-II. Defaults to DCT-I.
 		calc_endpoints (bool, optional): Whether to calculate the endpoints of the answer, in case they are unnecessary for a
-			particular use case. Defaults to True. False silences the NaN warning for order > 4.
+			particular use case. Defaults to True. False silences the :code:`NaN` warning for :code:`order` :math:`> 4`.
  
 	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
@@ -102,8 +104,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 	else: # For higher derivatives, leave the endpoints uncalculated, but direct the user to my analysis of this problem.
 		if calc_endpoints: warn("""endpoints set to NaN, only calculated for 4th derivatives and below. For help with higher derivatives,
 			see https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb""")
-		dy_n[first] = np.nan
-		dy_n[last] = np.nan
+		dy_n[first] = dy_n[last] = np.nan
 
 	# The above is agnostic to where the data came from, pretends it came from the domain [-1, 1], but the data may actually be
 	return dy_n/scale**order # smooshed from some other domain. So scale the derivative by the relative size of the t and x intervals.
