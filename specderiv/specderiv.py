@@ -28,7 +28,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 			:math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.
 		dct_type (int, optional): 1 or 2, whether to use DCT-I or DCT-II. Defaults to DCT-I.
 		calc_endpoints (bool, optional): Whether to calculate the endpoints of the answer, in case they are unnecessary for a
-			particular use case. Defaults to True.
+			particular use case. Defaults to True. False silences the NaN warning for order > 4.
  
 	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
