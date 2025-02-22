@@ -52,10 +52,9 @@
 <span class="sd">			of differentiation.</span>
 <span class="sd">		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. If you&#39;re using</span>
 <span class="sd">			canonical Chebyshev points with the DCT-I, this will be :code:`x_n = np.cos(np.arange(N+1) * np.pi / N)` (:math:`x</span>
-<span class="sd">			\\in [1, -1]`), which on a domain from :math:`a` to :math:`b` is stretched to :code:`t_n = np.cos(np.arange(N+1) *</span>
-<span class="sd">			np.pi / N) * (b - a)/2 + (b + a)/2`. With the DCT-II, :code:`x_n = np.concatenate(([1], np.cos((np.arange(N+1) + 0.5)</span>
-<span class="sd">			* np.pi/(N+1)), [-1]))` and :code:`t_n = np.concatenate(([b], np.cos((np.arange(N+1) + 0.5) * np.pi/(N+1)), [a])) *</span>
-<span class="sd">			(b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high in </span>
+<span class="sd">			\\in [1, -1]`), which on a domain from :math:`a` to :math:`b` is stretched to :code:`t_n = x_n * (b - a)/2 + (b + a)/2`.</span>
+<span class="sd">			With the DCT-II, :code:`x_n = np.concatenate(([1], np.cos((np.arange(N+1) + 0.5) * np.pi/(N+1)), [-1]))` and :code:`t_n</span>
+<span class="sd">			= x_n * (b - a)/2 + (b + a)/2`. Note the order is high-to-low in the :math:`x` or :math:`t` domain, but low-to-high in </span>
 <span class="sd">			:math:`n`. Also note both endpoints are *inclusive*.</span>
 <span class="sd">		order (int): The order of differentiation, also called :math:`\\nu`. Must be :math:`\\geq 1`.</span>
 <span class="sd">		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to the</span>
