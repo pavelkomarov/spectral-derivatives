@@ -367,7 +367,7 @@ If there are discontinuities or corners, we get what's called the Gibbs Phenomen
 	\caption*{An example of the Gibbs phenomenon, from \cite{kutz}}
 \end{figure}
 
-This is a bigger problem than it may first appear, because when we do this on a computer, we're using the DFT, which implicitly periodically extends the function (\autoref{family}, \autoref{dft}). So we not only need the function to have no jumps or corners internal to its domain; we need it to match up smoothly \textit{at the edges} of its domain too!
+This is a bigger problem than it may first appear, because when we do this on a computer, we're using the DFT, which implicitly periodically extends the function (\autoref{family}, \autoref{dft}f). So we not only need the function to have no jumps or corners internal to its domain; we need it to match up smoothly \textit{at the edges} of its domain too!
 
 This rules out the above spectral method for all but ``periodic boundary conditions"\cite{kutz}. But if the story ended right there, I wouldn't have thought it worth building \href{https://pypi.org/project/spectral-derivatives/}{this package}.
 
@@ -866,7 +866,7 @@ Even worse, at the \textit{edges} of the domain we still need to use L'Hôpital'
 
 $$\frac{\partial^{\sum_i\nu_i}}{\partial x_1^{\nu_1} ... \partial x_D^{\nu_D}} y(\theta_1, ... \theta_D)$$
 
-This is made worse by the fact our analytic expression is based on the DCT-I, which has terms outside the central sum, so as we substitute the DCT-I in to the DCT-I, we get ever more terms ($3^D$ of them), e.g.~in 2D:
+This is made more challenging by the fact our analytic expression is based on the DCT-I, which has terms outside the central sum, so as we substitute the DCT-I in to the DCT-I, we get ever more terms ($3^D$ of them), e.g.~in 2D:
 
 \begin{align*}
 y(\theta_1, \theta_2) =& \frac{1}{M^2} \Big[ Y_{00} + Y_{N0}\cos(N\theta_1) + Y_{0N}\cos(N\theta_2) + Y_{NN}\cos(N\theta_1)\cos(N\theta_2)\\
