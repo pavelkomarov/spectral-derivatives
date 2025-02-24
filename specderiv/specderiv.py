@@ -53,7 +53,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 			'`np.concatenate(([b], np.cos((np.arange(N+1) + 0.5) * np.pi/(N+1)) * (b - a)/2 + (b + a)/2, [a]))'}""")
 
 	first = [slice(None) for dim in y_n.shape]; first[axis] = 0; first = tuple(first) # for accessing different parts of data
-	last = [slice(None) for dim in y_n.shape]; last[axis] = y_n.shape[axis] - 1; last = tuple(last)
+	last = [slice(None) for dim in y_n.shape]; last[axis] = -1; last = tuple(last)
 	middle = [slice(None) for dim in y_n.shape]; middle[axis] = slice(1, -1); middle = tuple(middle)
 	s = [np.newaxis for dim in y_n.shape]; s[axis] = slice(None); s = tuple(s) # for elevating vectors to have same dimension as data
 
