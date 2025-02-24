@@ -48,7 +48,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 		raise ValueError("The domain, t_n, should be ordered high-to-low, [b, ... a]. Try sampling with `np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`")
 	scale = (t_n[0] - t_n[-1])/2; offset = (t_n[0] + t_n[-1])/2 # Trying to be helpful, because sampling is tricky to get right
 	if not np.allclose(t_n, x_n * scale + offset, atol=1e-5):
-		raise ValueError(f"""Your function is not sampled appropriately for the DCT-{'I'*dct_type} Try sampling with
+		raise ValueError(f"""Your function is not sampled appropriately for the DCT-{'I'*dct_type}. Try sampling with
 			{'`np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`' if dct_type == 1 else
 			'`np.concatenate(([b], np.cos((np.arange(N+1) + 0.5) * np.pi/(N+1)) * (b - a)/2 + (b + a)/2, [a]))'}""")
 
