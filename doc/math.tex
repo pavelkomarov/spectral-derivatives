@@ -23,7 +23,7 @@ This document sets out the math behind the \texttt{spectral-derivatives} package
 
 \section{Bases}
 
-A \textit{basis} is a set of ``orthogonal" functions, call them $\{\xi_k\}$, that can be summed together in various quantities to produce other functions. Othogonal means that if we take the ``inner product" of one funtion from the set with itself, we get back 1, and if we take the inner product of a function with a different member of the set, we get back 0. In this sense the members of the basis set are independent of one another, just like perpendicular directions on a graph.
+A \textit{basis} is a set of ``orthogonal" functions, call them $\{\xi_k\}$, that can be summed together in various quantities to produce other functions. Othogonal means that if we take the ``inner product" of one funtion from the set with itself, we get back a constant (often normalized to be 1), and if we take the inner product of a function with a different member of the set, we get back 0. In this sense the members of the basis set are independent of one another, just like perpendicular directions on a graph.
 
 The inner product between two functions $f$ and $g$ is a generalization of the inner product between vectors, where instead of summing over a finite number of discrete entries, we integrate over infinitely many infinitesimally-separated points in the domain. We define it as:
 
@@ -860,9 +860,9 @@ The double derivative in $x_1$ has \textit{splintered} the expression into two, 
 
 All the terms that involve derivatives of a $\theta$ w.r.t. an $x$ are ultimately just functions of $x$. In fact, $\frac{d\theta_2}{dx_2}$ is just our old friend $\frac{-1}{\sqrt{1-x_2^2}}$, and you can pick out $\big( \frac{d\theta_1}{dx_1} \big)^2$ and $\frac{d^2\theta_1}{dx_1^2}$ in \autoref{2nd}. Together they are \textit{a Cartesian product} of the \hyperref[pyramid]{the 1D case}!
 
-Meanwhile, the $\partial y$ terms have different orders, which means that to find them we need to multiply $Y$, the all-dimensions transform of $y$, by \textit{different} orders of $(jk)$. If we do this carefully, the best-case scenario is that we incur \href{https://github.com/pavelkomarov/spectral-derivatives/issues/2}{the same amount of work} as the in-series case, but it takes some extra bookkeeping and data copying.
+Meanwhile, the $\partial y$ terms have different orders, which means that to find them we need to multiply $Y$, the all-dimensions transform of $y$, by \textit{different} orders of $jk$. If we do this carefully, the best-case scenario is that we incur \href{https://github.com/pavelkomarov/spectral-derivatives/issues/2}{the same amount of work} as the in-series case, but it takes some extra bookkeeping and data copying.
 
-Most gnarly, at the \textit{edges} of the domain we still need to use L'Hôpital's rule on an analytic expression to evaluate the limits of
+Even worse, at the \textit{edges} of the domain we still need to use L'Hôpital's rule on an analytic expression to evaluate the limits of
 
 $$\frac{\partial^{\sum_i\nu_i}}{\partial x_1^{\nu_1} ... \partial x_D^{\nu_D}} y(\theta_1, ... \theta_D)$$
 
@@ -876,7 +876,7 @@ y(\theta_1, \theta_2) =& \frac{1}{M^2} \Big[ Y_{00} + Y_{N0}\cos(N\theta_1) + Y_
 
 We could generalize the original conception (\autoref{equivalent}), which has a single sum with $a_0 = \frac{Y_0}{M}, a_k = \frac{2 Y_k}{M} \text{ for } k \in [1, N-1], a_N = \frac{Y_N}{M}$, to get a $y(\vec{\theta})$ with only a single term, but this involves still more extra bookkeeping.
 
-Worst of all, we then still have to take limits as different \textit{combinations} of dimensions reach the edges, which becomes a combinatorial nightmare. This was \hyperref[endpoints]{already hard enough in 1D}!
+Most gnarly, we then still have to take limits as different \textit{combinations} of dimensions reach the edges, which becomes a combinatorial nightmare. This was \hyperref[endpoints]{already hard enough in 1D}!
 
 So although \texttt{numpy} does provide the \texttt{fftn} function for transforming in multiple dimensions at once, and \texttt{scipy} provides similar \texttt{dctn} and \texttt{dstn} functions, they wouldn't confer a computational-complexity benefit and would require the math and code to get massively more complicated, so I have chosen not to use them. From a user-friendliness perspective, I also judge it to be somewhat more confusing to specify multiple derivatives at once (although generalizing the \texttt{nu} and \texttt{axis} parameters to vectors is possible). For all these reasons, I have chosen to limit the package to taking derivatives along a single dimension at once.
 
