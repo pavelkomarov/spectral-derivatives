@@ -290,9 +290,9 @@ As we change the values of $M$ and $k$, the parabola shifts around, getting tall
 
 We can see that for $k \in [0, \frac{M}{2})$, the $m_k = 0$ solution is lower down the cost curve, and for $k \in (\frac{M}{2}, M)$, the $m_k = -1$ solution is more optimal. ``If $k = \frac{M}{2}$ (for even $M$), however, there is an ambiguity: either $m_k = 0$ or $-1$ gives the same value $(k + m_k M)^2 = (\frac{M}{2})^2$. For this $Y_{M/2}$ term (the ``Nyquist" term), we can arbitrarily split up the $Y_{M/2}$ term between $m = 0$ [$j\frac{M}{2}\theta$, positive frequency] and $m = -1$ [$j(\frac{M}{2} - M)\theta = -j\frac{M}{2}\theta$, negative frequency]:"
 
-$$ Y_{M/2}(ue^{j\frac{M}{2}\theta} + (1 - u)e^{-j\frac{M}{2}\theta}) $$
+$$ Y_{M/2}(ue^{j\frac{M}{2}\theta} + (1 - u)e^{-j\frac{M}{2}\theta}) $$\vspace{-5mm}
 
-where $u \in \mathbb{C}$ s.t. at sample points $\theta_n$ we get $Y_{M/2}(ue^{j\frac{M}{2}\frac{2\pi}{M}n} + (1-u)e^{-j\frac{M}{2}\frac{2\pi}{M}n}) = Y_{M/2}(u\overbrace{e^{j\pi n}}^{(-1)^n} + (1-u)\overbrace{e^{-j\pi n}}^{(-1)^n}) = Y_{M/2}(-1)^n$, which at $n = \frac{M}{2}$ will be $Y_{M/2}(-1)^{\frac{M}{2}} = Y_{M/2}\cos(\frac{M}{2}\pi)$, ``and so recover the DFT$^{-1}$."
+where $u \in \mathbb{C}$ s.t. at sample points $\theta_n$ we get $Y_{M/2}(ue^{j\frac{M}{2}\frac{2\pi}{M}n} + (1-u)e^{-j\frac{M}{2}\frac{2\pi}{M}n}) = Y_{M/2}(u\overbrace{e^{j\pi n}}^{(-1)^n} + (1-u)\overbrace{e^{-j\pi n}}^{(-1)^n}) = Y_{M/2}(-1)^n$ ``and so recover the DFT$^{-1}$."
 
 If we use the above in the mean-squared slope derivation instead of $Y_k e^{j \theta (k + m_k M)}$ and $Y_{k'} e^{j \theta (k' + m_{k'} M)}$, then the \href{https://math.stackexchange.com/a/5013632/278341}{integral portion becomes}:
 
@@ -309,7 +309,7 @@ We now know that the contribution to the mean-squared slope from the $\frac{M}{2
 
 $$\frac{d}{du} |u|^2 + |1 - u|^2 = 2u - 2(1-u) = 0 \longrightarrow u = \frac{1}{2}$$
 
-So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} (DCT), which \hyperref[fftdct]{is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$}, so we do have to worry about the Nyquist term.
+So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} type-I (DCT-I), which \hyperref[fftdct]{is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$}, so we do have to worry about the Nyquist term.
 
 Now if we put it all together we get ``the \textbf{unique ``minimal-oscillation" trigonometric interpolation} of order $M$":
 
@@ -403,7 +403,7 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 \begin{minipage}{0.45\textwidth}
 	\begin{equation}\label{domains}
 	\begin{aligned}
-		\text{Let} \quad & x \in [-1, 1] \phantom{\frac{0}{0}} & \text{Chebyshev} \\ & = \cos(\theta),\ \theta \in \mathbb{R} \phantom{\frac{0}{0}} & \text{Fourier} \\ & = \frac{1}{2}(z + z^{-1}),\ |z| = 1 & \text{Laurent}
+		\text{Let} \quad & x \in [-1, 1] \phantom{\frac{0}{0}} & \text{Chebyshev} \\ & = \cos(\theta),\ \theta \in [0, \pi] \phantom{\frac{0}{0}} & \text{Fourier} \\ & = \frac{1}{2}(z + z^{-1}),\ |z| = 1 & \text{Laurent}
 	\end{aligned}
 	\end{equation}
 \end{minipage}
@@ -458,7 +458,7 @@ Why might we prefer this basis to the Fourier basis? Well, the advantage of a po
 
 However, there is something we can do about the Runge phenomenon: By clustering fit points at the edges of the domain, the wild wobbles go away.
 
-If we take $x_n = \cos(\theta_n = \pi n/N)$, then we get a very natural clustering at the edges of $[-1, 1]$. What's more, if we have equispaced $\theta_n$ and a reconstruction expression built up out of sinusoids, we're back in a Fourier paradigm (at least in variable $\theta$) and can exploit the efficiency of the FFT, or, better, the discrete cosine and sine transforms!\cite{dct}\cite{dst}
+If we take $x_n = \cos(\theta_n)$ with $\theta_n$ equispaced, then we get a very natural clustering at the edges of $[-1, 1]$. What's more, if we have equispaced $\theta_n$ and a reconstruction expression built up out of sinusoids, we're back in a Fourier paradigm (at least in variable $\theta$) and can exploit the efficiency of the FFT, or, better, the discrete cosine and sine transforms!\cite{dct}\cite{dst}
 
 Notice too that the polynomials/projected cosines are \textit{asymmetrical}, so we can natually use this basis to model arbitrary, lopsided functions without having to worry about \hyperref[phase]{phase shifts like we did for a Fourier basis of discrete harmonics}.
 
@@ -481,9 +481,9 @@ There are a lot of details left to be worked out here, which we'll tackle in seq
 
 \subsection{The Discrete Cosine Transform}\label{fftdct}
 
-Because the reconstruction of $y(\theta)$ (\autoref{equivalent}) only contains cosines, doing a full FFT, which tries to fit sines as well as cosines, would be doing double work. Instead we can use the DCT. There are actually \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{several possible definitions of the DCT}\cite{dct}, but I use the DCT-I, because it is in some sense closest to the interpolant (\autoref{interpolant}) we've already derived.
+Because the reconstruction of $y(\theta)$ (\autoref{equivalent}) only contains cosines, doing a full FFT, which tries to fit sines as well as cosines, would be doing double work. Instead we can use the DCT. There are actually \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{several possible definitions of the DCT}\cite{dct}; we'll start with the DCT-I, because its coefficients match those of the DFT without a ``\hyperref[phaseramp]{phase ramp}", which makes it simpler to understand.
 
-Say\vspace{-8mm}
+Say we ``periodically extend" $y$, i.e.~stack $y(\theta),\ \theta \in [0,\pi]$ next to a horizontal flip of itself on $(\pi, 2\pi)$, and then sample at $\theta_n = \frac{2\pi}{M}n,\ n \in \{0, ... M-1\}$. We get:\vspace{-2mm}
 
 $$\vec{y} = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N-1}, ... y_1}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2N, necessarily even!}}, \text{ that is: } y_n = y_{M-n},\ 0 \leq n \leq N$$
 
@@ -512,7 +512,7 @@ y(\theta) &= \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big( Y_k e^{j k 
 At samples $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N}n$, this becomes:\vspace{-2mm}
 
 \[
-y(\theta_n) = \frac{1}{M} \Big(Y_0 + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} + 2 \sum_{k = 1}^{N-1} Y_k \cos(\frac{\pi nk}{N}) \Big) \tag{DCT$^{-1}$}
+y(\theta_n) = \frac{1}{M} \Big(Y_0 + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} + 2 \sum_{k = 1}^{N-1} Y_k \cos(\frac{\pi nk}{N}) \Big) \tag{DCT-I$^{-1}$}
 \]
 
 This is exactly the DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT and DCT$^{-1}$ operate on the shorter set of $\vec{Y} = [Y_0, ... Y_N]$, without redundant information. Thus
@@ -521,16 +521,16 @@ This is exactly the DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a
 \text{FFT}^{-1}([Y_0, ... Y_N, Y_{N-1}, ... Y_1])[:\!N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
 \end{equation}
 
-Where $[:\!N+1]$ truncates to only the first $N+1$ elements ($\{0, ... N\}$). Given the equality above, we can line up everything we now know in a diagram:\vspace{-3mm}
+Where $[:\!N+1]$ truncates to only the first $N+1$ elements ($\{0, ... N\}$). Given the equality above, we can line up everything we now know in a diagram:
 
-\begin{figure}[h!]
+\begin{figure}[h!]\vspace{-2mm}
 \begin{center}
 \begin{minipage}{0.5\textwidth}
 \centering
 \begin{tikzpicture}
-	\node (y_long) at (0, 3) {$\vec{y}_{\text{long}}$};
+	\node (y_long) at (0, 2.75) {$\vec{y}_{\text{long}}$};
 	\node (Y_long) at (0, 0) {$\vec{Y}_{\text{long}}$};
-	\node (y_short) at (4, 3) {$\vec{y}_{\text{short}}$};
+	\node (y_short) at (4, 2.75) {$\vec{y}_{\text{short}}$};
 	\node (Y_short) at (4, 0) {$\vec{Y}_{\text{short}}$};
 
 	\draw[->, bend right=40] (y_long) to node[midway] {FFT} (Y_long);
@@ -545,19 +545,55 @@ Where $[:\!N+1]$ truncates to only the first $N+1$ elements ($\{0, ... N\}$). Gi
 \end{minipage}
 \begin{minipage}{0.25\textwidth} where truncate$^{-1}$ stacks back in redundant information\end{minipage}
 \end{center}
-\end{figure}\vspace{-5mm}
+\end{figure}
 
 We can now easily see that in addition to the inverse relationship (\autoref{ifftidct}), we also have the forward relationship:
 
 $$\text{FFT}([y_0, ... y_N, y_{N-1}, ... y_1])[:\!N+1] = \text{DCT-I}([y_0, ... y_N])$$
 
-Before we wrap up discussion of the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{DCT-I}\cite{dct}, note that the $0^{th}$ and $N^{th}$ terms appear \textit{outside the sum}, and that the sum \textit{is multiplied by 2}. In our original conception of the cosine series for $y(\theta)$ (\autoref{equivalent}), all the cosines appear equally within the sum, so our $Y_k$ are subtly different from the $a_k$ in that formulation (some scaled by a factor of $\frac{1}{2}$ and all scaled by $M$). This will be important when we later transform back to the Chebyshev domain, because we will use \textit{the DCT-I version} of $y(\theta)$, not the original conception.
+Before we wrap up discussion of the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{DCT-I}\cite{dct}, notice that the $0^{th}$ and $N^{th}$ terms appear \textit{outside the sum}, and that the sum \textit{is multiplied by 2}. In our original conception of the cosine series for $y(\theta)$ (\autoref{equivalent}), all the cosines appear equally within the sum, so our $Y_k$ are subtly different from the $a_k$ in that formulation (some scaled by a factor of $\frac{1}{2}$ and all scaled by $M$). Both are valid, but it's more computationally convenient to use the DCT-based formulation.
+
+\subsubsection{DCT Type II}
+
+The DCT-I is actually not the default in \texttt{scipy}\cite{dct}, because the DCT-II better matches the Karhunen–Loève Transform\cite{klt}, which is provably the optimal basis to represent signals generated by a random process that obeys the Markov property (where values are related only to \textit{immediate} previous values, through an autocorrelation coefficient). This class of signals is not exactly the same as the class of smooth functions, but it's similar in spirit, especially in the presence of noise. Thus we can often get better ``energy compaction" with this basis and represent signals with fewer coefficients\cite{energycompaction}. Indeed, common compression standards like JPEG choose to use the DCT-II.
+
+To see where it comes from, observe that it's possible to sample the periodic extension of $y$ in other ways. If we choose $\theta_n = \frac{2\pi}{M}(n + \frac{1}{2}),\ n \in \{0, ... M-1\}$, then we get:
+
+$$\vec{y} = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_N, y_{N-1}, ... y_1, y_0}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2(N+1), necessarily even!}}, \text{ that is: } y_n = y_{M-n-1},\ 0 \leq n \leq N$$
+
+If we once again use $M-k$ instead of $k$ in the DFT equation (\autoref{dft}), we can find the relationship between $Y_{M-k}$ and $Y_k$:
+
+\begin{align*}
+Y_{M-k} &= \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}n(M-k)} = \sum_{n=0}^{M-1} y_n \underbrace{e^{-j 2\pi n}}_{1} e^{j \frac{2\pi}{M}nk} = \sum_{n = M-1}^{0} y_{M-n-1} e^{j \frac{2\pi}{M}(M - n - 1)k} \\
+&= \sum_{n=0}^{M-1} \underbrace{y_{M-n-1}}_{= y_n} \underbrace{e^{j 2\pi k}}_{1} e^{-j\frac{2\pi}{M}(n+1)k} = e^{-j \frac{2\pi}{M} k} \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}nk} = e^{-j \frac{2\pi}{M} k} Y_k \quad \square
+\end{align*}
+\begin{tikzpicture}[overlay, remember picture]
+	\node at (11.2,3.25) {\footnotesize let $n_{new} = M - n_{old} - 1$};
+	\draw[->] (10.95,3.05) -- (10.85,2.5);
+\end{tikzpicture}
+
+Let's now plug these in to the interpolant (\autoref{interpolant}):
+
+\begin{equation}\label{phaseramp}
+\begin{aligned}
+y(\theta) &= \frac{1}{M} \Big(\underbrace{Y_0}_{\makebox[0pt]{\footnotesize $=\!\underbrace{e^{-j \frac{2\pi}{M} 0}}_{1} Y_0$}\hspace{4mm}} + \sum_{0 < k < \frac{M}{2}} \big( Y_k e^{j k \theta} + \underbrace{Y_{M-k}}_{\makebox[0pt]{\footnotesize $=\!e^{-j \frac{2\pi}{M} k} Y_k$}\hspace{6mm}} e^{-j k \theta}\big) + \underbrace{Y_{M/2}}_{\hspace{9mm}\makebox[0pt]{\footnotesize $=\!\underbrace{e^{-j \frac{2\pi}{M} \frac{M}{2}}}_{-1} Y_{M/2} \rightarrow Y_{M/2} = 0$}}\cos(\frac{M}{2}\theta) \Big) \\
+&= \frac{1}{M} \Big(Y_0 + \sum_{k = 1}^N Y_k \underbrace{e^{-j \frac{2\pi}{M}k\frac{1}{2}}}_{\text{phase ramp}} \underbrace{\big(e^{j \frac{2\pi}{M}k\frac{1}{2}} e^{j k \theta} + e^{-j \frac{2\pi}{M}k\frac{1}{2}} e^{-j k \theta}\big)}_{2\cos(k\theta + \frac{2\pi}{M}k\frac{1}{2})} \Big)
+\end{aligned}
+\end{equation}
+
+At DFT samples $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N+1}n$, this becomes:\vspace{-2mm}
+
+\[
+y(\theta_n) = \frac{1}{M} \Big(Y_0 + 2 \sum_{k = 1}^N Y_k \underbrace{e^{-j \frac{2\pi}{M}k\frac{1}{2}}}_{\text{phase ramp}} \cos\!\big(\frac{\pi k}{N+1} (n + \frac{1}{2})\big) \Big) \tag{DCT-II$^{-1}$}
+\]
+
+This is the DCT-II$^{-1}$ if we take its coefficients to be the ``phase-ramp" multiplied with the DFT coefficients. If we take away the $\frac{1}{M}$ and a flip $Y$ and $y$, this is the same as the forward DCT-III. Once again we get to work without redundant information.
 
 \subsection{Even and Odd Derivatives and the Discrete Sine Transform}
 
 The DCT-I can get us in to the frequency domain, but we'll need the help of another transform to get back out.
 
-If we look at the full $Y_{long}$ with redundant information, we have a palindromic structure around $N$, but also around $0$, because of \href{https://dsp.stackexchange.com/a/18931/40873}{the repetitions}\cite{bristow}, which ensure we can read the values of $Y$ at negative $k$ by wrapping around to the end of the vector. This is describing an \textit{even} function, $f(-x) = f(x)$, which makes sense, because $y(\theta)$ is entirely composed of cosines, which are even functions, and the forward transform is symmetrical with the inverse transform, also ultimately a bunch of cosines if we were to interpolate $Y(\omega)$ from $Y_k$.
+If we look at the full $Y_{long}$ with redundant information, we have a palindromic structure around $N$, but also around $0$, because of \href{https://dsp.stackexchange.com/a/18931/40873}{the repetitions}\cite{bristow}, which ensure we can read the values of $Y$ at negative $k$ by wrapping around to the end of the vector. This is describing an \textit{even} function, $f(-x) = f(x)$, which makes sense, because $y(\theta)$ is entirely composed of cosines, which are even functions, and because the forward transform is symmetrical with the inverse transform, the interpolation $Y(\omega)$ between $Y_k$ is also ultimately a bunch of cosines.
 
 The derivative of an even function is an \textit{odd} function, $f(-x) = -f(x)$, which in principle should be constructable from purely sines, which are odd. And the derivative of an odd function is an even function again.
 
@@ -600,6 +636,8 @@ y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^\n
 Brilliant! So we can use only the non-redundant $Y_k^{(\nu)}$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
 
 Note that the DCT-I and DST-I definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing than in my definitions here, which can be a point of confusion. I consistently take $N$ to be the \textit{index} of the last element of the non-redundant $y_n$, not its length, following \cite{trefethen8}. Note too that the DST-I only takes the $k = \{1, ... N-1\}$ elements, since sines will result in zero crossings at $k = 0$ and $N$ (no informational content), whereas the DCT-I takes all $k = \{0, ... N\}$ elements!
+
+\subsubsection{Inverse Transforms with DCT-II}
 
 \subsection{Transforming Back to the Chebyshev Domain}
 
@@ -701,7 +739,7 @@ $q$ always refers to the element up and to the left, and $p$ always refers to th
 
 I've done the above programmatically in \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{the code}, such that we can find and apply the factors---and thereby accomplish the variable transformation back to the Chebyshev domain---for arbitrarily high derivatives. You're welcome.
 
-\subsubsection{Handling Domain Endpoints}\label{endpoints}
+\subsection{Handling Domain Endpoints}\label{endpoints}
 
 There's a problem in the above at the edges of the domain: If $x = \pm 1$, the denominators of all the factors, which are powers of $\sqrt{1 - x^2} = 0$!
 
@@ -1054,14 +1092,18 @@ To enable calculation of the \texttt{scale}, and to double check the user sample
 	Bristow-Johnson, R., 2014, About Discrete Fourier Transform vs. Discrete Fourier Series, \url{https://dsp.stackexchange.com/a/18931/40873}
 \bibitem{johnson}
 	Johnson, S., 2011, Notes on FFT-based differentiation, \url{https://math.mit.edu/~stevenj/fft-deriv.pdf}
-\bibitem{dct}
-	\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}
-\bibitem{dst}
-	\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dst.html}
 \bibitem{trefethen8}
 	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, Chapter 8, \url{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}
 \bibitem{dedalus}
 	Burns, K., et al., 2020, Dedalus: A flexible framework for numerical simulations with spectral methods, \url{https://www.researchgate.net/publication/340905766_Dedalus_A_flexible_framework_for_numerical_simulations_with_spectral_methods}
+\bibitem{dct}
+	\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}
+\bibitem{dst}
+	\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dst.html}
+\bibitem{klt}
+	Giesen, F., DCT-II vs. KLT/PCA, \url{https://www.farbrausch.de/%7Efg/articles/dct_klt.pdf}
+\bibitem{energycompaction}
+	Royi, 2025, Why does the DCT-II have better energy compaction than DCT-I?, \url{https://dsp.stackexchange.com/a/96197/40873}
 \bibitem{chainrule}
 	The Chain Rule for Multivariable Functions, \url{https://math.libretexts.org/Bookshelves/Calculus/Calculus_(OpenStax)/14%3A_Differentiation_of_Functions_of_Several_Variables/14.05%3A_The_Chain_Rule_for_Multivariable_Functions}
 \end{thebibliography}
