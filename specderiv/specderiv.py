@@ -89,7 +89,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 	denom_x = denom(x_n[1:-1]) # only calculate this once; leave off +/-1, because they need to be treated specially anyway
 	for term,(numer,y_prime) in enumerate(zip(numers, y_primes), 1): # iterating from lower derivatives to higher
 		c = order - term/2 # c starts at nu - 1/2 and then loses 1/2 for each subsequent term
-		dy_n[middle] += (numer(x_n[1:-1])/(denom_x**c))[s] * y_prime
+		dy_n[middle] += (numer(x_n[1:-1])/np.power(denom_x, c))[s] * y_prime
 
 	# Calculate the endpoints
 	if order <= 4 and calc_endpoints:
