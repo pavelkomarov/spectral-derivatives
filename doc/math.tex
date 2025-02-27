@@ -669,7 +669,7 @@ y_{n,\text{II}}^{(\text{odd } \nu)} &= \frac{1}{M} \Big( \underbrace{\underbrace
 y_{n,\text{II}}^{(\text{even } \nu)} &= \frac{1}{M} \Big( \underbrace{\overset{\makebox[0pt]{$\substack{Y^{(\nu)}_{0,\text{II}}\\ \downarrow}$}}{0} + 2 \sum_{k=1}^N Y^{(\nu)}_{k,\text{II}} \cos\Big(\frac{\pi k}{N + 1}(n + \frac{1}{2})\Big)}_{\text{\normalsize = a DCT-III of $\vec{Y}^{(\nu)}_{\text{II}}$!}} \Big) \label{y_prime_even_ii}
 \end{align}
 
-where $\vec{Y}^{(\nu)}_{\text{II}}$ are found completely analogously to $\vec{Y}^{(\nu)}$, via the first half of \autoref{Y_nu}, except there is no Nyquist ($k = \frac{M}{2} = N+1$) term, so we only have to consider $k < \frac{M}{2}$.
+where $\vec{Y}^{(\nu)}_{\text{II}}$ are found completely analogously to $\vec{Y}^{(\nu)}$, via the first half of \autoref{Y_nu}, except there is no Nyquist term ($k = \frac{M}{2} = N+1$), so we only have to consider $k < \frac{M}{2}$.
 
 Note again that the DCT-III and DST-III definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing and symbols than in my definitions here.
 
@@ -783,7 +783,7 @@ However, this doesn't mean $\frac{d^\nu}{dx^\nu} y$ can't have a valid \textit{l
 
 This means the \textit{numerator} as well as the denominator is $0$ at the domain endpoints. $\frac{0}{0}$ is an indeterminate form, so we can use L'Hôpital's rule!
 
-Let's see it in fine detail for the $1^{st}$ derivative. The below uses the DCT-I reconstruction (\autoref{reconstruction}) for $y(\theta)$. The process is exactly the same if we use the DCT-II reconstruction instead (\autoref{phaseramp}), in some ways even easier due to the absence of the Nyquist term and the inert quality of phase when taking derivatives of sinusoids.
+Let's see it in fine detail for the $1^{st}$ derivative. The below uses the DCT-I reconstruction (\autoref{reconstruction}) for $y(\theta)$. The process is exactly the same if we use the DCT-II reconstruction instead (\autoref{phaseramp}), in some ways actually easier due to the absence of the Nyquist term and the inert quality of phase when taking derivatives of sinusoids.
 
 \begin{align*}
 &\lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{d}{d\theta} \frac{1}{M} \Big( Y_0 + Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} Y_k \cos(k\theta) \Big) \cdot \frac{d\theta}{dx} = \lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\frac{1}{M} \Big(-N Y_N \sin(N\theta) - 2 \sum_{k=1}^{N-1} k Y_k \sin(k\theta) \Big)}{-\sqrt{1-x^2}} \\
@@ -811,7 +811,7 @@ Now we can evaluate these and the factor $\frac{1}{6x^2 - 3}$ at the limit value
 \begin{cases} \frac{1}{3M} \Big((N^4 - N^2) Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{3M} \Big((N^4 - N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$2^{nd}$ endpoints}
 \]\vspace{2mm}
 
-For both orders above, if we instead use type II reconstruction, then $Y_k$ are really $Y_{k,\text{II}}$, and the only difference is that the $k = N$ terms are multiplied by 2 like every other, instead of by 1, and can therefore be moved \textit{inside} the sums.
+For both orders above, if we instead use type II reconstruction, then $Y_k$ are really $Y_{k,\text{II}}$, and the only difference is the $k = N$ terms are multiplied by 2 like every other, instead of by 1, and can therefore be moved \textit{inside} the sums.
 
 \subsubsection{Endpoints for Higher Derivatives}
 
@@ -825,11 +825,11 @@ $$\begin{cases}
 \frac{1}{D_0 M} \Big((... - C_3 N^6 + C_2 N^4 - C_1 N^2) Y_N + 2 \sum_{k=1}^{N-1} (... - C_3 k^6 + C_2 k^4 - C_1 k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{D_\pi M} \Big((... - C_3 N^6 + C_2 N^4 - C_1 N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (... - C_3 k^6 + C_2 k^4 - C_1 k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi
 \end{cases}$$
 
-where the alternating plus and minus in the $k$ and $N$ terms comes from the fact the $2^{nd}$ derivative contains $-$cosines, the $4^{th}$ +cosines, the $6^{th}$ $-$cosines again, and so on. Once again, if we use type II reconstruction, the $k=N$ terms disappear inside the sums, which then go up to $N$ instead of $N-1$.
+where the alternating plus and minus in the $k$ and $N$ terms comes from the fact the $2^{nd}$ derivative contains $-$cosines, the $4^{th}$ +cosines, the $6^{th}$ $-$cosines again, and so on. If we use type II reconstruction, the $k=N$ terms disappear inside the sums, which then go up to $N$ instead of $N-1$.
 
 Because the act of cancellation and the functions containing powers of $\sqrt{1-x^2} = \sin(\theta)$ can't be easily represented in \texttt{numpy}, computing $C$ and $D$ requires a symbolic solver like \texttt{sympy}. I've devised \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb}{an implementation} to construct expressions for the endpoints, up to arbitrary order. But due to its complexity, I've opted to keep this full process out of the main \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{package code}. Instead, I've hard-coded the solutions up to $4^{th}$ order and raise a warning with reference to the notebook if users try to go higher.
 
-It is possible to sidestep all these ballooningly-complicated variable mappings and higher derivative limit-evaluations by building up to higher derivatives from lower ones in stages (being careful to only use even derivatives if our end goal is even, so we preserve the Nyquist term). This would entail more forward transforms but actually no more inverse ones, since we have to remember the results of all the inverse transforms up to the $\nu^{th}$ order anyway.
+It is possible to sidestep all these ballooningly-complicated variable mappings and higher derivative limit-evaluations by building up to higher derivatives from lower ones in stages (being careful to only use even derivatives if we're using the DCT-I and our end goal is even, so we preserve the Nyquist term). This would entail more forward transforms but actually no more inverse ones, since we have to remember the results of all the inverse transforms up to the $\nu^{th}$ order anyway.
 
 \section{Multidimensionality}
 
@@ -942,7 +942,7 @@ Even worse, at the \textit{edges} of the domain we still need to use L'Hôpital'
 
 $$\frac{\partial^{\sum_i\nu_i}}{\partial x_1^{\nu_1} ... \partial x_D^{\nu_D}} y(\theta_1, ... \theta_D)$$
 
-This is made more challenging by the fact our analytic expression is based on the DCT-I, which has terms outside the central sum, so as we substitute the DCT-I in to the DCT-I, we get ever more terms ($3^D$ of them), e.g.~in 2D:
+This is made more challenging by the fact our analytic reconstruction expression is based on the DCT-I$^{-1}$ or DCT-II$^{-1}$, which have terms outside the central sum, so as we substitute the DCT in to the DCT, we get ever more terms ($3^D$ of them for the DCT-I$^{-1}$ and $2^D$ of them for the DCT-II$^{-1}$), e.g.~in 2D the DCT-I$^{-1}$ is:
 
 \begin{align*}
 y(\theta_1, \theta_2) =& \frac{1}{M^2} \Big[ Y_{00} + Y_{N0}\cos(N\theta_1) + Y_{0N}\cos(N\theta_2) + Y_{NN}\cos(N\theta_1)\cos(N\theta_2)\\
