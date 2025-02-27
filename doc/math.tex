@@ -29,7 +29,7 @@ The inner product between two functions $f$ and $g$ is a generalization of the i
 
 $$ \langle f,g \rangle = \int\limits_{a}^{b} \overline{f(x)} g(x) dx $$
 
-where the overbar $\overline{\cdot}$ denotes a complex conjugate.\newline
+where the overbar $\overline{\circ}$ denotes a complex conjugate.\newline
 
 The inner product is symmetrical, so
 
@@ -94,15 +94,15 @@ These numbers descibe \textit{how much} of each basis function $\xi_k$ is presen
 
 $$ f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b] $$
 
-where $M$ is the number of basis functions I'm using in my reconstruction.\newline
+where $M$ is the number of basis functions I'm using in my reconstruction and $k$ iterates through them.\newline
 
-The set of numbers $c_k$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. We've \textit{transformed} the function to a set of numbers which now live in a different domain.
+The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. We've \textit{transformed} the function to a set of numbers which now live in a different domain.
 
-Beware that the terminology ``transform" and ``domain" is not always used to describe transforming a continuous function to a discrete set of $c_k$ like this, because ``domain" technically refers to a ``connected" set, not just a collection of $M$ things. However, it is possible for members of the basis set to be related through a continuous parameter which in some sense makes the set dense, having infinitely many members which are infinitesimally close together. This is the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain.
+Beware the terminology ``transform" and ``domain" is not always used to describe transforming a continuous function to a discrete set of $\{c_k\}$ like this, because ``domain" technically refers to a ``connected" set, not just a collection of $M$ things. To be precise, some authors use ``series" instead. However, it is possible for members of the basis set to be related through a continuous parameter which in some sense makes the set dense, having infinitely many members which are infinitesimally close together, even in cases where we only take discrete members of this more general set to be our basis set for a particular scenario. This is the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain.
 
 \subsection{The Fourier Transform}\label{fourierT}
 
-Using Fourier's original real-sinusoid-based formulation, we can write the reconstruction expression as\footnote{It's worth considering how weird it is this is true. In fact, it's so weird that Joseph Lagrange publicly declared Fourier was wrong at a meeting of the Paris Academy in 1807!\cite{michigan} It's valuable to ask \href{https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work}{why this works}\cite{why} and sift through \href{https://math.uchicago.edu/~may/REU2017/REUPapers/Xue.pdf}{some analysis}.\cite{chicago}}:
+Using Fourier's original real-sinusoid-based formulation, we can write the reconstruction expression as\footnote{It's worth considering how weird it is this is true for arbitrary functions, non-smooth ones included, so long as they meet the Dirichlet conditions\cite{oppenheim} (aren't pathological cases). In fact, it's so weird that Joseph Lagrange publicly declared Fourier was wrong at a meeting of the Paris Academy in 1807\cite{michigan} and rejected Fourier's paper, which then went unpublished until after Lagrange died!\cite{oppenheim} It's valuable to ask \href{https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work}{why this works}\cite{why} and sift through \href{https://math.uchicago.edu/~may/REU2017/REUPapers/Xue.pdf}{some analysis}.\cite{chicago}}:
 
 $$ f(x) = a_0 + \sum_{k=1}^{\infty} (a_k \cos(k \omega_0 x) + b_k \sin(k \omega_0 x))$$
 
@@ -134,9 +134,9 @@ f(x) &= \frac{1}{2\pi} \int\limits_{-\infty}^{\infty} \hat{f}(\omega) e^{j \omeg
 \end{equation}
 
 
-where the hat $\hat{\cdot}$ represents a function in the Fourier domain, and the $\frac{1}{2\pi}$ is a scaling factor that corrects for the fact the inner product of a Fourier basis function with itself integrates to $2\pi$ over a period instead of to $1$ as we need for orthonormality.
+where the hat $\hat{\circ}$ represents a function in the Fourier domain, and the $\frac{1}{2\pi}$ is a scaling factor that corrects for the fact the inner product of a Fourier basis function with itself integrates to $2\pi$ over a period instead of to $1$ as we need for orthonormality.
 
-Just like the $c_k$, $\hat{f}(\omega)$ can be complex, but if the original $f(x)$ is real, then $\hat{f}$'s complexity will perfectly interact with the complex exponentials to produce only a real function in the reconstruction. 
+Just like the $\{c_k\}$, $\hat{f}(\omega)$ can be complex, but if the original $f(x)$ is real, then $\hat{f}$'s complexity will perfectly interact with the complex exponentials to produce only a real function in the reconstruction.
 
 \subsection{A Whole Family}\label{family}
 
@@ -178,11 +178,11 @@ Part of what makes Fourier transforms confusing is the proliferation of differen
 \end{tikzpicture}
 \end{center}
 
-Note that, following a more signal-processing-y convention\cite{oppenheim}, the function we're transforming is now called $x$, and the independent variable, since it can no longer be $x$, is named $t$. For discrete signals, we use independent variable $n$ in square brackets.
+Note that, following a more signal-processing-ish convention\cite{oppenheim}, the function we're transforming is now called $x$, and the independent variable, since it can no longer be $x$, is named $t$. For discrete signals, we use independent variable $n$ in square brackets.
 
 Here FS stands for ``Fourier Series", which is the first situation covered above. FT stands for ``Fourier Transform", which is given by the integral pair, \autoref{pair}. But these are not the only possibilities! DTFT stands for ``Discrete Time Fourier Transform", where the signal we want to analyze is discrete but the transform is continuous. And finally DFT stands for ``Discrete Fourier Transform", not to be confused with the DTFT, which we use when \textit{both} the original and transformed signals are sampled.
 
-\textit{All} of these can be considered Fourier transforms, but often when people talk about \textit{the} canonical ``Fourier capital-T Transform", they are referring to the continuous, aperiodic case in the upper righthand cell.
+\textit{All} of these can be considered Fourier transforms, but often when people talk about \textit{the} canonical ``Fourier Transform", they are referring to the continuous, aperiodic case in the upper righthand cell.
 
 The notation of all these different functions and transforms is easy to mix up and made all the more confusing by the reuse of symbols. But it's important to keep straight which situation we're in. \href{https://www.youtube.com/watch?v=6ITWKtTYlEI&t=69s}{I can only apologize.} For more on all these, see \cite{oppenheim}.
 
@@ -222,7 +222,7 @@ where
 	\item $Y$ denotes the signal in the frequency domain
 \end{itemize}
 
-To see where this comes from, see \cite{bretherton} or \cite{oppenheim}.\newline
+To see where this comes from, see \cite{oppenheim} or \cite{bretherton}; it comes down to cleverly solving a linear inverse problem.\newline
 
 For simplicity, we can collect $\frac{2\pi}{M}n$ as a single term, $\theta_n \in [0, 2\pi)$, or $\frac{2\pi}{M}k$ as a single term, $\omega_k$. We then get $y_n = y(\theta_n)$ and $Y_k = Y(\omega_k)$. This may help highlight the fact the \href{https://dsp.stackexchange.com/a/18931/40873}{original signal and transformed signal live on a domain which maps to the unit circle}\cite{bristow} (hence periodicity and aliasing) and are being sampled at equally-spaced angles/angular velocities.
 
@@ -357,7 +357,7 @@ This has definite echoes of the standardly-given, continuous-time case covered i
 
 So far it has all been good news, but there is a serious caveat to using the Fourier basis, especially for derivatives.
 
-Although a Fourier transform tends to have more ``mass" at lower frequencies and fall off as we go to higher ones (otherwise the reconstruction integral would diverge), and therefore we can get really great reconstructions by leaving off higher modes\cite{kutz} (or equivalently only sampling and transforming $M$ components), we in fact need \textit{all} the infinite modes to reconstruct the true signal\cite{oppenheim}, and even then the Fourier basis can not represent true discontinuities nor non-smooth corners, instead converging ``almost everywhere", which is math speak for the ``measure" or volume of the set where it doesn't work being 0, meaning it only doesn't work \textit{at} the discontinuities or corners themselves.\cite{oppenheim}
+Although a Fourier transform tends to have more ``mass" at lower frequencies and fall off as we go to higher ones (otherwise the reconstruction integral would diverge), and therefore we can get really great reconstructions by leaving off higher modes\cite{kutz} (or equivalently only sampling and transforming $M$ components), we in fact need \textit{all} the infinite modes to reconstruct an \textit{arbitrary} signal\cite{oppenheim}. Even then, the Fourier basis can not represent true discontinuities nor non-smooth corners, instead converging ``almost everywhere", which is math speak for the ``measure" or volume of the set where it doesn't work being 0, meaning it only doesn't work \textit{at} the discontinuities or corners themselves.\cite{oppenheim}
 
 If there are discontinuities or corners, we get what's called the Gibbs Phenomenon\cite{oppenheim}, essentially overshoot as the set of basis functions tries to fit a sudden change. These extra wiggles are bad news for function approximation but even worse news for taking derivatives: If we end up on one of those oscillations, the slope might wildly disagree with that of the true function!
 
@@ -555,7 +555,7 @@ Notice that the $0^{th}$ and $N^{th}$ terms appear \textit{outside the sum}, and
 
 \subsubsection{DCT Type II}
 
-The DCT-I is actually not the default in \texttt{scipy}\cite{dct}, because the DCT-II better matches the Karhunen–Loève Transform\cite{klt}, which is provably the optimal basis to represent signals generated by a random process that obeys the Markov property (where values are related only to \textit{immediate} previous values, through an autocorrelation coefficient). This class of signals is not exactly the same as the class of smooth functions, but it's similar in spirit, especially in the presence of noise. Thus we can often get better ``energy compaction" with this basis and represent signals with fewer coefficients\cite{energycompaction}. Indeed, common compression standards like JPEG choose to use the DCT-II.
+The DCT-I is actually not the default in \texttt{scipy}\cite{dct}, because the DCT-II better matches the Karhunen–Loève Transform, which is \href{https://www.farbrausch.de/%7Efg/articles/dct_klt.pdf}{provably the optimal basis}\cite{klt} for representation, of signals generated by a random process that obeys the Markov property (where values are related only to \textit{immediate} previous values, through an autocorrelation coefficient). This class of signals is not exactly the same as the class of smooth functions, but it's similar in spirit, especially in the presence of noise. Thus we can often get better ``energy compaction" with this basis and \href{https://dsp.stackexchange.com/a/96197/40873}{represent signals in fewer coefficients}\cite{energycompaction}. Indeed, common compression standards like JPEG choose to use the DCT-II.
 
 To see where it comes from, observe it's possible to sample the periodic extension of $y$ in other ways. If we choose $\theta_{n,\text{II}} = \frac{2\pi}{M}(n + \frac{1}{2}),\ n \in \{0, ... M-1\}$, then we get:\vspace{-2mm}
 
