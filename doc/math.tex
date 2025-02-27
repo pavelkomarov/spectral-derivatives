@@ -584,7 +584,7 @@ y(\theta) &= \frac{1}{M} \Big(\underbrace{Y_0}_{\makebox[0pt]{\footnotesize $=\!
 The DFT is blind to where samples came from and assumes they are at $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N+1}n$, which results in:\vspace{-2mm}
 
 \[\label{halfindex}
-y_{n,\text{II}} = \frac{1}{M} \Big(\underbrace{Y_0}_{Y_{0,\text{II}}} + 2 \sum_{k = 1}^N \underbrace{Y_k \underbrace{e^{-j \frac{2\pi}{M}k\frac{1}{2}}}_{\text{phase ramp}}}_{Y_{k,\text{II}}} \cos\!\big(\underbrace{\frac{\pi k}{N+1} (n + \frac{1}{2})}_{=\theta_{n,\text{II}}}\big) \Big) \tag{DCT-II$^{-1}$}
+y_{n,\text{II}} = \frac{1}{M} \Big(\underset{\makebox[0pt]{$\substack{\uparrow \\ Y_{0,\text{II}}}$}}{Y_0} + 2 \sum_{k = 1}^N \underbrace{Y_k \underbrace{e^{-j \frac{2\pi}{M}k\frac{1}{2}}}_{\text{phase ramp}}}_{Y_{k,\text{II}}} \cos\!\big(\underbrace{\frac{\pi k}{N+1} (n + \frac{1}{2})}_{=\theta_{n,\text{II}}}\big) \Big) \tag{DCT-II$^{-1}$}
 \]
 
 This is the DCT-II$^{-1}$ if we take its coefficients to be the phase ramp multiplied with the DFT coefficients. Operating on samples $y_{n,\text{II}}$ taken from $\theta_{n,\text{II}}$ \textit{offsets} the phase difference and makes this equivalent to a DFT, where we once again get the benefit of only needing non-redundant information. Notice the Nyquist term, which would be at index $\frac{M}{2} = N+1$, has disappeared with this sampling. Also notice this sampling \textit{doesn't include the domain endpoints}.
