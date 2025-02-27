@@ -4,7 +4,7 @@
 
 [Documentation](https://pavelkomarov.com/spectral-derivatives/specderiv.html), [How it works](https://pavelkomarov.com/spectral-derivatives/math.pdf).
 
-This repository is home to Python code that can take spectral derivatives with the Chebyshev basis or the Fourier basis, based on some [pretty elegant, deep math](https://pavelkomarov.com/spectral-derivatives/math.pdf). That is, given a vector representing samples of a smooth function, the code returns a numerical derivative, indicating how fast an interpolation built of the basis functions is changing at the sample points.
+This repository is home to Python code that can take spectral derivatives with the Chebyshev basis or the Fourier basis, based on some [pretty elegant, deep math](https://pavelkomarov.com/spectral-derivatives/math.pdf). That is, given a vector representing samples of a smooth function, the code returns a numerical derivative, indicating how fast an interpolation built of the basis functions is changing at the sample points. Note these methods are best for situations when you *don't know the generating function of your data*; if the generator is known, then autodifferentiation tools like [JAX](https://jax.readthedocs.io/en/latest/quickstart.html) are your friend.
 
 When using the Fourier basis, spectral derivatives require periodic boundaries, but the Chebyshev basis allows arbitrary boundaries, extending the method to a much wider class of functions.
 
