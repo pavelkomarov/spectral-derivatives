@@ -365,7 +365,7 @@ If there are discontinuities or corners, we get what's called the Gibbs Phenomen
 	\centering
 	\includegraphics[width=0.7\textwidth]{gibbs.png}
 	\caption*{An example of the Gibbs phenomenon, from \cite{kutz}}
-\end{figure}
+\end{figure}\vspace{-2mm}
 
 This is a bigger problem than it may first appear, because when we do this on a computer, we're using the DFT, which implicitly periodically extends the function (\autoref{family}, \autoref{dft}). So we not only need the function to have no jumps or corners internal to its domain; we need it to match up smoothly \textit{at the edges} of its domain too!
 
@@ -382,7 +382,7 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 	\begin{axis}[axis lines=middle, xlabel={Re$\{z\}$}, xlabel style={right},
 		ylabel={Im$\{z\}$}, ylabel style={yshift=3mm}, xmin=-1.1, xmax=1.2, xtick={1},
 		xticklabels={1}, xticklabel style={xshift=1mm, yshift=5mm}, ymin=-1.1, ymax=1.2, ytick=\empty,
-		axis line style={->}, width=8cm, height=8cm]
+		axis line style={->}, width=7.5cm, height=7.5cm]
 		\addplot[domain=0:360,samples=100, smooth, thick] ({cos(x)}, {sin(x)}); %  Plot the unit circle
 		\pgfmathsetmacro{\angle}{50}  % Angle in degrees
 		\pgfmathsetmacro{\xcoord}{cos(\angle)}  % Re{z} = cos(theta)
@@ -851,19 +851,19 @@ Due to the linearity of the Fourier transform, transforming along all dimensions
 
 \begin{center}
 \begin{tikzpicture}
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm] (y) {$y$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of y] (Y) {$Y$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of Y] (jkY) {$(jk)^{\tilde{\nu}} \odot Y$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of jkY] (dy) {$dy$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm] (y) {$y$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm, right=of y] (Y) {$Y$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm, right=of Y] (jkY) {$(jk)^{\tilde{\nu}} \odot Y$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm, right=of jkY] (dy) {$dy$};
 	\draw[->] (y) -- (Y);
 	\draw[->] (Y) -- (jkY);
 	\draw[->] (jkY) -- (dy);
-	\draw[->] (-1,1.75) -- (-1,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
-	\draw[->] (-1.75,-1) -- (1.75,-1) node[midway, above] {\footnotesize FFT};
-	\draw[<->] (3,1.75) -- (3,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $\odot (jk)^{\nu_d}$};
-	\draw[<->] (2.25,-1) -- (5.75,-1) node[midway, above] {\footnotesize $\odot (jk)^{\nu_{d'}}$};
-	\draw[<-] (7,1.75) -- (7,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
-	\draw[<-] (6.25,-1) -- (9.75,-1) node[midway, above] {\footnotesize FFT$^{-1}$};
+	\draw[->] (-1,1.5) -- (-1,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
+	\draw[->] (-1.5,-1) -- (1.5,-1) node[midway, above] {\footnotesize FFT};
+	\draw[<->] (2.5,1.5) -- (2.5,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $\odot (jk)^{\nu_d}$};
+	\draw[<->] (2,-1) -- (5,-1) node[midway, above] {\footnotesize $\odot (jk)^{\nu_{d'}}$};
+	\draw[<-] (6,1.5) -- (6,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
+	\draw[<-] (5.5,-1) -- (8.5,-1) node[midway, above] {\footnotesize FFT$^{-1}$};
 	\node[anchor=north, yshift=-2mm] at (y.south) {$O(D \cdot N^D \log N)$};
 	\node[anchor=north, yshift=-2mm] at (Y.south) {$O(D \cdot N^D)$};
 	\node[anchor=north, yshift=-2mm] at (jkY.south) {$O(D \cdot N^D \log N)$};
@@ -874,13 +874,13 @@ That's really neat, but does it save us anything, really? Let's see it in series
 
 \begin{center}
 \begin{tikzpicture}
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm] (y) {$y$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of y] (Y1) {$Y_d$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of Y] (jkY1) {$(jk)^{\nu_d} \odot Y_d$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, right=of jkY] (dy1) {$\partial_d y$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, below=of dy1] (Y2) {$Y_{d'}$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, left=of Y2] (jkY2) {$(jk)^{\nu_{d'}} \odot Y_{d'}$};
-	\node[draw, rectangle, minimum width=3cm, minimum height=3cm, left=of jkY2] (dy2) {$\partial_{d'} \partial_{d} y$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm] (y) {$y$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm, right=of y] (Y1) {$Y_d$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm, right=of Y] (jkY1) {$(jk)^{\nu_d} \odot Y_d$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm, right=of jkY] (dy1) {$\partial_d y$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm, below=of dy1] (Y2) {$Y_{d'}$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm, left=of Y2] (jkY2) {$(jk)^{\nu_{d'}} \odot Y_{d'}$};
+	\node[draw, rectangle, minimum width=2.5cm, minimum height=2.5cm, left=of jkY2] (dy2) {$\partial_{d'} \partial_{d} y$};
 	\node[left=of dy2, font=\huge] (dots) {...};
 	\draw[->] (y) -- (Y);
 	\draw[->] (Y) -- (jkY);
@@ -889,12 +889,12 @@ That's really neat, but does it save us anything, really? Let's see it in series
 	\draw[->] (Y2) -- (jkY2);
 	\draw[->] (jkY2) -- (dy2);
 	\draw[->] (dy2) -- (dots);
-	\draw[->] (11,1.75) -- (11,-1.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
-	\draw[->] (-1.75,-1) -- (1.75,-1) node[midway, above] {\footnotesize FFT};
-	\draw[<->] (11,-2.25) -- (11,-5.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $\odot (jk)^{\nu_{d'}}$};
-	\draw[<->] (2.25,-1) -- (5.75,-1) node[midway, above] {\footnotesize $\odot (jk)^{\nu_d}$};
-	\draw[<-] (7,-2.25) -- (7,-5.75) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
-	\draw[<-] (6.25,-1) -- (9.75,-1) node[midway, above] {\footnotesize FFT$^{-1}$};
+	\draw[->] (9.5,1.5) -- (9.5,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
+	\draw[->] (-1.5,-1) -- (1.5,-1) node[midway, above] {\footnotesize FFT};
+	\draw[<->] (9.5,-2) -- (9.5,-5) node[midway, above left, yshift=3mm, xshift=2mm] {\footnotesize $\odot (jk)^{\nu_{d'}}$};
+	\draw[<->] (2,-1) -- (5,-1) node[midway, above] {\footnotesize $\odot (jk)^{\nu_d}$};
+	\draw[<-] (6,-2) -- (6,-5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
+	\draw[<-] (5.5,-1) -- (8.5,-1) node[midway, above] {\footnotesize FFT$^{-1}$};
 	\node[anchor=north] at (y.south) {$O(N^D \log N)$};
 	\node[anchor=north] at (Y.south) {$O(N^D)$};
 	\node[anchor=north] at (jkY.south) {$O(N^D \log N)$};
