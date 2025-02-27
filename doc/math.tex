@@ -309,7 +309,7 @@ We now know that the contribution to the mean-squared slope from the $\frac{M}{2
 
 $$\frac{d}{du} |u|^2 + |1 - u|^2 = 2u - 2(1-u) = 0 \longrightarrow u = \frac{1}{2}$$
 
-So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} type-I (DCT-I), which \hyperref[fftdct]{is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$}, so we do have to worry about the Nyquist term.
+So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} type I (DCT-I), which \hyperref[fftdct]{is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$}, so we do have to worry about the Nyquist term.
 
 Now if we put it all together we get ``the \textbf{unique ``minimal-oscillation" trigonometric interpolation} of order $M$":
 
@@ -481,13 +481,13 @@ There are a lot of details left to be worked out here, which we'll tackle in seq
 
 \subsection{The Discrete Cosine Transform}\label{fftdct}
 
-Because the reconstruction of $y(\theta)$ (\autoref{equivalent}) only contains cosines, doing a full FFT, which tries to fit sines as well as cosines, would be doing double work. Instead we can use the DCT. There are actually \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{several possible definitions of the DCT}\cite{dct}; we'll start with the DCT-I, because its coefficients match those of the DFT without a ``\hyperref[phaseramp]{phase ramp}", which makes it simpler to understand.
+Because the reconstruction of $y(\theta)$ (\autoref{equivalent}) only contains cosines, doing a full FFT/DFT, which tries to fit sines as well as cosines, would be doing double work. Instead we can use the DCT. There are actually \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{several possible definitions of the DCT}\cite{dct}; we'll start with the DCT-I, because its coefficients match those of the DFT without a \hyperref[phaseramp]{``phase ramp"} or any \hyperref[halfindex]{funky half-index sampling}, which makes it simpler to understand.
 
-Say we ``periodically extend" $y$, i.e.~stack $y(\theta),\ \theta \in [0,\pi]$ next to a horizontal flip of itself on $(\pi, 2\pi)$, and then sample at $\theta_n = \frac{2\pi}{M}n,\ n \in \{0, ... M-1\}$. We get:\vspace{-2mm}
+Say we ``periodically extend" $y$, i.e.~stack $y(\theta),\ \theta \in [0,\pi]$ next to a horizontal flip of itself on $(\pi, 2\pi)$, and then sample at the canonical DFT points, $\theta_n = \frac{2\pi}{M}n,\ n \in \{0, ... M-1\}$ (\autoref{dft}). We get:\vspace{-2mm}
 
-$$\vec{y} = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N-1}, ... y_1}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2N, necessarily even!}}, \text{ that is: } y_n = y_{M-n},\ 0 \leq n \leq N$$
+$$\vec{y}_{\text{ext}} = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N-1}, ... y_1}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2N, necessarily even!}}, \text{ that is: } y_n = y_{M-n},\ 0 \leq n \leq N$$
 
-Then using $M-k$ for $k$ in the DFT equation (\autoref{dft}), we get:
+Then using $M-k$ for $k$ in the DFT equation, we get:
 
 \begin{align*}
 Y_{M-k} &= \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}n(M-k)} = \sum_{n=0}^{M-1} y_n \underbrace{e^{-j 2\pi n}}_{1} e^{j \frac{2\pi}{M}nk} = \sum_{n = M}^{1} y_{M-n} e^{j \frac{2\pi}{M}(M - n)k} \\
@@ -495,7 +495,7 @@ Y_{M-k} &= \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}n(M-k)} = \sum_{n=0}^{M-1} y
 \end{align*}
 \begin{tikzpicture}[overlay, remember picture]
 	\node at (11.5,3.25) {\footnotesize let $n_{new} = M - n_{old}$};
-	\node at (11,0) {\parbox{28mm}{\footnotesize because $e^{-j\frac{2\pi}{M}Mk} = e^0 = 1$ and $y_M = y_0$}};
+	\node at (11,0) {\parbox{27mm}{\footnotesize because $e^{-j\frac{2\pi}{M}Mk} = e^0 = 1$ and $y_M = y_0$}};
 	\draw[->] (11.45,3.05) -- (11.37,2.5);
 	\draw[->] (10.7,0.35) -- (10.86,0.95);
 \end{tikzpicture}\newline
@@ -518,32 +518,32 @@ y(\theta_n) = \frac{1}{M} \Big(Y_0 + Y_N\underbrace{\cos(\pi n)}_{(-1)^n} + 2 \s
 This is exactly the DCT-I$^{-1}$, which, except for the $\frac{1}{M}$ term and a flip of $Y$ and $y$, is the same as the forward DCT-I! But the DCT and DCT$^{-1}$ operate on the shorter set of $\vec{Y} = [Y_0, ... Y_N]$, without redundant information. Thus
 
 \begin{equation}\label{ifftidct}
-\text{FFT}^{-1}([Y_0, ... Y_N, Y_{N-1}, ... Y_1])[:\!N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
+\text{FFT}^{-1}(\underbrace{[Y_0, ... Y_N, Y_{N-1}, ... Y_1]}_{\vec{Y}_{\text{ext}}})[:\!N+1] = \text{DCT-I}^{-1}([Y_0, ... Y_N])
 \end{equation}
 
 Where $[:\!N+1]$ truncates to only the first $N+1$ elements ($\{0, ... N\}$). Given the equality above, we can line up everything we now know in a diagram:
 
-\begin{figure}[h!]\vspace{-2mm}
+\begin{figure}[h!]
 \begin{center}
 \begin{minipage}{0.5\textwidth}
 \centering
 \begin{tikzpicture}
-	\node (y_long) at (0, 2.75) {$\vec{y}_{\text{long}}$};
-	\node (Y_long) at (0, 0) {$\vec{Y}_{\text{long}}$};
-	\node (y_short) at (4, 2.75) {$\vec{y}_{\text{short}}$};
-	\node (Y_short) at (4, 0) {$\vec{Y}_{\text{short}}$};
+	\node (y_ext) at (0, 2.25) {$\vec{y}_{\text{ext}}$};
+	\node (Y_ext) at (0, 0) {$\vec{Y}_{\text{ext}}$};
+	\node (y) at (4, 2.25) {$\vec{y}$};
+	\node (Y) at (4, 0) {$\vec{Y}$};
 
-	\draw[->, bend right=40] (y_long) to node[midway] {FFT} (Y_long);
-	\draw[->, bend right=40] (Y_long) to node[midway] {FFT$^{-1}$} (y_long);
-	\draw[->, bend right=40] (y_short) to node[midway] {DCT-I} (Y_short);
-	\draw[->, bend right=40] (Y_short) to node[midway] {DCT-I$^{-1}$} (y_short);
-	\draw[->, bend left=20] (y_long) to node[midway, above, yshift=-0.5mm] {truncate} (y_short);
-	\draw[->, bend left=20] (y_short) to node[midway, below, yshift=1mm] {truncate$^{-1}$} (y_long);
-	\draw[->, bend left=20] (Y_long) to node[midway, above, yshift=-0.5mm] {truncate} (Y_short);
-	\draw[->, bend left=20] (Y_short) to node[midway, below, yshift=1mm] {truncate$^{-1}$} (Y_long);
+	\draw[->, bend right=25] (y_ext) to node[midway, left, xshift=1mm] {FFT} (Y_ext);
+	\draw[->, bend right=25] (Y_ext) to node[midway, right, xshift=-1mm] {FFT$^{-1}$} (y_ext);
+	\draw[->, bend right=25] (y) to node[midway, left, xshift=1mm] {DCT-I} (Y);
+	\draw[->, bend right=25] (Y) to node[midway, right, xshift=-1mm] {DCT-I$^{-1}$} (y);
+	\draw[->, bend left=18] (y_ext) to node[midway, above, yshift=-0.5mm] {truncate} (y);
+	\draw[->, bend left=18] (y) to node[midway, below, yshift=1mm] {truncate$^{-1}$} (y_ext);
+	\draw[->, bend left=18] (Y_ext) to node[midway, above, yshift=-0.5mm] {truncate} (Y);
+	\draw[->, bend left=18] (Y) to node[midway, below, yshift=1mm] {truncate$^{-1}$} (Y_ext);
 \end{tikzpicture}
 \end{minipage}
-\begin{minipage}{0.25\textwidth} where truncate$^{-1}$ stacks back in redundant information\end{minipage}
+\begin{minipage}{0.3\textwidth}\raggedright where truncate$^{-1}$ does periodic extension, stacking back in redundant information\end{minipage}
 \end{center}
 \end{figure}
 
@@ -551,25 +551,25 @@ We can now easily see that in addition to the inverse relationship (\autoref{iff
 
 $$\text{FFT}([y_0, ... y_N, y_{N-1}, ... y_1])[:\!N+1] = \text{DCT-I}([y_0, ... y_N])$$
 
-Before we wrap up discussion of the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{DCT-I}\cite{dct}, notice that the $0^{th}$ and $N^{th}$ terms appear \textit{outside the sum}, and that the sum \textit{is multiplied by 2}. In our original conception of the cosine series for $y(\theta)$ (\autoref{equivalent}), all the cosines appear equally within the sum, so our $Y_k$ are subtly different from the $a_k$ in that formulation (some scaled by a factor of $\frac{1}{2}$ and all scaled by $M$). Both are valid, but it's more computationally convenient to use the DCT-based formulation.
+Notice that the $0^{th}$ and $N^{th}$ terms appear \textit{outside the sum}, and that the sum \textit{is multiplied by 2}. In our original conception of the cosine series for $y(\theta)$ (\autoref{equivalent}), all the cosines appear equally within the sum, so our $Y_k$ are subtly different from the $a_k$ in that formulation (some scaled by a factor of $\frac{1}{2}$ and all scaled by $M$). Both are valid, but it's more computationally convenient to use the DCT-based formulation.
 
 \subsubsection{DCT Type II}
 
 The DCT-I is actually not the default in \texttt{scipy}\cite{dct}, because the DCT-II better matches the Karhunen–Loève Transform\cite{klt}, which is provably the optimal basis to represent signals generated by a random process that obeys the Markov property (where values are related only to \textit{immediate} previous values, through an autocorrelation coefficient). This class of signals is not exactly the same as the class of smooth functions, but it's similar in spirit, especially in the presence of noise. Thus we can often get better ``energy compaction" with this basis and represent signals with fewer coefficients\cite{energycompaction}. Indeed, common compression standards like JPEG choose to use the DCT-II.
 
-To see where it comes from, observe that it's possible to sample the periodic extension of $y$ in other ways. If we choose $\theta_n = \frac{2\pi}{M}(n + \frac{1}{2}),\ n \in \{0, ... M-1\}$, then we get:
+To see where it comes from, observe it's possible to sample the periodic extension of $y$ in other ways. If we choose $\theta_{n,\text{II}} = \frac{2\pi}{M}(n + \frac{1}{2}),\ n \in \{0, ... M-1\}$, then we get:
 
-$$\vec{y} = \underbrace{[\underbrace{y_0, y_1, ... y_{N-1}, y_N}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_N, y_{N-1}, ... y_1, y_0}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\text{length M = 2(N+1), necessarily even!}}, \text{ that is: } y_n = y_{M-n-1},\ 0 \leq n \leq N$$
+$$\vec{y}_{\text{ext,II}} = \underbrace{[\underbrace{y_{0,\text{II}}, ... y_{N,\text{II}}}_{\parbox{20mm}{\footnotesize \centering original vector, length N+1}}, \underbrace{y_{N,\text{II}}, ... y_{0,\text{II}}}_{\parbox{16mm}{\footnotesize \centering redundant information}}]}_{\makebox[0pt]{\footnotesize length M = 2(N+1), necessarily even!}}, \text{ that is: } y_{n,\text{II}} = y_{M-n-1,\text{II}},\ 0 \leq n \leq N$$
 
 If we once again use $M-k$ instead of $k$ in the DFT equation (\autoref{dft}), we can find the relationship between $Y_{M-k}$ and $Y_k$:
 
 \begin{align*}
-Y_{M-k} &= \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}n(M-k)} = \sum_{n=0}^{M-1} y_n \underbrace{e^{-j 2\pi n}}_{1} e^{j \frac{2\pi}{M}nk} = \sum_{n = M-1}^{0} y_{M-n-1} e^{j \frac{2\pi}{M}(M - n - 1)k} \\
-&= \sum_{n=0}^{M-1} \underbrace{y_{M-n-1}}_{= y_n} \underbrace{e^{j 2\pi k}}_{1} e^{-j\frac{2\pi}{M}(n+1)k} = e^{-j \frac{2\pi}{M} k} \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M}nk} = e^{-j \frac{2\pi}{M} k} Y_k \quad \square
+Y_{M-k} &= \sum_{n=0}^{M-1} y_{n,\text{II}} e^{-j \frac{2\pi}{M}n(M-k)} = \sum_{n=0}^{M-1} y_{n,\text{II}} \underbrace{e^{-j 2\pi n}}_{1} e^{j \frac{2\pi}{M}nk} = \sum_{n = M-1}^{0} y_{M-n-1,\text{II}} e^{j \frac{2\pi}{M}(M - n - 1)k} \\
+&= \sum_{n=0}^{M-1} \underbrace{y_{M-n-1,\text{II}}}_{= y_{n,\text{II}}} \underbrace{e^{j 2\pi k}}_{1} e^{-j\frac{2\pi}{M}(n+1)k} = e^{-j \frac{2\pi}{M} k} \sum_{n=0}^{M-1} y_{n,\text{II}} e^{-j \frac{2\pi}{M}nk} = e^{-j \frac{2\pi}{M} k} Y_k \quad \square
 \end{align*}
 \begin{tikzpicture}[overlay, remember picture]
-	\node at (11.2,3.25) {\footnotesize let $n_{new} = M - n_{old} - 1$};
-	\draw[->] (10.95,3.05) -- (10.85,2.5);
+	\node at (11.45,3.25) {\footnotesize let $n_{new} = M - n_{old} - 1$};
+	\draw[->] (11.15,3.05) -- (11,2.5);
 \end{tikzpicture}
 
 Let's now plug these in to the interpolant (\autoref{interpolant}):
@@ -581,33 +581,35 @@ y(\theta) &= \frac{1}{M} \Big(\underbrace{Y_0}_{\makebox[0pt]{\footnotesize $=\!
 \end{aligned}
 \end{equation}
 
-At DFT samples $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N+1}n$, this becomes:\vspace{-2mm}
+The DFT is blind to where samples came from and assumes they are at $\theta_n = \frac{2\pi}{M}n = \frac{\pi}{N+1}n$, which results in:\vspace{-2mm}
 
-\[
-y(\theta_n) = \frac{1}{M} \Big(Y_0 + 2 \sum_{k = 1}^N Y_k \underbrace{e^{-j \frac{2\pi}{M}k\frac{1}{2}}}_{\text{phase ramp}} \cos\!\big(\frac{\pi k}{N+1} (n + \frac{1}{2})\big) \Big) \tag{DCT-II$^{-1}$}
+\[\label{halfindex}
+y_{n,\text{II}} = \frac{1}{M} \Big(\underbrace{Y_0}_{Y_{0,\text{II}}} + 2 \sum_{k = 1}^N \underbrace{Y_k \underbrace{e^{-j \frac{2\pi}{M}k\frac{1}{2}}}_{\text{phase ramp}}}_{Y_{k,\text{II}}} \cos\!\big(\underbrace{\frac{\pi k}{N+1} (n + \frac{1}{2})}_{=\theta_{n,\text{II}}}\big) \Big) \tag{DCT-II$^{-1}$}
 \]
 
-This is the DCT-II$^{-1}$ if we take its coefficients to be the ``phase-ramp" multiplied with the DFT coefficients. If we take away the $\frac{1}{M}$ and a flip $Y$ and $y$, this is the same as the forward DCT-III. Once again we get to work without redundant information.
+This is the DCT-II$^{-1}$ if we take its coefficients to be the phase ramp multiplied with the DFT coefficients. Operating on samples $y_{n,\text{II}}$ taken from $\theta_{n,\text{II}}$ \textit{offsets} the phase difference and makes this equivalent to a DFT, where we once again get the benefit of only needing non-redundant information. Notice the Nyquist term, which would be at index $\frac{M}{2} = N+1$, has disappeared with this sampling. Also notice this sampling \textit{doesn't include the domain endpoints}.
+
+If we take away the $\frac{1}{M}$ and a flip $Y$ and $y$, this is the same as the forward DCT-III. And just as before, since we can use the inverse transform to reconstruct the signal from coefficients, we can use the forward DCT-II transform to obtain the basis coefficients.
 
 \subsection{Even and Odd Derivatives and the Discrete Sine Transform}
 
-The DCT-I can get us in to the frequency domain, but we'll need the help of another transform to get back out.
+The DCT can get us in to the frequency domain, but we'll need the help of another transform to get back out. We again start with the DCT-I formulation for simplicity.
 
-If we look at the full $Y_{long}$ with redundant information, we have a palindromic structure around $N$, but also around $0$, because of \href{https://dsp.stackexchange.com/a/18931/40873}{the repetitions}\cite{bristow}, which ensure we can read the values of $Y$ at negative $k$ by wrapping around to the end of the vector. This is describing an \textit{even} function, $f(-x) = f(x)$, which makes sense, because $y(\theta)$ is entirely composed of cosines, which are even functions, and because the forward transform is symmetrical with the inverse transform, the interpolation $Y(\omega)$ between $Y_k$ is also ultimately a bunch of cosines.
+If we look at the full $\vec{Y}_{\text{ext}}$ (\autoref{ifftidct}), we have a palindromic structure around $N$, but also around $0$, because of \href{https://dsp.stackexchange.com/a/18931/40873}{the repetitions}\cite{bristow}, which ensure we can read the values of $Y_k$ at negative $k$ by wrapping around to the end of the vector. This is describing an \textit{even} function, $f(-x) = f(x)$, which makes sense, because $y(\theta)$ is entirely composed of cosines, which are even functions, and because the forward transform is symmetrical with the inverse transform, the interpolation $Y(\omega)$ between $Y_k$ is also ultimately a bunch of cosines.
 
 The derivative of an even function is an \textit{odd} function, $f(-x) = -f(x)$, which in principle should be constructable from purely sines, which are odd. And the derivative of an odd function is an even function again.
 
 To see this more granularly, let's look in more detail at the multiplication by $(jk)^\nu$ that produces all the $Y_k^{(\nu)}$ (\autoref{Y_nu}), for $k \in \{0, ... M-1\}$:\vspace{-2mm}
 
 \begin{align*}
-\vec{Y}_{\text{long}}^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{black} \text{ or } \color{red}(jN)^\nu\color{black})}_{\parbox{20mm}{\footnotesize \centering depending on $\nu$ \color{blue}odd \color{black} or \color{red}even}}, (-j(N-1))^\nu, ... (-j)^\nu] \odot \vec{Y}_{\text{long}}\\
-&= j^\nu \cdot {\underbrace{[0, 1, ... 1, (\color{blue}0 \color{black}\text{ or }\color{red} 1\color{black}), -1, ..., -1]}_{\text{\large $\tilde{\mathbbm{1}}$}}}^\nu \odot \underbrace{[0, 1, ... N-1, N, N-1, ... 1]^\nu} \odot \vec{Y}_{\text{long}}
+\vec{Y}_{\text{ext}}^{(\nu)} &= [0, j^\nu, ... (j(N-1))^\nu, \underbrace{(\color{blue}0\color{black} \text{ or } \color{red}(jN)^\nu\color{black})}_{\parbox{20mm}{\footnotesize \centering depending on $\nu$ \color{blue}odd \color{black} or \color{red}even}}, (-j(N-1))^\nu, ... (-j)^\nu] \odot \vec{Y}_{\text{ext}}\\
+&= j^\nu \cdot {\underbrace{[0, 1, ... 1, (\color{blue}0 \color{black}\text{ or }\color{red} 1\color{black}), -1, ..., -1]}_{\text{\large $\tilde{\mathbbm{1}}$}}}^\nu \odot \underbrace{[0, 1, ... N-1, N, N-1, ... 1]^\nu} \odot \vec{Y}_{\text{ext}}
 \end{align*}
 \begin{tikzpicture}[overlay, remember picture]
-	\node at (4.4,0.25) {\footnotesize constant};
+	\node at (4.35,0.25) {\footnotesize constant};
 	\node at (13.4,0.2) {\footnotesize palindromic};
-	\draw[->] (4.4,0.5) -- (4.4,1);
-	\draw[->] (12.8,0.35) -- (12.05,0.83);
+	\draw[->] (4.35,0.5) -- (4.35,1);
+	\draw[->] (12.8,0.35) -- (11.95,0.8);
 	\draw[->] (14,0.35) -- (14.6,1);
 \end{tikzpicture}
 
@@ -621,23 +623,57 @@ Let's now use this to reconstruct samples in the $\theta$ domain, $y_n^{(\nu)}$,
 
 \begin{align}
 y_n^{(\text{odd } \nu)} &= \frac{1}{M} \sum_{0 < k < \frac{M}{2}} (jk)^\nu (Y_k e^{jk\theta_n} \color{blue}-\color{black} \underbrace{Y_{M-k}}_{= Y_k} e^{-jk\theta_n}) = \frac{1}{M} \sum_{k=1}^{N-1} (jk)^\nu Y_k \underbrace{(e^{jk\theta_n} - e^{-jk\theta_n})}_{2j\sin(k\theta_n)} \notag \\
-&= \frac{1}{M} \underbrace{2 \sum_{k=1}^{N-1} (jk)^\nu Y_k j \sin(\frac{\pi nk}{N})}_{\text{\normalsize = a DST-I of $\vec{Y}_{\text{short}}^{(\nu)} \cdot j$!}} \label{y_prime_odd}\\
+&= \frac{1}{M} \underbrace{2 \sum_{k=1}^{N-1} (jk)^\nu Y_k j \sin(\frac{\pi nk}{N})}_{\text{\normalsize = a DST-I of $\vec{Y}^{(\nu)} \cdot j$!}} \label{y_prime_odd}\\
 y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^\nu (Y_k e^{jk\theta_n} \color{red}+\color{black} \underbrace{Y_{M-k}}_{= Y_k} e^{-jk\theta_n}) + (j\frac{M}{2})^\nu Y_{M/2} \cos(\frac{M}{2}\theta_n) \Big) \notag \\
 &= \frac{1}{M} \Big( (jN)^\nu Y_N \cos(\pi n) + \sum_{k=1}^{N-1} (jk)^\nu Y_k \underbrace{(e^{jk\theta_n} + e^{-jk\theta_n})}_{2\cos(k\theta_n)} \Big) \notag \\
-&= \frac{1}{M} \Big( \underbrace{(j0)^\nu Y_0 + (jN)^\nu Y_N (-1)^n + 2 \sum_{k=1}^{N-1} (jk)^\nu Y_k \cos(\frac{\pi nk}{N})}_{\text{\normalsize = a DCT-I of $\vec{Y}_{\text{short}}^{(\nu)}$!}} \Big) \label{y_prime_even}
+&= \frac{1}{M} \Big( \underbrace{(j0)^\nu Y_0 + (jN)^\nu Y_N (-1)^n + 2 \sum_{k=1}^{N-1} (jk)^\nu Y_k \cos(\frac{\pi nk}{N})}_{\text{\normalsize = a DCT-I of $\vec{Y}^{(\nu)}$!}} \Big) \label{y_prime_even}
 \end{align}
 \begin{tikzpicture}[overlay, remember picture]
-	\node at (7.2,7.3) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
-	\node at (7.25,4.05) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
-	\draw[->, blue] (7.7,7.6) -- (7.95,7.9);
-	\draw[->, red] (7.8,4.3) -- (8.1,4.55);
+	\node at (7.25,7.1) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
+	\node at (7.3,3.85) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
+	\draw[->, blue] (7.75,7.4) -- (7.95,7.65);
+	\draw[->, red] (7.85,4.1) -- (8.1,4.35);
 \end{tikzpicture}
 
 Brilliant! So we can use only the non-redundant $Y_k^{(\nu)}$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
 
-Note that the DCT-I and DST-I definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing than in my definitions here, which can be a point of confusion. I consistently take $N$ to be the \textit{index} of the last element of the non-redundant $y_n$, not its length, following \cite{trefethen8}. Note too that the DST-I only takes the $k = \{1, ... N-1\}$ elements, since sines will result in zero crossings at $k = 0$ and $N$ (no informational content), whereas the DCT-I takes all $k = \{0, ... N\}$ elements!
+Note that the DCT-I and DST-I definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing than in my definitions here, which can be a point of confusion. I consistently take $N$ to be the \textit{index} of the last element of the non-redundant $y_n$, not its length, following \cite{trefethen8}. Note too that I consistently use $n$ to index samples and $k$ to index basis domain, whereas \texttt{scipy} uses $n$ for the domain being transformed \textit{from} and $k$ for the domain being transformed \textit{to}, which means these symbols are consistend with mine for forward transforms but flipped for inverse transforms.
+
+Even more confusing, the DST-I only takes the $k \in \{1, ... N-1\}$ elements, since sines will result in zero crossings at $k = 0$ and $N$ (no informational content), whereas the DCT-I takes all $k \in \{0, ... N\}$ elements!
 
 \subsubsection{Inverse Transforms with DCT-II}
+
+We can follow a similar (and now that the even-odd intuition has been covered, maybe a more direct) line of reasoning to find inverse transforms for derivatives when using the DCT-II. So far we know:
+
+\begin{align*}
+y_{n,\text{II}} &= \frac{1}{M} \Big( \underbrace{Y_{0,\text{II}} + 2 \sum_{k=1}^N Y_{k,\text{II}} \cos\!\big(\frac{\pi k}{N + 1}(n + \frac{1}{2})\big)}_{\text{DCT-III}} \Big)\\
+Y_{k,\text{II}} &= \underbrace{2 \sum_{n=0}^N y_{n,\text{II}} \cos\!\big(\frac{\pi k}{N + 1}(n + \frac{1}{2})\big)}_{\text{DCT-II}}
+\end{align*}
+
+If we substitute a continuous $\theta$ for $\theta_{n,\text{II}}$, then we can obtain the continuous reconstruction:
+
+$$y(\theta) = \frac{1}{M} \Big( Y_{0,\text{II}} + 2 \sum_{k=1}^N Y_{k,\text{II}} \cos\!\big(k \theta \big) \Big)$$
+
+We can then simply take its derivative w.r.t. $\theta$:
+
+\begin{align*}
+y'(\theta) &= \frac{1}{M} \Big( -2 \sum_{k=1}^N k Y_{k,\text{II}} \sin\!\big(k \theta \big) \Big) = \frac{1}{M} \Big( 2 \sum_{k=1}^N \underbrace{jk Y_{k,\text{II}}}_{Y'_{k,\text{II}}} \cdot j \sin\!\big(k \theta \big) \Big)\\
+y''(\theta) &= \frac{1}{M} \Big( -2 \sum_{k=1}^N k^2 Y_{k,\text{II}} \cos\!\big( k \theta \big) \Big) = \frac{1}{M} \Big( 2 \sum_{k=1}^N \underbrace{(jk)^2 Y_{k,\text{II}}}_{Y''_{k,\text{II}}} \cos\!\big( k \theta \big) \Big)\\
+&...
+\end{align*}
+
+We can continue the pattern, re-discretize $\theta_{n,\text{II}}$, and explicitly list out some zero terms to obtain something that looks like discrete inverse transforms for the even and odd cases:
+
+\begin{align}
+y_{n,\text{II}}^{(\text{odd } \nu)} &= \frac{1}{M} \Big( \underbrace{\underbrace{(-1)^n}_{\hspace{5mm} \makebox[0pt]{\footnotesize $\sin\!\big(\frac{\pi (N + 1)}{N+1} (n + \frac{1}{2})\big)$}} \cdot \overset{\makebox[3mm]{$\substack{Y^{(\nu)}_{N+1,\text{II}}\\ \downarrow}$}}{0} + 2 \sum_{k=1}^N Y^{(\nu)}_{k,\text{II}} \cdot j \sin\!\big(\frac{\pi k}{N+1}(n + \frac{1}{2})\big)}_{\text{\normalsize = a DST-III of $\vec{Y}^{(\nu)}_{\text{II}}$!}} \Big) \label{y_prime_odd_ii}\\
+y_{n,\text{II}}^{(\text{even } \nu)} &= \frac{1}{M} \Big( \underbrace{\overset{\makebox[0pt]{$\substack{Y^{(\nu)}_{0,\text{II}}\\ \downarrow}$}}{0} + 2 \sum_{k=1}^N Y^{(\nu)}_{k,\text{II}} \cos\Big(\frac{\pi k}{N + 1}(n + \frac{1}{2})\Big)}_{\text{\normalsize = a DCT-III of $\vec{Y}^{(\nu)}_{\text{II}}$!}} \Big) \label{y_prime_even_ii}
+\end{align}
+
+where $\vec{Y}^{(\nu)}_{\text{II}}$ are found completely analogously to $\vec{Y}^{(\nu)}$, via the first half of \autoref{Y_nu}, except there is no Nyquist ($k = \frac{M}{2} = N+1$) term, so we only have to consider $k < \frac{M}{2}$.
+
+Note again that the DCT-III and DST-III definitions given in \texttt{scipy}\cite{dct}\cite{dst} use slightly different indexing and symbols than in my definitions here.
+
+Importantly, the DST-III takes $N$ elements, but due to a +1 offset of the summed-over indexer, this is effectively working on elements $k \in \{1, ... N+1\}$. This is because for this variant of the DST there is a zero crossing at $k = 0$, so that entry would have no informational content. Because we need the $k = N+1$ element to be 0, and multiplying coefficients by $(jk)^\nu$ will give us elements $k \in \{0, ... N\}$ with the $k=0$ element 0, we can obtain what we need by \texttt{roll()}ing the coefficients to the left. The DCT-III is much more straightforward, taking elements $k = \{0, ... N\}$, just like the DCT-I.
 
 \subsection{Transforming Back to the Chebyshev Domain}
 
@@ -648,10 +684,10 @@ When we do this, we have to employ a chain rule, which introduces a new factor: 
 $$\frac{d}{dx} y(\theta) = \frac{d}{d\theta} y(\theta) \cdot \frac{d\theta}{dx} = \frac{\frac{d}{d\theta} y(\theta)}{\frac{dx}{d\theta}}, \quad \text{where } \frac{dx}{d\theta} = \frac{d}{d\theta} \cos(\theta) = -\sin(\theta)$$
 \begin{align*}
 	& \sin^2(\theta) + \cos^2(\theta) = 1 \longrightarrow \sin(\theta) = \pm \sqrt{1-\cos^2(\theta)} = \sqrt{1 - x^2} \text{ using upper semicircle}\\
-	& \longrightarrow -\sin(\theta) = -\sqrt{1 - x^2} \longrightarrow \frac{d\theta}{dx} = \frac{1}{\frac{dx}{d\theta}} = \frac{-1}{\sqrt{1 - x^2}} \quad \Big(\text{and also } \frac{d}{dx} \cos^{-1}(x) = \frac{-1}{\sqrt{1 - x^2}} \Big)
+	& \longrightarrow -\sin(\theta) = -\sqrt{1 - x^2} \longrightarrow \frac{d\theta}{dx} = \frac{1}{\frac{dx}{d\theta}} = \frac{-1}{\sqrt{1 - x^2}} \quad \Big(\text{agrees with } \frac{d}{dx} \cos^{-1}(x) = \frac{-1}{\sqrt{1 - x^2}} \Big)
 \end{align*}
 
-The $\frac{d}{d\theta} y(\theta)$ a.k.a $y'(\theta)$ term is actually pretty easy to handle, because we know its value (and for higher orders too) at discretized $\theta_n$ from earlier (\autoref{y_prime_odd} and \autoref{y_prime_even})! If we use the sampled $x_n = \cos(\theta_n)$ from step 1 of \hyperref[algo]{the algorithm}, then our $\{x_n\}$ and $\{\theta_n\}$ align, and we can find samples of the derivative w.r.t. $x$ by plugging $\{x_n\}$ in to the new factor(s) and multiplying appropriately (pointwise):
+The $\frac{d}{d\theta} y(\theta)$ a.k.a $y'(\theta)$ term is actually pretty easy to handle, because we know its value (and for higher orders too) at discretized $\theta_n$ from earlier! (Equations \ref{y_prime_odd} \& \ref{y_prime_even} or \ref{y_prime_odd_ii} \& \ref{y_prime_even_ii}) If we use the sampled $x_n = \cos(\theta_n)$ from step 1 of \hyperref[algo]{the algorithm} (or $x_{n,\text{II}} = \cos(\theta_{n,\text{II}})$, \textit{so long as the samplings agree!}), then our $\{x_n\}$ and $\{\theta_n\}$ align, and we can find samples of the derivative w.r.t. $x$ by plugging $\{x_n\}$ in to the new factor(s) and multiplying appropriately (pointwise):
 
 $$[\frac{d}{dx} y(\theta)]_n = \frac{-1}{\sqrt{1 - x_n^2}} \odot y'_n$$
 
@@ -747,7 +783,7 @@ However, this doesn't mean $\frac{d^\nu}{dx^\nu} y$ can't have a valid \textit{l
 
 This means the \textit{numerator} as well as the denominator is $0$ at the domain endpoints. $\frac{0}{0}$ is an indeterminate form, so we can use L'Hôpital's rule!
 
-Let's see it for the $1^{st}$ derivative. Plugging in the DCT-I reconstruction (\autoref{reconstruction}) for $y(\theta)$:
+Let's see it in fine detail for the $1^{st}$ derivative. The below uses the DCT-I reconstruction (\autoref{reconstruction}) for $y(\theta)$. The process is exactly the same if we use the DCT-II reconstruction instead (\autoref{phaseramp}), in some ways even easier due to the absence of the Nyquist term and the inert quality of phase when taking derivatives of sinusoids.
 
 \begin{align*}
 &\lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{d}{d\theta} \frac{1}{M} \Big( Y_0 + Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} Y_k \cos(k\theta) \Big) \cdot \frac{d\theta}{dx} = \lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\frac{1}{M} \Big(-N Y_N \sin(N\theta) - 2 \sum_{k=1}^{N-1} k Y_k \sin(k\theta) \Big)}{-\sqrt{1-x^2}} \\
@@ -758,14 +794,14 @@ Let's see it for the $1^{st}$ derivative. Plugging in the DCT-I reconstruction (
 = \begin{cases} \frac{1}{M} \Big(N^2 Y_N + 2 \sum_{k=1}^{N-1} k^2 Y_k \Big) & \text{ at } x=1, \theta=0 \\ -\frac{1}{M} \Big(N^2 (-1)^N Y_N + 2 \sum_{k=1}^{N-1} k^2 (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$1^{st}$ endpoints}
 \]\vspace{2mm}
 
-And now let's do it for the $2^{nd}$ derivative, with some slightly more compact notation:
+And now let's do it for the $2^{nd}$ derivative, with some slightly more compact notation, where we can be agnostic about $y(\theta)$'s exact structure until the end:
 
 \begin{align*}
 &\lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\sqrt{1 - x^2} y''(\theta) - x y'(\theta)}{(1-x^2)^{3/2}} \rightarrow \frac{0}{0} \underset{\frac{d}{dx}}{\overset{\frac{d}{dx}}{\longrightarrow}} \frac{\cancel{\sqrt{1-x^2}}y'''(\theta)\frac{-1}{\cancel{\sqrt{1-x^2}}} + \cancel{\frac{-x}{\sqrt{1-x^2}}y''(\theta)} - (\cancel{xy''(\theta)\frac{-1}{\sqrt{1-x^2}}} + y'(\theta))}{-3x\sqrt{1-x^2}}\\
 & \rightarrow \frac{0}{0} \underset{\frac{d}{dx}}{\overset{\frac{d}{dx}}{\longrightarrow}} \frac{\cancel{-}y^{IV}(\theta)\frac{\cancel{-1}}{\cancel{\sqrt{1-x^2}}} \cancel{-} y''(\theta)\frac{\cancel{-1}}{\cancel{\sqrt{1-x^2}}}}{\frac{6x^2 - 3}{\cancel{\sqrt{1-x^2}}}} = \frac{1}{6x^2 - 3}(y^{IV}(\theta) + y''(\theta))
 \end{align*}
 
-We already know $y''(\theta) = \frac{1}{M} \Big(-N^2 Y_N \cos(N\theta) - 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big)$. We can easily find
+We already know $y''(\theta) = \frac{1}{M} \Big(-N^2 Y_N \cos(N\theta) - 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big)$, assuming type I reconstruction. We can easily find
 
 $$y^{IV}(\theta) = \frac{1}{M} \Big(N^4 Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} k^4 Y_k \cos(k\theta) \Big)$$
 
@@ -774,6 +810,8 @@ Now we can evaluate these and the factor $\frac{1}{6x^2 - 3}$ at the limit value
 \[
 \begin{cases} \frac{1}{3M} \Big((N^4 - N^2) Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{3M} \Big((N^4 - N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$2^{nd}$ endpoints}
 \]\vspace{2mm}
+
+For both orders above, if we instead use type II reconstruction, then $Y_k$ are really $Y_{k,\text{II}}$, and the only difference is that the $k = N$ terms are multiplied by 2 like every other, instead of by 1, and can therefore be moved \textit{inside} the sums.
 
 \subsubsection{Endpoints for Higher Derivatives}
 
@@ -787,7 +825,7 @@ $$\begin{cases}
 \frac{1}{D_0 M} \Big((... - C_3 N^6 + C_2 N^4 - C_1 N^2) Y_N + 2 \sum_{k=1}^{N-1} (... - C_3 k^6 + C_2 k^4 - C_1 k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{D_\pi M} \Big((... - C_3 N^6 + C_2 N^4 - C_1 N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (... - C_3 k^6 + C_2 k^4 - C_1 k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi
 \end{cases}$$
 
-where the alternating plus and minus in the $k$ and $N$ terms comes from the fact the $2^{nd}$ derivative contains $-$cosines, the $4^{th}$ +cosines, the $6^{th}$ $-$cosines again, and so on.
+where the alternating plus and minus in the $k$ and $N$ terms comes from the fact the $2^{nd}$ derivative contains $-$cosines, the $4^{th}$ +cosines, the $6^{th}$ $-$cosines again, and so on. Once again, if we use type II reconstruction, the $k=N$ terms disappear inside the sums, which then go up to $N$ instead of $N-1$.
 
 Because the act of cancellation and the functions containing powers of $\sqrt{1-x^2} = \sin(\theta)$ can't be easily represented in \texttt{numpy}, computing $C$ and $D$ requires a symbolic solver like \texttt{sympy}. I've devised \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb}{an implementation} to construct expressions for the endpoints, up to arbitrary order. But due to its complexity, I've opted to keep this full process out of the main \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{package code}. Instead, I've hard-coded the solutions up to $4^{th}$ order and raise a warning with reference to the notebook if users try to go higher.
 
@@ -975,7 +1013,7 @@ In the discrete case, where we have $M$ samples on $[a, b)$, then we can map $t_
 
 $$ \theta_n \in \frac{\{0, ... M-1\} \cdot 2\pi}{M} \leftrightarrow t_n \in \frac{\{0, ... M-1\} \cdot \cancel{2\pi}}{M} \cdot \frac{b - a}{\cancel{2\pi}} + a$$
 
-In other words, if we want to take a spectral derivative of a function that's periodic on $[a, b)$, then we need to sample it at \texttt{t\char`_n = np.arange(M)/M * (b - a) + a = np.linspace(a, b, M, endpoint=False)}.
+In simple code terms, if we want to take a spectral derivative of a function that's periodic on $[a, b)$, then we need to sample it at \texttt{t\char`_n = np.arange(M)/M * (b - a) + a = np.linspace(a, b, M, endpoint=False)}.
 
 \subsection{Chebyshev}
 
@@ -1023,11 +1061,12 @@ To get a sense this is true, let's see an example:\vspace{2mm}
 
 In the discrete case, where we have $N+1$ samples on $[a, b]$, then we can map $t_n$ with:
 
-$$x_n \in \cos\!\Big(\frac{\pi \{0, ... N\}}{N}\Big) \leftrightarrow t_n \in \cos\!\Big(\frac{\pi \{0, ... N\}}{N}\Big) \cdot \frac{b - a}{2} + \frac{b + a}{2} $$
+\begin{align}
+x_n \in \cos\!\Big(\frac{\pi \{0, ... N\}}{N}\Big) &\leftrightarrow t_n \in \cos\!\Big(\frac{\pi \{0, ... N\}}{N}\Big) \cdot \frac{b - a}{2} + \frac{b + a}{2} \tag{type I}\\
+x_{n,\text{II}} \in \cos\!\Big(\frac{\pi}{N+1}\big(\{0, ... N\}+\frac{1}{2}\big)\Big) &\leftrightarrow t_{n,\text{II}} \in \cos\!\Big(\frac{\pi}{N+1}\big(\{0, ... N\}+\frac{1}{2}\big)\Big) \cdot \frac{b - a}{2} + \frac{b + a}{2} \tag{type II}
+\end{align}
 
-Notice the order has flipped here, that counting \textit{up} in $n$ means we traverse $x$ from $+1 \rightarrow -1$. This is actually what we want; it corresponds to the \hyperref[cylinder]{horizontal flip} necessary to make cosine shadows equate with Chebyshev polynomails.
-
-In simple code terms, if we want to take a spectral derivative of a function on $[a, b]$, then we need to sample it at \texttt{t\char`_n = np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2}.
+Notice the order has flipped here, that counting \textit{up} in $n$ means we traverse $x$ from $+1 \rightarrow -1$. This is actually what we want; it corresponds to the \hyperref[cylinder]{horizontal flip} necessary to make cosine shadows equate with Chebyshev polynomails. Also notice the type II sampling \textit{doesn't naturally include the endpoints a and b}, which we may want, especially for consistency with the fact the domain is the \textit{closed} set $[a, b]$. We can correct for this by tacking on $\pm 1$ to the ends of $x_{n,\text{II}}$, which is the same as tacking on $a$ and $b$ at the ends of $t_{n,\text{II}}$.
 
 \subsection{Accounting for Smoosh}
 
@@ -1049,7 +1088,7 @@ $$\frac{d^\nu y}{\big( dx \cdot \text{smoosh})^\nu} = \frac{d^\nu y}{dx^\nu} \cd
 
 So we can always correct the derivative by dividing by scale$^\nu$.\newline
 
-To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter}.
+To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub and especially confusing with the DCT-II), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter} and raise errors messages with correct examples if the sampling is invalid.
 
 \printendnotes
 

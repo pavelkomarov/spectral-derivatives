@@ -137,8 +137,9 @@ def fourier_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, fil
 	#No worrying about conversion back from a variable transformation. No special treatment of domain boundaries.
 	if len(t_n.shape) > 1 or t_n.shape[0] != y_n.shape[axis]:
 		raise ValueError("t_n should be 1D and have the same length as y_n along the axis of differentiation")
-	if not np.all(np.diff(t_n) > 0):
-		raise ValueError("The domain, t_n, should be ordered low-to-high, [a, ... b). Try sampling with `np.arange(0, M)/M * (b - a) + a`")
+	delta_t = np.diff(t_n)
+	if not (np.all(delta_t > 0) and np.allclose(delta_t, delta_t[0])):
+		raise ValueError("The domain, t_n, needs to be equispaced, ordered low-to-high on [a, ... b). Try sampling with `np.arange(0, M)/M * (b - a) + a`")
 
 	M = y_n.shape[axis]
 	# if M has an even length, then we make k = [0, 1, ... M/2 - 1, 0 or M/2, -M/2 + 1, ... -1]
