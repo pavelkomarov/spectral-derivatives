@@ -8,7 +8,7 @@ This repository is home to Python code that can take spectral derivatives with t
 
 When using the Fourier basis, spectral derivatives require periodic boundaries, but the Chebyshev basis allows arbitrary boundaries, extending the method to a much wider class of functions (albeit via nonuniform sampling).
 
-This package can be useful any time you want to take a derivative numerically, such as for doing PDE simulations. For taking derivatives of noisy data, spectral methods naturally enable global filtering by weighing basis function contributions.
+This package can be useful any time you want to take a derivative numerically, such as for doing PDE simulations. For taking derivatives of noisy data, spectral methods naturally enable global filtering by weighting basis function contributions.
 
 Note these methods are best for situations when you *don't know the generating function of your data*; if the generator is known, then autodifferentiation tools like [JAX](https://jax.readthedocs.io/en/latest/quickstart.html) are your friend.
 
