@@ -388,7 +388,7 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, \ycoord)};
 		\node at (axis cs:\xcoord, \ycoord) [above right] {$z = e^{j\theta}$};
 		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, -\ycoord)};
-		\node at (axis cs:\xcoord, -\ycoord) [below, right, yshift=-4mm] {\parbox{15mm}{\begin{align*}\overline{z} &= z^{-1} \\ &= e^{-j\theta}\end{align*}}};
+		\node at (axis cs:\xcoord, -\ycoord) [below, right, yshift=-4mm] {\parbox{13mm}{\begin{align*}\overline{z} &= z^{-1} \\ &= e^{-j\theta}\end{align*}}};
 		\addplot[domain=0:1, samples=2, thick] ({x*\xcoord}, {x*\ycoord}); 
 		\addplot[domain=1:0, samples=2, thick, dashed] ({\xcoord}, {x*\ycoord}); 
 		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, 0)};
