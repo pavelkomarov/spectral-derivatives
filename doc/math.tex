@@ -102,7 +102,7 @@ Beware the terminology ``transform" and ``domain" is not always used to describe
 
 \subsection{The Fourier Transform}\label{fourierT}
 
-Using Fourier's original real-sinusoid-based formulation, we can write the reconstruction expression as\footnote{It's worth considering how weird it is this is true for arbitrary functions, non-smooth ones included, so long as they meet the Dirichlet conditions\cite{oppenheim} (aren't pathological cases). In fact, it's so weird that Joseph Lagrange publicly declared Fourier was wrong at a meeting of the Paris Academy in 1807\cite{michigan} and rejected Fourier's paper, which then went unpublished until after Lagrange died!\cite{oppenheim} It's valuable to ask \href{https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work}{why this works}\cite{why} and sift through \href{https://math.uchicago.edu/~may/REU2017/REUPapers/Xue.pdf}{some analysis}.\cite{chicago}}:
+Using Fourier's original real-sinusoid-based formulation, we can write the reconstruction expression as\footnote{It's worth considering how weird this is. It even works for non-smooth functions, so long as they meet the Dirichlet conditions\cite{oppenheim} (aren't pathological cases). It's so counter-intuitive that Joseph Lagrange publicly declared Fourier was wrong at a meeting of the Paris Academy in 1807\cite{michigan} and rejected Fourier's paper, which then went unpublished until after Lagrange died!\cite{oppenheim} It's valuable to ask \href{https://math.stackexchange.com/questions/1105265/why-do-fourier-series-work}{why this works}\cite{why} and sift through \href{https://math.uchicago.edu/~may/REU2017/REUPapers/Xue.pdf}{some analysis}.\cite{chicago}}:
 
 $$ f(x) = a_0 + \sum_{k=1}^{\infty} (a_k \cos(k \omega_0 x) + b_k \sin(k \omega_0 x))$$
 
@@ -110,7 +110,7 @@ where
 \begin{itemize}[noitemsep, topsep=0pt, after=\newline]
 	\item $f$ is periodic with fundamental frequency $\omega_0$, so the $k^{th}$ frequency becomes $k \cdot \omega_0$
 	\item $a_k$ and $b_k$ are coefficients describing how much cosine and sine to add in, respectively
-	\item $k$ goes up to $\infty$ because we need an infinite number of ever-higher-frequency sinusoids to reconstruct the function with perfect fidelity
+	\item $k$ goes up to $\infty$ because in general we need an infinite number of ever-higher-frequency sinusoids to reconstruct the function with perfect fidelity
 \end{itemize}
 
 Let's now use $\cos(x) = \frac{e^{jx} + e^{-jx}}{2}$ and $\sin(x) = \frac{e^{jx} - e^{-jx}}{2j}$, which can be verified by manipulating Euler's formula, \autoref{euler}.
@@ -125,14 +125,12 @@ So if we choose $c_0 = a_0$ and $c_k = \overline{c_{-k}} = \frac{a_k}{2} + \frac
 
 If instead of a fundamental frequency $\omega_0 = \frac{2\pi}{T}$, where $T$ is a period of repetition, the signal contains dense frequencies (because it has no repetition, $T \rightarrow \infty$, $\omega_0 \rightarrow 0$), and if we care about a domain of the entire set of $\mathbb{R}$, then it makes more sense to express the transformed coefficients as a function in $\omega$ and to make both our inner product and reconstruction expression integrals from $-\infty$ to $+\infty$:
 
-
 \begin{equation}\label{pair}
 \begin{aligned}
 \hat{f}(\omega) &= \int\limits_{-\infty}^{\infty} f(x) e^{-j \omega x} dx = \mathcal{F}\{f(x)\} \\
 f(x) &= \frac{1}{2\pi} \int\limits_{-\infty}^{\infty} \hat{f}(\omega) e^{j \omega x} d \omega = \mathcal{F}^{-1}\{\hat{f}(\omega)\}
 \end{aligned}
 \end{equation}
-
 
 where the hat $\hat{\circ}$ represents a function in the Fourier domain, and the $\frac{1}{2\pi}$ is a scaling factor that corrects for the fact the inner product of a Fourier basis function with itself integrates to $2\pi$ over a period instead of to $1$ as we need for orthonormality.
 
