@@ -656,8 +656,7 @@ We can then simply take its derivative w.r.t. $\theta$:
 
 \begin{align*}
 y'(\theta) &= \frac{1}{M} \Big( -2 \sum_{k=1}^N k Y_{k,\text{II}} \sin\!\big(k \theta \big) \Big) = \frac{1}{M} \Big( 2 \sum_{k=1}^N \underbrace{jk Y_{k,\text{II}}}_{Y'_{k,\text{II}}} \cdot j \sin\!\big(k \theta \big) \Big)\\
-y''(\theta) &= \frac{1}{M} \Big( -2 \sum_{k=1}^N k^2 Y_{k,\text{II}} \cos\!\big( k \theta \big) \Big) = \frac{1}{M} \Big( 2 \sum_{k=1}^N \underbrace{(jk)^2 Y_{k,\text{II}}}_{Y''_{k,\text{II}}} \cos\!\big( k \theta \big) \Big)\\
-&...
+y''(\theta) &= \frac{1}{M} \Big( -2 \sum_{k=1}^N k^2 Y_{k,\text{II}} \cos\!\big( k \theta \big) \Big) = \frac{1}{M} \Big( 2 \sum_{k=1}^N \underbrace{(jk)^2 Y_{k,\text{II}}}_{Y''_{k,\text{II}}} \cos\!\big( k \theta \big) \Big)
 \end{align*}
 
 We can continue the pattern, re-discretize $\theta_{n,\text{II}}$, and explicitly list out some zero terms to obtain something that looks like discrete inverse transforms for the even and odd cases:
@@ -1086,7 +1085,7 @@ $$\frac{d^\nu y}{\big( dx \cdot \text{smoosh})^\nu} = \frac{d^\nu y}{dx^\nu} \cd
 
 So we can always correct the derivative by dividing by scale$^\nu$.\newline
 
-To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub and especially confusing with the DCT-II), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter} and raise errors messages with correct examples if the sampling is invalid.
+To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub and especially confusing with the DCT-II), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter} and raise error messages with correct examples if the sampling is invalid.
 
 \printendnotes
 
