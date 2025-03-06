@@ -50,7 +50,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 	if not np.allclose(t_n, x_n * scale + offset, atol=1e-5):
 		raise ValueError(f"""Your function is not sampled appropriately for the DCT-{'I'*dct_type}. Try sampling with
 			{'`np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`' if dct_type == 1 else
-			'`np.concatenate(([b], np.cos((np.arange(N+1) + 0.5) * np.pi/(N+1)) * (b - a)/2 + (b + a)/2, [a]))'}""")
+			'`np.concatenate(([b], np.cos((np.arange(N+1) + 0.5) * np.pi/(N+1)) * (b - a)/2 + (b + a)/2, [a]))`'}""")
 
 	first = [slice(None) for dim in y_n.shape]; first[axis] = 0; first = tuple(first) # for accessing different parts of data
 	last = [slice(None) for dim in y_n.shape]; last[axis] = -1; last = tuple(last)
