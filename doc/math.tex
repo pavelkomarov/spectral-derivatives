@@ -86,15 +86,15 @@ If we inner product mismatched wiggles, they misalign and integrate to 0, but if
 
 \section{Transforms}
 
-I can use a basis to ``transform" a function, meaning I take the function's inner product with each of the basis functions to produce numbers:
+We can use a basis to ``transform" a function, meaning we take the function's inner product with each of the basis functions to produce numbers:
 
 $$ \langle f,\xi_k \rangle = \int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx = \text{a constant coefficient}, c_k $$
 
-These numbers descibe \textit{how much} of each basis function $\xi_k$ is present in the signal $f$ on a domain between $a$ and $b$. If I do this for all the $\{\xi_k\}$, I essentially get a \textit{recipe}, which says ``I need this much of $\xi_0$ and that much of $\xi_1$ and howevermuch of $\xi_2$ ... added together to reproduce the original signal."
+These numbers descibe \textit{how much} of each basis function $\xi_k$ is present in the signal $f$ on a domain between $a$ and $b$. If we do this for all the $\{\xi_k\}$, we essentially get a \textit{recipe}, which says: ``We need this much of $\xi_0$ and that much of $\xi_1$ and howevermuch of $\xi_2$ ... added together to reproduce the original signal."
 
 $$ f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b] $$
 
-where $M$ is the number of basis functions I'm using in my reconstruction and $k$ iterates through them.\newline
+where $M$ is the number of basis functions we use in our reconstruction and $k$ iterates through them.\newline
 
 The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. We've \textit{transformed} the function to a set of numbers which now live in a different domain.
 
