@@ -2,6 +2,7 @@
 
 | Notebook | What's in it |
 | --- | --- |
+| [Alternative Chebyshev Derivative Methods](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/alternative_chebyshev_derivative_methods.ipynb) | In the process of creating this repo I discovered multiple routes to the Chebyshev-spectral derivative. This notebook preserves, discusses, and compares them all. |
 | [Arbitrary Domains](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/arbitrary_domains.ipynb) | This is where I first worked out how to take derivatives of functions over non-canonical domains (i.e. *not* $[-1, 1]$ with the Chebyshev basis or $[0, 2\pi)$ with the Fourier basis. The explanation now also lives in [the math](https://pavelkomarov.com/spectral-derivatives/math.pdf), but the interactive code example lives here.|
 | [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb) | Usage examples of `cheb_deriv`, in one and multiple dimensions, including a PDE simulation at the end.|
 | [Chebyshev Antiderivatives](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_antiderivatives.ipynb) | It's easy to take spectral antiderivatives with the Fourier basis by simply dividing by $jk$ instead of multiplying. This notebook explores doing the same with the Chebyshev basis, as part of a resolution to [Issue #11](https://github.com/pavelkomarov/spectral-derivatives/issues/11).|
