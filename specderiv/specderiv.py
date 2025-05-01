@@ -92,6 +92,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 		dy_n[middle] += (numer(x_n[1:-1])/np.power(denom_x, c))[s] * y_prime
 
 	# Calculate the endpoints
+	alt = np.ones(N+1); alt[1::2] = -1 # alternating for summing the last point
 	if order <= 4 and calc_endpoints:
 		C, D = {1: [(-1,), 1], 2: [(1, 1), 3], 3: [(-4, -5, -1), 15], 4: [(36, 49, 14, 1), 105]}[order] # Constants from the math. See the notebook in the warning.
 		LH = 0 # L'Hôpital numerator terms
@@ -99,7 +100,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 			LH += 2 * C_i * (-1)**i * np.power(k, 2*i)
 			if dct_type == 1: LH[-1] -= C_i * (-1)**i * np.power(N, 2*i) # because Nth element is outside the 2\sum in the DCT-I
 		dy_n[first] = np.sum(LH[s] * Y_k, axis=axis)/ (D*M)
-		dy_n[last] = np.sum((LH * np.power(-1, k))[s] * Y_k, axis=axis) / ((-1)**order * D*M)
+		dy_n[last] = np.sum((LH * alt)[s] * Y_k, axis=axis) / ((-1)**order * D*M)
 	else: # For higher derivatives, leave the endpoints uncalculated, but direct the user to my analysis of this problem.
 		if calc_endpoints: warn("""endpoints set to NaN, only calculated for 4th derivatives and below. For help with higher derivatives,
 			see https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb""")
