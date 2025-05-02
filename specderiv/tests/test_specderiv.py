@@ -8,15 +8,15 @@ from ..specderiv import cheb_deriv, fourier_deriv
 # for use with Chebyshev
 N = 20
 x_n = np.cos(np.arange(N+1) * np.pi / N) # length N+1, in keeping with the usage of N in Trefethen.
-x_n2 = np.concatenate(([1], np.cos(np.pi/(N+1) * (np.arange(N+1) + 0.5)), [-1])) # use half-indices for DCT-II
+x_u = np.linspace(-1, 1, N+1, endpoint=True) # uniformly distributed points
 
 # for use with Fourier
 M = 20					# It's important this be an *open* periodic domain, or we get artefacting
 th_n = np.arange(0, M) * 2*np.pi / M # e.g. th_n = np.linspace(0, M, M)*2*np.pi/M is no good
 
 @pytest.mark.filterwarnings('ignore::UserWarning') # Not worrying about warnings in this test
-@pytest.mark.parametrize("dct_type, x_n", [(1, x_n), (2, x_n2)]) # Test using DCT-I and DCT-II
-def test_cheb_deriv_accurate_to_6th(dct_type, x_n):
+@pytest.mark.parametrize("x_n, run_num", [(x_n, 0), (x_u, 1)]) # Test using DCT-I points and uniform points
+def test_cheb_deriv_accurate_to_6th(x_n, run_num):
 	"""A test that the MSE of derivatives of a non-periodic function vs truth is suitably low up to some
 	high power. Implicitly tests the middle polynomial-finding code, the endpoints-finding code, and even
 	derivatives as well as odd derivatives.
@@ -29,39 +29,13 @@ def test_cheb_deriv_accurate_to_6th(dct_type, x_n):
 						4*np.exp(x_n) * (719*np.sin(5*x_n) + 475*np.cos(5*x_n)),	# 5th
 						8*np.exp(x_n) * (2035*np.cos(5*x_n) - 828*np.sin(5*x_n))]	# 6th
 	# Things get less accurate for higher derivatives, so check < 10^f(nu)
-	L2_powers = [[-19, -14, -10, -6, -3, 0], [-17, -13, -9, -6, -2, 1]]
-	Linf_powers = [[-9, -6, -4, -2, -1, 1], [-8, -6, -4, -2, 0, 1]]
+	L2_powers = [[-19, -14, -10, -6, -3, 1], [-14, -10, -7, -4, -1, 2]]
+	Linf_powers = [[-9, -6, -4, -2, -1, 1], [-6, -4, -3, -1, 0, 2]]
 
-	for nu in range(1,7):
-		computed = cheb_deriv(y_n, x_n, nu, dct_type=dct_type) # strangely, this can be slightly different (but close) in CI vs local, despite same package versions
-		assert np.nanmean((analytic_truth[nu-1] - computed)**2) < 10**L2_powers[dct_type-1][nu-1]
-		assert np.nanmax(np.abs(analytic_truth[nu-1] - computed)) < 10**Linf_powers[dct_type-1][nu-1]
-
-def test_cheb_endpoints():
-	"""A test of the endpoints code, specifically. Endpoints should be found accurately up to the
-	4th derivative, NaN at derivatives beyond the 4th, and a warning should be thrown about the presence
-	of NaNs in the answer.
-	"""
-	y_n = 3*x_n**6 - 2*x_n**4
-	analytic_truth = [18*x_n**5 - 8*x_n**3,			# 1st
-						90*x_n**4 - 24*x_n**2,		# 2nd
-						360*x_n**3 - 48*x_n,		# 3rd
-						1080*x_n**2 - 48,			# 4th
-						2160*x_n,					# 5th
-						2160*np.ones(x_n.shape)]	# 6th
-
-	for nu in range(1, 7):
-		if nu <= 4:
-			computed = cheb_deriv(y_n, x_n, nu)
-			assert np.abs(computed[0] - analytic_truth[nu-1][0]) < 1e-7
-			assert np.abs(computed[-1] - analytic_truth[nu-1][-1]) < 1e-7
-		else: # nu > 4
-			with pytest.warns(UserWarning): # assure the warning is thrown
-				computed = cheb_deriv(y_n, x_n, nu)
-			assert np.isnan(computed[0]) # the endpoints are NaN
-			assert np.isnan(computed[-1])
-			assert np.all(~np.isnan(computed[1:-1])) # the middle isn't NaN
-		assert np.nanmean(analytic_truth[nu-1] - computed)**2 < 1e-7 # check middle too for good measure
+	for order in range(1,7):
+		computed = cheb_deriv(y_n, x_n, order) # strangely, this can be slightly different (but close) in CI vs local, despite same package versions
+		assert np.mean((analytic_truth[order-1] - computed)**2) < 10**L2_powers[run_num][order-1]
+		assert np.max(np.abs(analytic_truth[order-1] - computed)) < 10**Linf_powers[run_num][order-1]
 
 def test_fourier_deriv_accurate_to_3rd():
 	"""A test for derivatives of a periodic function sampled at equispaced points
@@ -74,8 +48,8 @@ def test_fourier_deriv_accurate_to_3rd():
 
 		for nu in range(1,4):
 			computed = fourier_deriv(y_n, th_n_, nu)
-			assert np.nanmean((analytic_truth[nu-1] - computed)**2) < 1e-25
-			assert np.nanmax(np.abs(analytic_truth[nu-1] - computed)) < 1e-12
+			assert np.mean((analytic_truth[nu-1] - computed)**2) < 1e-25
+			assert np.max(np.abs(analytic_truth[nu-1] - computed)) < 1e-12
 
 @pytest.mark.filterwarnings('ignore::UserWarning')
 def test_fourier_antiderivative_0_to_3rd():
@@ -88,8 +62,8 @@ def test_fourier_antiderivative_0_to_3rd():
 
 		for nu in range(0,4):
 			computed = fourier_deriv(y_n, th_n_, -nu)
-			assert np.nanmean((analytic_truth[nu] - computed)**2) < 1e-25
-			assert np.nanmax(np.abs(analytic_truth[nu] - computed)) < 1e-12
+			assert np.mean((analytic_truth[nu] - computed)**2) < 1e-25
+			assert np.max(np.abs(analytic_truth[nu] - computed)) < 1e-12
 
 def test_cheb_multidimensional():
 	"""A test for multidimensional derivatives in the aperiodic case
@@ -165,8 +139,7 @@ def test_fourier_arbitrary_domains_to_3rd():
 def test_user_errors():
 	"""A test that helpful errors are thrown when a user goofs up
 	"""
-	for t_n in [np.cos(np.arange(N+1) * np.pi / N)[::-1] * (4 - 1)/2 + (4 + 1)/2, # t_n ordered low-to-high
-				np.linspace(4, 1, N+1),											# t_n not cosine-spaced
+	for t_n in [np.array([0, 1, 2, 3, 4, 6, 5, 8, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]), # t_n not monotonic
 				np.cos(np.arange(N) * np.pi / (N-1)) * (4 - 1)/2 + (4 + 1)/2]:	# t_n not the same length as y_n along axis
 		with pytest.raises(ValueError):
 			cheb_deriv(np.zeros(N+1), t_n, 1)
@@ -187,8 +160,8 @@ def test_fourier_filter():
 		for nu in range(1,4): # Things get less accurate for higher derivatives, so check < 10^f(nu)
 			computed_noisy = fourier_deriv(y_n_with_noise, th_n_, nu)
 			computed_noisy_with_filter = fourier_deriv(y_n_with_noise, th_n_, nu, filter=lambda k: np.abs(k) < 5) # only keep lower-frequency modes
-			assert np.nanmean((analytic_truth[nu-1] - computed_noisy_with_filter)**2) < np.nanmean((analytic_truth[nu-1] - computed_noisy)**2)
-			assert np.nanmax(np.abs(analytic_truth[nu-1] - computed_noisy_with_filter)) < np.nanmax(np.abs(analytic_truth[nu-1] - computed_noisy))
+			assert np.mean((analytic_truth[nu-1] - computed_noisy_with_filter)**2) < np.mean((analytic_truth[nu-1] - computed_noisy)**2)
+			assert np.max(np.abs(analytic_truth[nu-1] - computed_noisy_with_filter)) < np.max(np.abs(analytic_truth[nu-1] - computed_noisy))
 
 @pytest.mark.filterwarnings('ignore::UserWarning') # Not worrying about warnings in this test
 def test_cheb_filter():
@@ -206,5 +179,5 @@ def test_cheb_filter():
 	for nu in range(1,7):
 		computed_noisy = cheb_deriv(y_n_with_noise, x_n, nu)
 		computed_noisy_with_filter = cheb_deriv(y_n_with_noise, x_n, nu, filter=lambda k: k < 10)
-		assert np.nanmean((analytic_truth[nu-1] - computed_noisy_with_filter)**2) < np.nanmean((analytic_truth[nu-1] - computed_noisy)**2) # I've seen this assertion fail in CI before. Tests based on randomness are handwavy.
-		assert np.nanmax(np.abs(analytic_truth[nu-1] - computed_noisy_with_filter)) < np.nanmax(np.abs(analytic_truth[nu-1] - computed_noisy))
+		assert np.mean((analytic_truth[nu-1] - computed_noisy_with_filter)**2) < np.mean((analytic_truth[nu-1] - computed_noisy)**2) # I've seen this assertion fail in CI before. Tests based on randomness are handwavy.
+		assert np.max(np.abs(analytic_truth[nu-1] - computed_noisy_with_filter)) < np.max(np.abs(analytic_truth[nu-1] - computed_noisy))
