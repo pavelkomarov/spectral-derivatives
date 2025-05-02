@@ -60,7 +60,7 @@
 
 <span class="sd">	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">if</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># allow antiderivatives with numpy&#39;s chebint?</span>
+	<span class="k">if</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># allow antiderivatives with numpy&#39;s chebint? The trouble is those extra zeros [0, ... coefs]. How do you evaluate that at only N+1 points efficiently?</span>
 		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;derivative order, nu, should be &gt;= 1&quot;</span><span class="p">)</span>
 	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t_n</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">t_n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">y_n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]:</span>
 		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;t_n should be 1D and have the same length as y_n along the axis of differentiation&quot;</span><span class="p">)</span>
