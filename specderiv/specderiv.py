@@ -25,7 +25,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 
 	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
 	"""
-	if order < 1: # allow antiderivatives with numpy's chebint?
+	if order < 1: # allow antiderivatives with numpy's chebint? The trouble is those extra zeros [0, ... coefs]. How do you evaluate that at only N+1 points efficiently?
 		raise ValueError("derivative order, nu, should be >= 1")
 	if len(t_n.shape) > 1 or t_n.shape[0] != y_n.shape[axis]:
 		raise ValueError("t_n should be 1D and have the same length as y_n along the axis of differentiation")
