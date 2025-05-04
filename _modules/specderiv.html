@@ -48,7 +48,7 @@
 <span class="sd">		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. Use cosine-spaced</span>
 <span class="sd">			points, i.e. :code:`t_n = x_n * (b - a)/2 + (b + a)/2` for a domain between :math:`a` and :math:`b`, where</span>
 <span class="sd">			:code:`x_n = np.cos(np.arange(N+1) * np.pi / N)`, to enable :math:`O(N \\log N)` transforms to and from the basis domain.</span>
-<span class="sd">			Note the ordering of these points counts *up* in :math:`n`, which is right-to-left, from 1 to -1 in the :math:`t` domain.</span>
+<span class="sd">			Note the ordering of these points counts *up* in :math:`n`, which is right-to-left, from 1 to -1 in the :math:`x` domain.</span>
 <span class="sd">			If instead you want to use arbitrary sample points, this is allowed, but the code will warn that you are incurring</span>
 <span class="sd">			:math:`O(N^3)` cost. Note both endpoints are *inclusive*.</span>
 <span class="sd">		order (int): The order of differentiation, also called :math:`\\nu`. Must be :math:`\\geq 1`.</span>
