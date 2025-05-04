@@ -13,7 +13,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. Use cosine-spaced
 			points, i.e. :code:`t_n = x_n * (b - a)/2 + (b + a)/2` for a domain between :math:`a` and :math:`b`, where
 			:code:`x_n = np.cos(np.arange(N+1) * np.pi / N)`, to enable :math:`O(N \\log N)` transforms to and from the basis domain.
-			Note the ordering of these points counts *up* in :math:`n`, which is right-to-left, from 1 to -1 in the :math:`t` domain.
+			Note the ordering of these points counts *up* in :math:`n`, which is right-to-left, from 1 to -1 in the :math:`x` domain.
 			If instead you want to use arbitrary sample points, this is allowed, but the code will warn that you are incurring
 			:math:`O(N^3)` cost. Note both endpoints are *inclusive*.
 		order (int): The order of differentiation, also called :math:`\\nu`. Must be :math:`\\geq 1`.
