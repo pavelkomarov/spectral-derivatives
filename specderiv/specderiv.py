@@ -47,7 +47,7 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 		# expansion we have: y_n = \sum_{k=0}^{N} cos(pi k n/N) a_k. So we need to do some scaling to make Y_k = a_k.
 		for k in (first, last): Y_k[k] /= 2
 	else:
-		warn("""Your function is not sampled for the DCT-I, i.e. using `t_n = np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`.
+		warn("""Your function is not sampled for the DCT-I, i.e. `t_n = np.cos(np.arange(N+1) * np.pi / N) * (b - a)/2 + (b + a)/2`.
 			`cheb_deriv` using chebfit() and chebval() under the hood, which costs O(N^3) instead of O(N log N).""")
 		x_n = (t_n - offset)/scale # We have to work in the domain [-1, 1]
 		Y_k = np.apply_along_axis(lambda v: chebfit(x_n, v, N), axis, y_n) # O(N^3) to find each fit
