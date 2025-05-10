@@ -18,7 +18,9 @@ One of the happiest accidents in all math is the ease of transforming a function
 
 This document sets out the math behind the \texttt{spectral-derivatives} package, all the way down to the bones, as much as I can manage. I try to get in to the real \textit{whys} behind what we're doing here, touching on fundamental signal processing and calculus concepts as necessary, and building upwards to more general cases.
 
+\small
 \tableofcontents
+\normalsize
 
 \section{Bases}
 
@@ -305,7 +307,7 @@ We now know that the contribution to the mean-squared slope from the $\frac{M}{2
 
 $$\frac{d}{du} |u|^2 + |1 - u|^2 = 2u - 2(1-u) = 0 \longrightarrow u = \frac{1}{2}$$
 
-So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} type I (DCT-I), which \hyperref[fftdct]{is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$}, so we do have to worry about the Nyquist term.
+So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies $\pm\frac{M}{2}\theta$, giving a $\cos(\frac{M}{2}\theta)$ term." Note that if $M$ is odd, there is no troublesome $\frac{M}{2}$ term like this, but later we'll use the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.dct.html}{Discrete Cosine Transform}\cite{dct} type I (DCT-I), which \hyperref[fftdct]{is equivalent to the FFT with even $M$ and $Y_k = Y_{M-k}$}, so we \textit{do} have to worry about the Nyquist term.
 
 Now if we put it all together we get ``the \textbf{unique ``minimal-oscillation" trigonometric interpolation} of order $M$":
 
@@ -458,18 +460,18 @@ If we take $x_n = \cos(\theta_n)$ with $\theta_n$ equispaced, $n \in \{0, ...N\}
 
 Notice too that the polynomials/projected cosines are \textit{asymmetrical}, so we can natually use this basis to model arbitrary, lopsided functions without having to worry about \hyperref[phase]{phase shifts like we did for a Fourier basis of discrete harmonics}.
 
-\section{Chebyshev Derivatives via Fourier}\label{algo}
+\section{Chebyshev Derivatives by Reduction to the Fourier Case}\label{algo}
 
 This all suggests a solution procedure:
 
 \begin{algorithm}
-\caption*{\textbf{Chebyshev Derivative via Fourier Derivative}}
+\caption*{\textbf{Chebyshev Derivative via Fourier}}
 \begin{algorithmic}[1] % the [1] numbers the steps, starting from 1
-	\STATE Sample $y$ at $\{x_n = \cos(\theta_n)\}$ rather than at equally spaced $\{x_n\}$, thereby warping the function over the arc\\of a cylinder.
-	\STATE Use the DCT to transform to frequency domain.
-	\STATE Multiply by appropriate $(jk)^\nu$ to accomplish differentiation.
-	\STATE Inverse transform using the DST if odd function, DCT if even function.
-	\STATE Change variables back, taking care that the derivative in the Chebyshev domain entails an extra chain rule.
+\STATE Sample $y$ at $\{x_n = \cos(\theta_n)\}$ rather than at equally spaced $\{x_n\}$, thereby warping the function over the arc\\of a cylinder.
+\STATE Use the DCT to transform to frequency domain.
+\STATE Multiply by appropriate $(jk)^\nu$ to accomplish differentiation in the $\theta$ domain.
+\STATE Inverse transform using the DST if odd function, DCT if even function.
+\STATE Change variables back from $\theta$ to $x$, the Chebyshev variable, taking care that this entails an extra chain rule.
 \end{algorithmic}
 \end{algorithm}\pagebreak
 
@@ -660,29 +662,23 @@ At this point we've accomplished all but the last step of \hyperref[algo]{the al
 
 When we do this, we have to employ a chain rule, which introduces a new factor: the derivative of one of our variables w.r.t. the other. For the $1^{st}$ derivative it looks like:
 
-$$\frac{d}{dx} y(\theta) = \frac{d}{d\theta} y(\theta) \cdot \frac{d\theta}{dx} = \frac{\frac{d}{d\theta} y(\theta)}{\frac{dx}{d\theta}}, \quad \text{where } \frac{dx}{d\theta} = \frac{d}{d\theta} \cos(\theta) = -\sin(\theta)$$
-\begin{align*}
-	& \sin^2(\theta) + \cos^2(\theta) = 1 \longrightarrow \sin(\theta) = \pm \sqrt{1-\cos^2(\theta)} = \sqrt{1 - x^2} \text{ using upper semicircle}\\
-	& \longrightarrow -\sin(\theta) = -\sqrt{1 - x^2} \longrightarrow \frac{d\theta}{dx} = \frac{1}{\frac{dx}{d\theta}} = \frac{-1}{\sqrt{1 - x^2}} \quad \Big(\text{agrees with } \frac{d}{dx} \cos^{-1}(x) = \frac{-1}{\sqrt{1 - x^2}} \Big)
-\end{align*}
+$$\frac{d}{dx} y(\theta) = \frac{d}{d\theta} y(\theta) \cdot \frac{d\theta}{dx} = y'(\theta) \cdot \frac{d}{dx} \cos^{-1}(x) = y'(\theta) \cdot \frac{-1}{\sqrt{1 - x^2}}$$
 
-The $\frac{d}{d\theta} y(\theta)$ a.k.a $y'(\theta)$ term is actually pretty easy to handle, because we know its value (and for higher orders too) at discretized $\theta_n$ from earlier! (Equations \ref{y_prime_odd} \& \ref{y_prime_even}) If we use the sampled $x_n = \cos(\theta_n)$ from step 1 of \hyperref[algo]{the algorithm}, then our $\{x_n\}$ and $\{\theta_n\}$ align, and we can find samples of the derivative w.r.t. $x$ by plugging $\{x_n\}$ in to the new factor(s) and multiplying appropriately (pointwise):
+The $y'(\theta)$ term is actually pretty easy to handle, because we know its value (and for higher orders too) at discretized $\theta_n$ from earlier! (Equations \ref{y_prime_odd} \& \ref{y_prime_even}) If we use the sampled $x_n = \cos(\theta_n)$ from step 1 of \hyperref[algo]{the algorithm}, then our $\{x_n\}$ and $\{\theta_n\}$ align, and we can find samples of the derivative w.r.t. $x$ by plugging $\{x_n\}$ in to the new factor(s) and multiplying appropriately (pointwise):
 
 $$[\frac{d}{dx} y(\theta)]_n = \frac{-1}{\sqrt{1 - x_n^2}} \odot y'_n$$
 
-\subsubsection{Higher Derivatives}
+\subsubsection{Higher Derivatives and Splintering Terms}
 
 Let's see it for the second derivative:
 
-\begin{equation}\label{2nd}
-\begin{aligned}
+\begin{align*}
 \frac{d^2}{dx^2} y(\theta) &= \frac{d}{dx} \frac{y'(\theta)}{-\sqrt{1-x^2}} = \frac{-\sqrt{1-x^2} \frac{d}{dx} y'(\theta) - y'(\theta) \frac{d}{dx} (-\sqrt{1-x^2})}{1 - x^2} \\
 &= \frac{-\frac{d}{d\theta}y'(\theta)\cdot \frac{d\theta}{dx}}{\sqrt{1-x^2}} - \frac{y'(\theta)\frac{x}{\sqrt{1-x^2}}}{1 - x^2} = \frac{y''(\theta)}{1-x^2} - \frac{x y'(\theta)}{(1 - x^2)^{3/2}} \\
 \longrightarrow [\frac{d^2}{dx^2} y(\theta)]_n &= \frac{1}{1-x_n^2} \odot y''_n - \frac{x_n}{(1 - x_n^2)^{3/2}} \odot y'_n
-\end{aligned}
-\end{equation}
+\end{align*}
 
-Notice that the $2^{nd}$ derivative in $x$ requires \textit{both} the $1^{st}$ and $2^{nd}$ derivatives in $\theta$! This pattern will turn out to hold for higher derivatives as well: For the $\nu^{th}$ derivative in $x$ we require all derivatives up to order $\nu$ in $\theta$.
+Notice that the $2^{nd}$ derivative in $x$ requires \textit{both} the $1^{st}$ and $2^{nd}$ derivatives in $\theta$! This \textit{splintering} phenomenon will be a considerable source of pain as we take higher derivatives: For the $\nu^{th}$ derivative in $x$ we require all derivatives up to order $\nu$ in $\theta$.
 
 Let's see a few more:
 
@@ -696,7 +692,7 @@ Let's see a few more:
 \normalsize
 \end{equation}
 
-As we take higher derivatives, we can see a bit of a pattern. In particular, the function of $x$ multiplying each derivative of $y$ in $\theta$ comes from at most two terms in the preceding derivative, which have a predictable form:\vspace{-2mm}
+We can see a bit of a pattern here, though. In particular, the function of $x$ multiplying each derivative of $y$ in $\theta$ comes from at most two terms in the preceding derivative, which have a predictable form:\vspace{-2mm}
 
 \begin{align*}
 \frac{d}{dx} \Big( \frac{p(x)}{(1-x^2)^{c-1}} y^{(\mu)}(\theta) &+ \frac{q(x)}{(1-x^2)^{c -\frac{1}{2}}} y^{(\mu-1)}(\theta) \Big) = \\
@@ -748,11 +744,9 @@ This relationship holds no matter which, $\mu, c, p, q$ we're addressing, which 
 \end{tikzpicture}
 \end{minipage}
 \end{center}
-\end{figure}\vspace{-5mm}
+\end{figure}\pagebreak
 
-$q$ always refers to the element up and to the left, and $p$ always refers to the element above. If the arrows roll out of the pyramid, the corresponding $p$ or $q$ is $0$.
-
-I've done the above programmatically in \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/alternative_chebyshev_derivative_methods.ipynb}{code}, such that we can find and apply the factors---and thereby accomplish the variable transformation back to the Chebyshev domain---for arbitrarily high derivatives.
+$q$ always refers to the element up and to the left, and $p$ always refers to the element above. If the arrows roll out of the pyramid, the corresponding $p$ or $q$ is $0$. I've done the above programmatically in \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/alternative_chebyshev_derivative_methods.ipynb}{code}, such that we can find and apply the factors---and thereby accomplish the variable transformation back to the Chebyshev domain---for arbitrarily high derivatives.
 
 \subsection{Handling Domain Endpoints}\label{endpoints}
 
@@ -808,24 +802,61 @@ Because the act of cancellation and the functions containing powers of $\sqrt{1-
 
 \section{Chebyshev Derivatives via Series Recurrence}
 
+The above algorithm is a generalization of the method suggested by \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Trefethen}\cite{trefethen8}, but it actually overcomplicates matters considerably. It is possible to sidestep all the ballooningly-difficult variable mappings and higher derivative limit-evaluations by exploiting \href{https://scicomp.stackexchange.com/questions/44939/chebyshev-series-derivative-in-terms-of-coefficients}{a direct relationship}\cite{chebder}\cite{brown}\cite{dcoefs} between a function's Chebyshev series and its derivative's Chebyshev series. This is analogous to how we can represent a function as a power series (a sum of integer powers of the independent variable) and find the coefficients of its derivative with \href{https://mathworld.wolfram.com/PowerRule.html}{Power Rule}\cite{powerrule}.
 
-
-It is possible to sidestep all these ballooningly-complicated variable mappings and higher derivative limit-evaluations building up to higher derivatives from lower ones in stages (being careful to only use even derivatives if we're using the DCT-I and our end goal is even, so we preserve the Nyquist term). This would entail more forward transforms but actually no more inverse ones, since we have to remember the results of all the inverse transforms up to the $\nu^{th}$ order anyway.
+If we sandwich this key rule with the realization that the DCT is not only getting Fourier series coefficients of the warped function, but also Chebyshev series coefficients of the original function (because these are exactly the same!), and thus the DCT$^{-1}$ can go from the Chebyshev series representation to a cosine-spaced sampling of a function, then we have the ingredients to craft an algorithm that stays entirely in the $x$ domain:
 
 \begin{algorithm}
-\caption*{\textbf{Chebyshev Derivative via Fourier Derivative}}
+\caption*{\textbf{Chebyshev Derivative via Series Rule}}
 \begin{algorithmic}[1] % the [1] numbers the steps, starting from 1
-	\STATE Sample $y$ at $\{x_n = \cos(\theta_n)\}$ rather than at equally spaced $\{x_n\}$, thereby warping the function over the arc\\of a cylinder.
-	\STATE Use the DCT to transform to frequency domain.
-	\STATE Multiply by appropriate $(jk)^\nu$ to accomplish differentiation.
-	\STATE Inverse transform using the DST if odd function, DCT if even function.
-	\STATE Change variables back, taking care that the derivative in the Chebyshev domain entails an extra chain rule.
+\STATE Sample $y$ at $\{x_n = \cos(\theta_n)\}$ for equispaced $\{\theta_n\}$.
+\STATE Use the DCT to get Chebyshev basis coefficients.
+\STATE Use the Chebyshev series derivative rule to calculate the derivative's coefficients in $O(N)$.
+\STATE Inverse transform with the DCT to resample the derivative function at $\{x_n\}$.
 \end{algorithmic}
 \end{algorithm}
 
+This algorithm turns out to be \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/alternative_chebyshev_derivative_methods.ipynb}{essentially numerically identical} to \hyperref[algo]{the first}, and due to its relative simplicity (no splinters!), it is the method of choice implemented in the main library \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{code}.
 
-TODO, mostly rip in the scicomp post
+\subsection{Chebyshev Series Derivative Rule}
 
+To most easily explain the rule, we'll need a little extra machinery: There are actually \textit{two different kinds} of Chebyshev polynomials, and so far we've only been working with the first kind, denoted $T_k(x) = \cos(k\theta)$. The \textit{second kind} is given as:
+
+$$U_k(x) = \frac{\sin((k+1)\theta)}{\sin(\theta)}$$
+
+Notice that:
+
+$$\frac{d}{dx} T_k(x) = \frac{d}{d\theta} \cos(k\theta) \cdot \frac{d\theta}{dx} = k(\cancel{-}\sin(k\theta)) \cdot \frac{\cancel{-1}}{\sqrt{1-x^2}} = \frac{k\sin(k\theta)}{\sin(\theta)} = k \cdot U_{k-1}(x)$$
+
+But we really want the derivative in terms of $T$, not $U$. Lucky for us, there is a relationship between the two, based on trignometric identities, making particular use of $\sin(\alpha)\cos(\beta) = \frac{1}{2}(\sin(\alpha + \beta) + \sin(\alpha - \beta))$:
+
+\begin{align*}
+2\sum_{\text{odd }\kappa>0}^{\text{odd }k-1} &\cos(\kappa\theta)\sin(\theta) = \cancel{2}\sum_{\text{odd } \kappa>0}^{\text{odd }k-1} \cancel{\frac{1}{2}}(\sin((1+\kappa)\theta) + \underbrace{\sin(1-\kappa)\theta)}_{=-\sin((\kappa-1)\theta)}\\
+&= \sin(k\theta) \cancel{-\sin((k-2)\theta) + \sin((k-2)\theta)} - ... \cancel{-\sin(2\theta) + \sin(2\theta)} - \overset{\text{\normalsize 0}}{\cancel{\sin(0\theta)}} = \sin(k\theta)\\
+&\longrightarrow \frac{\sin(k\theta)}{\sin(\theta)} = 2\sum_{\text{odd }\kappa>0}^{k-1} \cos(\kappa\theta) \quad \text{for \textit{even} k}
+\end{align*}
+
+Similarly:
+
+\begin{align*}
+2\sum_{\text{even }\kappa \geq 0}^{\text{even }k-1} &\cos(\kappa\theta)\sin(\theta) = \cancel{2}\sum_{\text{even } \kappa \geq 0}^{\text{even }k-1} \cancel{\frac{1}{2}}(\sin((1+\kappa)\theta) + \underbrace{\sin(1-\kappa)\theta)}_{=-\sin((\kappa-1)\theta)}\\
+&= \sin(k\theta) \cancel{-\sin((k-2)\theta) + \sin((k-2)\theta)} - ... \cancel{-\sin(\theta) + \sin(\theta)} \underbrace{-\sin(-\theta)}_{=+\sin(\theta)} = \sin(k\theta) + \sin(\theta)\\
+&\longrightarrow \frac{\sin(k\theta)}{\sin(\theta)} = -1 + 2\sum_{\text{odd }\kappa>0}^{k-1} \cos(\kappa\theta) \quad \text{for \textit{odd} k}
+\end{align*}
+
+Thus:
+
+$$U_{k-1}(x) = \begin{cases}
+2\sum_{\text{odd } \kappa>0}^{k-1} T_\kappa(x) & \text{for even } k \\
+-1 + 2\sum_{\text{even } \kappa \geq 0}^{k-1} T_\kappa(x) & \text{for odd } k
+\end{cases}\longrightarrow \frac{d}{dx} T_k(x) = k \cdot \begin{cases}
+2\sum_{\text{odd } \kappa>0}^{k-1} T_\kappa(x) & \text{for even } k \\
+-1 + 2\sum_{\text{even } \kappa \geq 0}^{k-1} T_\kappa(x) & \text{for odd } k
+\end{cases}$$
+
+Let's see this on a couple examples to get a better intuition: In practice we represent the function with $N$ Chebyshev series coefficients, stored low to high. If $N=5$, then $T_3(x)$ would be $[0, 0, 0, 1, 0]$, and $T_4(x)$ would be $[0, 0, 0, 0, 1]$. If we differentiate these two, we should get $\frac{d}{dx}T_3(x) = 3 \cdot(-1 + 2 \cdot [1, 0, 1, 0, 0]) = [3, 0, 6, 0, 0]$, and $\frac{d}{dx}T_4(x) = 4 \cdot 2 \cdot [0, 1, 0, 1, 0] = [0, 8, 0, 8, 0]$. Notice the extra constant from the $-1$ in the first example is factored in to the coefficient of $T_0(x) = 1$.
+
+Because differentiation is linear, we can scale and stack these particular results, e.g. $\frac{d}{dx}(2T_3(x) + T_4(x)) = 6T_0(x) + 8T_1(x) + 12T_2(x) + 8T_3(x)$. And because each term's derivative only affects ever-other term of lower order, and these effects are cumulative, it's possible to calculate the new sequence by starting at the higher-order end and working downwards, modifying only \href{https://scicomp.stackexchange.com/q/44939/48402}{two numbers at each step}\cite{dcoefs}. An implementation of this procedure called \href{https://github.com/numpy/numpy/blob/v2.2.0/numpy/polynomial/chebyshev.py#L874-L961}{\texttt{chebder}}\cite{chebder} lives in \texttt{numpy}.
 
 
 \section{Multidimensionality}
@@ -836,15 +867,15 @@ $$\frac{\partial^2}{\partial x_1 \partial x_2} y(x_1, x_2) = \texttt{Algo}(\text
 
 $$ \nabla^2 y = (\frac{\partial^2}{\partial x_1^2} + \frac{\partial^2}{\partial x_2^2}) y = \texttt{Algo}(y_i, 2^{nd}, x_1) + \texttt{Algo}(y_j, 2^{nd}, x_2) \quad \forall\ i, j$$
 
-where $i, j$ are indexers as in the computing sense and have nothing to do with the imaginary unit, \texttt{Algo} applies \hyperref[algo]{the algorithm} to each vector along the dimension given by the third argument, and the $1^{st}$ and $2^{nd}$ in the second argument refer to the derivative order.
+where $i, j$ are indexers as in the computing sense and have nothing to do with the imaginary unit, \texttt{Algo} applies the algorithm to each vector along the dimension given by the third argument, and the $1^{st}$ and $2^{nd}$ in the second argument refer to the derivative order.
 
 Each application to a vector incurs $O(N \log N)$ cost, and fundamentally applying the method to higher-dimensional data must involve a loop, so the full cost of applying along any given direction is (assuming length $N$ in all dimensions) $O(N^D \log N)$, where $D$ is the dimension of the data. Aside from pushing this loop lower down into \texttt{numpy} to take advantage of vectorized compute, there can be no cost savings for a derivative in a particular dimension.
 
 \subsection{Dimensions Together versus In Series}
 
-But can we simplify the situation at all?
+Can we simplify the situation at all?
 
-Due to the linearity of the Fourier transform, transforming along all dimensions, multiplying by appropriate $(jk)^\nu$ along corresponding dimensions of the transformed data, and then inverse transforming along all dimensions is equivalent to transforming, multiplying, and inverse transforming each dimension in series\cite{johnson}:
+Due to the linearity of the Fourier transform (and DCT), transforming along all dimensions, multiplying by appropriate $(jk)^\nu$ (or calling \texttt{chebder}) along corresponding dimensions of the transformed data, and then inverse transforming along all dimensions is equivalent to transforming, differentiating, and inverse transforming each dimension in series\cite{johnson}:
 
 \begin{center}
 \begin{tikzpicture}
@@ -867,7 +898,7 @@ Due to the linearity of the Fourier transform, transforming along all dimensions
 \end{tikzpicture}
 \end{center}
 
-That's really neat, but does it save us anything, really? Let's see it in series:
+That's neat, but does it save us anything, really? Let's see it in series:
 
 \begin{center}
 \begin{tikzpicture}
@@ -901,59 +932,9 @@ That's really neat, but does it save us anything, really? Let's see it in series
 
 If we add up the costs, we can see that it's actually no more or less efficient to differentiate along all dimensions at once versus in series.
 
-\subsection{Splintering}
+From a user-friendliness perspective, I judge it to be somewhat more confusing to specify multiple derivative dimensions at once (although generalizing the \texttt{order} and \texttt{axis} parameters to vectors is possible), so I have chosen to limit the package to differentation along a single dimension at a time, which also agrees with the interface of \texttt{chebder}. 
 
-The above is good news, because converting back to the Chebyshev domain turns out to be terribly knotty and difficult in the simultaneous-multidimensional derivatives case, for several reasons.
-
-First, the fact we need all inverse transforms in $\theta$ up to order $\nu$ to compute the derivative of order $\nu$ in $x$ leads to \textit{far} more terms in multiple dimensions, due to interactions. I'll demonstrate with the simplest possible case, $2^{nd}$ order in one dimension and $1^{st}$ order in another:
-
-\begin{equation}\label{minexample}
-\frac{\partial^3}{\partial x_1^2 \partial x_2} y(\theta_1, \theta_2) = \frac{\partial}{\partial x_2} \Big[ \frac{\partial^2}{\partial x_1^2} y(\theta_1, \theta_2) \Big]
-\end{equation}
-
-Let's break this up and apply the \href{https://math.libretexts.org/Bookshelves/Calculus/Calculus_(OpenStax)/14%3A_Differentiation_of_Functions_of_Several_Variables/14.05%3A_The_Chain_Rule_for_Multivariable_Functions}{multivariable chain rule}\cite{chainrule} and product rule to just evaluate that inner portion first:\vspace{-5mm}
-
-\begin{align*}
-\frac{\partial^2}{\partial x_1^2} y(\theta_1, \theta_2) &= \frac{\partial}{\partial x_1} \Big( \frac{\partial}{\partial \theta_1} y \cdot \frac{d\theta_1}{dx_1} + \frac{\partial}{\partial \theta_2} y \cdot \overset{\text{\normalsize 0}}{\cancel{\frac{d\theta_2}{dx_1}}} \Big) & \text{multivariable chain rule}\\
-&= \frac{\partial}{\partial \theta_1} y \cdot \frac{d^2 \theta_1}{dx_1^2} + \frac{\partial}{\partial x_1}\Big( \frac{\partial}{\partial \theta_1} y \Big) \cdot \frac{d\theta_1}{d x_1} & \text{product rule}\\
-&= \frac{\partial}{\partial \theta_1} y \cdot \frac{d^2 \theta_1}{dx_1^2} + \Big( \frac{\partial^2}{\partial \theta_1^2} y \cdot \frac{d \theta_1}{dx_1} + \frac{\partial^2}{\partial \theta_2 \partial \theta_1} y \overset{\text{\normalsize 0}}{\cancel{\frac{d\theta_2}{dx_1}}} \Big) \cdot \frac{d\theta_1}{d x_1} & \text{multivariable chain rule}\\
-&= \frac{\partial}{\partial \theta_1} y \cdot \frac{d^2 \theta_1}{dx_1^2} + \frac{\partial^2}{\partial \theta_1^2} y \cdot \Big( \frac{d \theta_1}{dx_1} \Big)^2
-\end{align*}
-
-Now using this to evaluate \autoref{minexample}:\vspace{-3mm}
-
-\begin{align*}
-\frac{\partial^3}{\partial x_1^2 \partial x_2} y(\theta_1, \theta_2) =& \frac{\partial}{\partial x_2} \Big[ \frac{\partial}{\partial \theta_1} y \cdot \frac{d^2 \theta_1}{dx_1^2} + \frac{\partial^2}{\partial \theta_1^2} y \cdot \Big( \frac{d \theta_1}{dx_1} \Big)^2 \Big]\\
-=& \frac{\partial}{\partial \theta_1} y \cdot \overset{\text{\normalsize 0}}{\cancel{\frac{\partial}{\partial x_2} \frac{d^2 \theta_1}{dx_1^2}}} + \Big( \frac{\partial^2}{\partial \theta_1^2} y \cdot \overset{\text{\normalsize 0}}{\cancel{\frac{d\theta_1}{dx_2}}} + \frac{\partial^2}{\partial \theta_1 \partial \theta_2} y \cdot \frac{d \theta_2}{dx_2} \Big) \cdot \frac{d^2\theta_1}{dx_1^2} \\
-&+ \frac{\partial^2}{\partial \theta_1^2} y \overset{\text{\normalsize 0}}{\cancel{\frac{\partial}{\partial x_2} \Big( \frac{d\theta_1}{dx_1} \Big)^2}} + \Big( \frac{\partial^3}{\partial \theta_1^3} y \cdot \overset{\text{\normalsize 0}}{\cancel{\frac{d\theta_1}{dx_2}}} + \frac{\partial^3}{\partial \theta_1^2 \partial \theta_2} y \cdot \frac{d \theta_2}{dx_2} \Big) \cdot \Big(\frac{d\theta_1}{dx_1}\Big)^2 \\
-=& \frac{\partial^2}{\partial \theta_1 \partial \theta_2} y \cdot \frac{d \theta_2}{dx_2} \cdot \frac{d^2\theta_1}{dx_1^2} + \frac{\partial^3}{\partial \theta_1^2 \partial \theta_2} y \cdot \frac{d \theta_2}{dx_2} \cdot \Big(\frac{d\theta_1}{dx_1}\Big)^2
-\end{align*}
-
-The double derivative in $x_1$ has \textit{splintered} the expression into two, and then the single derivative in $x_2$ has interacted with \textit{both} those terms.
-
-All the terms that involve derivatives of a $\theta$ w.r.t. an $x$ are ultimately just functions of $x$. In fact, $\frac{d\theta_2}{dx_2}$ is just our old friend $\frac{-1}{\sqrt{1-x_2^2}}$, and you can pick out $\big( \frac{d\theta_1}{dx_1} \big)^2$ and $\frac{d^2\theta_1}{dx_1^2}$ in \autoref{2nd}. Together they are \textit{a Cartesian product} of the \hyperref[pyramid]{the 1D case}!
-
-Meanwhile, the $\partial y$ terms have different orders, which means that to find them we need to multiply $Y$, the all-dimensions transform of $y$, by \textit{different} orders of $jk$. If we do this carefully, the best-case scenario is that we incur \href{https://github.com/pavelkomarov/spectral-derivatives/issues/2}{the same amount of work} as the in-series case, but it takes some extra bookkeeping and data copying.
-
-Even worse, at the \textit{edges} of the domain we still need to use L'Hôpital's rule on an analytic expression to evaluate the limits of\vspace{-2mm}
-
-$$\frac{\partial^{\sum_i\nu_i}}{\partial x_1^{\nu_1} ... \partial x_D^{\nu_D}} y(\theta_1, ... \theta_D)$$
-
-This is made more challenging by the fact our analytic reconstruction expression is based on the DCT-I$^{-1}$ or DCT-II$^{-1}$, which have terms outside the central sum, so as we substitute the DCT in to the DCT, we get ever more terms ($3^D$ of them for the DCT-I$^{-1}$ and $2^D$ of them for the DCT-II$^{-1}$), e.g.~in 2D the DCT-I$^{-1}$ is:\vspace{-2mm}
-
-\begin{align*}
-y(\theta_1, \theta_2) =& \frac{1}{M^2} \Big[ Y_{00} + Y_{N0}\cos(N\theta_1) + Y_{0N}\cos(N\theta_2) + Y_{NN}\cos(N\theta_1)\cos(N\theta_2)\\
-&+ 2\sum_{k_1 = 1}^{N-1} Y_{k_1 0} \cos(k_1 \theta_1) + 2\sum_{k_2 = 1}^{N-1} Y_{0 k_2} \cos(k_2 \theta_2) + 2\cos(N\theta_2) \sum_{k_1 = 1}^{N-1} Y_{k_1 N} \cos(k_1 \theta_1)\\
-&+ 2\cos(N\theta_1) \sum_{k_2 = 1}^{N-1} Y_{N k_2} \cos(k_2 \theta_2) + 4 \sum_{k_1 = 1}^{N-1} \sum_{k_2 = 1}^{N-1} Y_{k_1 k_2} \cos(k_1 \theta_1) \cos(k_2 \theta_2)\Big]
-\end{align*}
-
-We could generalize the original conception (\autoref{equivalent}), which has a single sum with $a_0 = \frac{Y_0}{M}, a_k = \frac{2 Y_k}{M} \text{ for } k \in [1, N-1], a_N = \frac{Y_N}{M}$, to get a $y(\vec{\theta})$ with only a single term, but this involves still more extra bookkeeping.
-
-Most gnarly, we then still have to take limits as different \textit{combinations} of dimensions reach the edges, which becomes a combinatorial nightmare. This was \hyperref[endpoints]{already hard enough in 1D}!
-
-So although \texttt{numpy} does provide the \texttt{fftn} function for transforming in multiple dimensions at once, and \texttt{scipy} provides similar \texttt{dctn} and \texttt{dstn} functions, they wouldn't confer a computational-complexity benefit and would require the math and code to get massively more complicated, so I have chosen not to use them. From a user-friendliness perspective, I also judge it to be somewhat more confusing to specify multiple derivatives at once (although generalizing the \texttt{nu} and \texttt{axis} parameters to vectors is possible). For all these reasons, I have chosen to limit the package to taking derivatives along a single dimension at once.
-
-Multidimensional \textit{data} can still be handled, however, via clever indexing and use of \texttt{fft}, \texttt{dct}, and \texttt{dst}'s \texttt{axis} parameter.
+Multidimensional \textit{data} can still be handled, however, via clever indexing and use of \texttt{fft}, \texttt{dct}, and \texttt{chebder}'s \texttt{axis} parameter.
 
 \section{Arbitrary Domains}
 
@@ -1144,7 +1125,7 @@ This way doesn't work so well due to systematic edge blowup. Give explanation.
 \bibitem{johnson}
 	Johnson, S., 2011, Notes on FFT-based differentiation, \url{https://math.mit.edu/~stevenj/fft-deriv.pdf}
 \bibitem{trefethen8}
-	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, Chapter 8, \url{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}
+	Trefethen, N., 2000, \textit{Spectral Methods in Matlab}, Chapter 8, \url{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}	
 \bibitem{dedalus}
 	Burns, K., et al., 2020, Dedalus: A flexible framework for numerical simulations with spectral methods, \url{https://www.researchgate.net/publication/340905766_Dedalus_A_flexible_framework_for_numerical_simulations_with_spectral_methods}
 \bibitem{dct}
@@ -1155,10 +1136,14 @@ This way doesn't work so well due to systematic edge blowup. Give explanation.
 	Giesen, F., DCT-II vs. KLT/PCA, \url{https://www.farbrausch.de/%7Efg/articles/dct_klt.pdf}
 \bibitem{energycompaction}
 	Royi, 2025, Why does the DCT-II have better energy compaction than DCT-I?, \url{https://dsp.stackexchange.com/a/96197/40873}
-\bibitem{chainrule}
-	The Chain Rule for Multivariable Functions, \url{https://math.libretexts.org/Bookshelves/Calculus/Calculus_(OpenStax)/14%3A_Differentiation_of_Functions_of_Several_Variables/14.05%3A_The_Chain_Rule_for_Multivariable_Functions}
+\bibitem{chebder}
+	Harris, C., 2009, `chebder`, \url{https://github.com/numpy/numpy/blob/v2.2.0/numpy/polynomial/chebyshev.py#L874-L961}
 \bibitem{brown}
 	Breuer, K. \& Everson, R., 1990, On the errors incurred calculating derivatives using Chebyshev polynomials, \url{https://doi.org/10.1016/0021-9991(92)90274-3}
+\bibitem{dcoefs}
+	Komarov, P., 2025, Chebyshev Series Derivative in terms of Coefficients, \url{https://scicomp.stackexchange.com/q/44939/48402}
+\bibitem{powerrule}
+	Power Rule, \url{https://mathworld.wolfram.com/PowerRule.html}
 \end{thebibliography}
 
 \end{document}
