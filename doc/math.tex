@@ -831,17 +831,17 @@ $$\frac{d}{dx} T_k(x) = \frac{d}{d\theta} \cos(k\theta) \cdot \frac{d\theta}{dx}
 But we really want the derivative in terms of $T$, not $U$. Lucky for us, there is a relationship between the two, based on trigonometric identities, making particular use of $\cos(\alpha)\sin(\beta) = \frac{1}{2}(\sin(\alpha + \beta) - \sin(\alpha - \beta))$:
 
 \begin{align*}
-2\sum_{\text{odd }\kappa>0}^{\text{odd }k-1} &\cos(\kappa\theta)\sin(\theta) = \cancel{2}\sum_{\text{odd } \kappa>0}^{\text{odd }k-1} \cancel{\frac{1}{2}}(\sin((\kappa+1)\theta) - \sin(\kappa-1)\theta)\\
+2\!\!\!\!\sum_{\text{odd }\kappa>0}^{\text{odd }k-1} \!\!\!\!&\cos(\kappa\theta)\sin(\theta) = \cancel{2}\!\!\!\!\sum_{\text{odd } \kappa>0}^{\text{odd }k-1} \cancel{\frac{1}{2}}(\sin((\kappa+1)\theta) - \sin(\kappa-1)\theta)\\
 &= \sin(k\theta) \cancel{-\sin((k-2)\theta) + \sin((k-2)\theta)} - ... \cancel{-\sin(2\theta) + \sin(2\theta)} - \overset{\text{\normalsize 0}}{\cancel{\sin(0\theta)}} = \sin(k\theta)\\
-&\longrightarrow \frac{\sin(k\theta)}{\sin(\theta)} = 2\sum_{\text{odd }\kappa>0}^{k-1} \cos(\kappa\theta) \quad \text{for \textit{even} k}
+&\longrightarrow \frac{\sin(k\theta)}{\sin(\theta)} = 2\!\!\!\!\sum_{\text{odd }\kappa>0}^{k-1} \!\!\!\!\cos(\kappa\theta) \quad \text{for \textit{even} k}
 \end{align*}
 
 Similarly:
 
 \begin{align*}
-2\sum_{\text{even }\kappa \geq 0}^{\text{even }k-1} &\cos(\kappa\theta)\sin(\theta) = \cancel{2}\sum_{\text{even } \kappa \geq 0}^{\text{even }k-1} \cancel{\frac{1}{2}}(\sin((\kappa+1)\theta) - \sin(\kappa-1)\theta)\\
+2\!\!\!\!\sum_{\text{even }\kappa \geq 0}^{\text{even }k-1} \!\!\!\!&\cos(\kappa\theta)\sin(\theta) = \cancel{2}\!\!\!\!\sum_{\text{even } \kappa \geq 0}^{\text{even }k-1} \cancel{\frac{1}{2}}(\sin((\kappa+1)\theta) - \sin(\kappa-1)\theta)\\
 &= \sin(k\theta) \cancel{-\sin((k-2)\theta) + \sin((k-2)\theta)} - ... \cancel{-\sin(\theta) + \sin(\theta)} \underbrace{-\sin(-\theta)}_{=+\sin(\theta)} = \sin(k\theta) + \sin(\theta)\\
-&\longrightarrow \frac{\sin(k\theta)}{\sin(\theta)} = -1 + 2\sum_{\text{odd }\kappa>0}^{k-1} \cos(\kappa\theta) \quad \text{for \textit{odd} k}
+&\longrightarrow \frac{\sin(k\theta)}{\sin(\theta)} = -1 + 2\!\!\!\!\sum_{\text{odd }\kappa>0}^{k-1} \!\!\!\!\cos(\kappa\theta) \quad \text{for \textit{odd} k}
 \end{align*}
 
 Thus:
