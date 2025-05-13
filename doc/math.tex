@@ -40,7 +40,7 @@ Note that if we set $a$ and $b$ at $\pm \infty$, this integral could diverge. If
 
 \subsection{The Fourier Basis}\label{fourierB}
 
-The most famous basis is the \textit{Fourier} basis\endnote{There's a great passage in \href{https://en.wikipedia.org/wiki/Richard_Hamming}{Richard Hamming}'s book \textit{The Art of Doing Science and Engineering}\cite{hamming} where he wonders why we use the Fourier basis so much:
+The most famous basis is the \textit{Fourier} basis\endnote{\label{whyfourier}There's a great passage in \href{https://en.wikipedia.org/wiki/Richard_Hamming}{Richard Hamming}'s book \textit{The Art of Doing Science and Engineering}\cite{hamming} where he wonders why we use the Fourier basis so much:
 
 \begin{quotation}
 ``It soon became clear to me digital filter theory was dominated by Fourier series, about which theoretically I had learned in college, and actually I had had a lot of further education during the signal processing I had done for John Tukey, who was a professor from Princeton, a genius, and a one or two day a week employee of Bell Telephone Laboratories. For about ten years I was his computing arm much of the time.
@@ -51,7 +51,7 @@ So I had to think of basics, just as I told you I had done when using an error-d
 
 Second, linear systems, which is what we want at this stage, also have the same eigenfunctions—the complex exponentials which are equivalent to the real trigonometric functions. Hence a simple rule: if you have either a time-invariant system or a linear system, then you should use the complex exponentials.
 
-On further digging into the matter I found yet a third reason for using them in the field of digital filters. There is a theorem, often called Nyquist's sampling theorem (though it was known long before and even published by Whittaker, in a form you can hardly realize what it is saying, even when you know Nyquist's theorem), which says that if you have a band-limited signal and sample at equal spaces at a rate of at least two in the highest frequency, then the original signal can be reconstructed from the samples. Hence the sampling process loses no information when we replace the continuous signal with the equally spaced samples, provided the samples cover the whole real line. The sampling rate is often known as the Nyquist rate after Harry Nyquist, also of servo stability fame, as well as other things [also reputed to have been \href{https://deanebarker.net/tech/linkedin/harry-nyquist-again/}{just a really great guy} who often had productive lunches with his colleagues, giving them feedback and asking questions that brought out the best in them]. If you sample a non-band-limited function, then the higher frequencies are ``aliased" into lower ones, a word devised by Tukey to describe the fact that a single high frequency will appear later as a single low frequency in the Nyquist band. The same is not true for any other set of functions, say powers of $t$. Under equally spaced sampling and reconstruction a single high power of $t$ will go into a polynomial (many terms) of lower powers of $t$.
+On further digging in to the matter I found yet a third reason for using them in the field of digital filters. There is a theorem, often called Nyquist's sampling theorem (though it was known long before and even published by Whittaker, in a form you can hardly realize what it is saying, even when you know Nyquist's theorem), which says that if you have a band-limited signal and sample at equal spaces at a rate of at least two in the highest frequency, then the original signal can be reconstructed from the samples. Hence the sampling process loses no information when we replace the continuous signal with the equally spaced samples, provided the samples cover the whole real line. The sampling rate is often known as the Nyquist rate after Harry Nyquist, also of servo stability fame, as well as other things [also reputed to have been \href{https://deanebarker.net/tech/linkedin/harry-nyquist-again/}{just a really great guy} who often had productive lunches with his colleagues, giving them feedback and asking questions that brought out the best in them]. If you sample a non-band-limited function, then the higher frequencies are ``aliased" into lower ones, a word devised by Tukey to describe the fact that a single high frequency will appear later as a single low frequency in the Nyquist band. The same is not true for any other set of functions, say powers of $t$. Under equally spaced sampling and reconstruction a single high power of $t$ will go into a polynomial (many terms) of lower powers of $t$.
 
 Thus there are three good reasons for the Fourier functions: (1) time invariance, (2) linearity, and (3) the reconstruction of the original function from the equally spaced samples is simple and easy to understand.
 
@@ -229,7 +229,7 @@ For simplicity, we can collect $\frac{2\pi}{M}n$ as a single term, $\theta_n \in
 
 I now quote \href{https://math.mit.edu/~stevenj/fft-deriv.pdf}{Steven Johnson}\cite{johnson}, with some of my own symbols and notation sprinkled in:
 
-\begin{quotation}
+\begin{quotation}\label{bandlimited}
 ``In order to compute derivatives like $y'(\theta)$, we need to do more than express $y_n$. We need to use the DFT$^{-1}$ expression to define a continuous interpolation between the samples $y_n$---this is called \textit{trigonometric interpolation}---and then differentiate this interpolation. At first glance, interpolating seems very straightforward: one simply evaluates the DFT$^{-1}$ expression at non-integer $n \in \mathbb{R}$. This indeed defines \textit{an} interpolation, but it is not the \textit{only} interpolation, nor is it the \textit{best} interpolation for this purpose. The reason there is more than one interpolation is due to \textit{aliasing}: any term $e^{+j \theta_n k} Y_k$ in the DFT$^{-1}$ can be replaced by $e^{+j \theta_n (k + mM)} Y_k$ for any integer $m$ and still give the \textit{same} samples $y_n$, since $e^{j \frac{2\pi}{M} nmM} = e^{j2\pi nm} = 1$ for any integers $m$ and $n$. Essentially, adding the $mM$ term to $k$ means that the interpolated function $y(\theta)$ just oscillates $m$ extra times between the sample points, which has no effect on $y_n$ but has a huge effect on derivatives. To resolve this ambiguity, one imposes additional criteria---e.g.~a bandlimited spectrum and/or minimizing some derivative of the interpolated $y(\theta)$"
 \end{quotation}
 
@@ -351,7 +351,7 @@ Y^{(\nu)}_k = \begin{cases} (j k)^\nu \cdot Y_k & k < \frac{M}{2} \\ (j \frac{M}
 
 This has definite echoes of the standardly-given, continuous-time case covered in \autoref{derivative}, but it's emphatically \textit{not} as simple as just multiplying by $j\omega$ or even by $j k$. However, the final answer is thankfully super compact to represent in math and in code.
 
-\subsection{Limitations}
+\subsection{Limitations}\label{artefacts}
 
 So far it has all been good news, but there is a serious caveat to using the Fourier basis, especially for derivatives.
 
@@ -804,7 +804,7 @@ Because the act of cancellation and the functions containing powers of $\sqrt{1-
 
 The above algorithm is a generalization of the method suggested by \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Trefethen}\cite{trefethen8}, but it actually overcomplicates matters considerably. It is possible to sidestep all the ballooningly-difficult variable mappings and higher derivative limit-evaluations by exploiting \href{https://scicomp.stackexchange.com/questions/44939/chebyshev-series-derivative-in-terms-of-coefficients}{a direct relationship}\cite{chebder}\cite{brown}\cite{dcoefs} between a function's Chebyshev series and its derivative's Chebyshev series. This is analogous to how we can represent a function as a power series (a sum of integer powers of the independent variable) and find the coefficients of its derivative with \href{https://mathworld.wolfram.com/PowerRule.html}{Power Rule}\cite{powerrule}.
 
-If we sandwich this key rule with the realization that the DCT is not only getting Fourier series coefficients of the warped function, but also Chebyshev series coefficients of the original function (because these are exactly the same!), and thus the DCT$^{-1}$ can go from the Chebyshev series representation to a cosine-spaced sampling of a function, then we have the ingredients to craft an algorithm that stays entirely in the $x$ domain:
+If we sandwich this key rule with the realization that the DCT is not only getting Fourier series coefficients of the warped function, but also (scaled) Chebyshev series coefficients of the original function (because these are exactly the same modulo constant factors!), and thus the DCT$^{-1}$ can go from the Chebyshev series representation to a cosine-spaced sampling of a function, then we have the ingredients to craft an algorithm that stays entirely in the $x$ domain:
 
 \begin{algorithm}
 \caption*{\textbf{Chebyshev Derivative via Series Rule}}
@@ -816,9 +816,9 @@ If we sandwich this key rule with the realization that the DCT is not only getti
 \end{algorithmic}
 \end{algorithm}
 
-This algorithm turns out to be \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/alternative_chebyshev_derivative_methods.ipynb}{essentially numerically identical} to \hyperref[algo]{the first}, and due to its relative simplicity (no splinters!), it is the method of choice implemented in the main library \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{code}.
+This algorithm turns out to be \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/alternative_chebyshev_derivative_methods.ipynb}{essentially numerically identical} to \hyperref[algo]{the first}, and due to its relative simplicity (no splinters!) and ease of extension to support non-cosine-spaced samples (albeit with considerably greater computational cost, $O(N^3)$ rather than $O(N \log N)$), it is the method of choice implemented in the main library \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/specderiv/specderiv.py}{code}.
 
-\subsection{Chebyshev Series Derivative Rule}
+\subsection{Chebyshev Series Derivative Rule}\label{seriesrule}
 
 To most easily explain the rule, we'll need a little extra machinery: There are actually \textit{two different kinds} of Chebyshev polynomials, and so far we've only been working with the first kind, denoted $T_k(x) = \cos(k\theta)$. The \textit{second kind} is given as:
 
@@ -1067,21 +1067,230 @@ So we can always correct the derivative by dividing by scale$^\nu$.\newline
 
 To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub and especially confusing with the DCT-II), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter} and raise error messages with correct examples if the sampling is invalid.
 
-\section{Noise}
+\section{Differentiating in the Presence of Noise}
 
-TODO: Explanation of band-separation of noise, rip from noise notebook, and cite sources.
+Finding the true derivative of a noisy signal is ill-posed, because random variations cause unknown (and often dramamtic) local deviations of function slope. This problem only gets worse for calculations of curvature and higher order derivatives, so the only solution is to try to remove the noise \textit{before} differentating.
+
+\subsection{White Noise}
+
+Absent further information about a noise-generating process, we can't assume anything about the noise's structure, which makes it extra challenging to remove. We instead can only rely on the aid of a central observation from the field of signal processing:
+
+\begin{quotation}
+``Every spectrum of real noise falls off reasonably rapidly as you go to infinite frequencies, or else it would have infinite energy. But the sampling process aliases higher frequencies in lower ones, and the folding ... tends to produce a flat spectrum. ... \textit{white noise}. The signal, usually, is mainly in the lower frequencies." --Richard Hamming, \textit{The Art of Doing Science and Engineering}\cite{hamming}, Digital Filters III
+\end{quotation}
+
+By use of the term ``frequencies", Hamming is implying use of the \textit{Fourier} basis. He's saying there is \textit{band-separation} of signal and noise in the frequency domain, yet another reason for its \hyperref[whyfourier]{popularity}. This general principle extends to other noise reduction techniques in spirit: At bottom, all accomplish some kind of \textit{smoothing}, be it moving average, FIR filtering, Savitzky-Golay, Kalman filtering, total variation penalty, etc.
+
+\subsection{Filtering with the Fourier Basis}
+
+It's helpful to see a picture:
+
+\begin{figure}[h!]\label{spectrum}
+\begin{center}
+\begin{minipage}{0.6\textwidth}
+\centering
+\begin{tikzpicture}
+  \begin{axis}[width=10cm, height=6cm,
+    xlabel={Frequency $f$ (Hz)}, ylabel={Energy}, ylabel style={yshift=-9mm},
+    xmin=0, xmax=1.5, xtick={0, 0.5, 1, 1.5}, xticklabels={$0$, $\frac{1}{2}f_s$, $f_s$, $\frac{3}{2}f_s$},
+    ymin=0, ymax=1.1, yticklabels={},
+    domain=0:1.5,
+    samples=200,thick,
+    grid=both, axis lines=left]
+  \addplot[blue, thick] coordinates {(0.00, 0.8) (0.0625, 1) (0.125, 0.95) (0.1875, 0.8) (0.25, 0.25)
+  	(0.3125, 0.27) (0.375, 0.22) (0.4375, 0.2) (0.5, 0.18) (0.5625, 0.21) (0.625, 0.17) (0.6875, 0.18)
+  	(0.75, 0.15) (0.8125, 0.11) (0.875, 0.12) (0.9375, 0.15) (1, 0.1) (1.0625, 0.09) (1.125, 0.07)
+  	(1.1875, 0.08) (1.25, 0.06) (1.3125, 0.06) (1.375, 0.04) (1.4375, 0.07) (1.5, 0.03)};
+  \addplot[dashed, black] coordinates {(0.5,0) (0.5,1.1)};
+  \node[black, right] at (axis cs:0.5,0.75) {Cutoff Frequency};
+  \end{axis}
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.35\textwidth}
+\centering
+\begin{tikzpicture}
+  \begin{axis}[width=6cm, height=6cm,
+    xlabel={Frequency $f$ (Hz)},
+    xmin=0, xmax=0.5, xtick={0, 0.25, 0.5}, xticklabels={$0$, $\frac{1}{4}f_s$, $\frac{1}{2}f_s$},
+    ymin=0, ymax=1.1, yticklabels={},
+    domain=0:0.5,
+    samples=200,thick,
+    grid=both, axis lines=left]
+  \addplot[blue, thick] coordinates {(0, 0.8) (0.0625, 1) (0.125, 0.95) (0.1875, 0.8) (0.25, 0.25)
+  	(0.3125, 0.27) (0.375, 0.22) (0.4375, 0.2) (0.5, 0.18) (0.4375, 0.21) (0.375, 0.17) (0.3125, 0.18)
+  	(0.25, 0.15) (0.1875, 0.11) (0.125, 0.12) (0.0625, 0.15) (0, 0.1) (0.0625, 0.09) (0.125, 0.07)
+  	(0.1875, 0.08) (0.25, 0.06) (0.3125, 0.06) (0.375, 0.04) (0.4375, 0.07) (0.5, 0.03)};
+  \addplot[dashed, black] coordinates {(0.5,0) (0.5,1.1)};
+  \node[black, right] at (axis cs:0.05,0.25) {Aliasing};
+  \end{axis}
+\end{tikzpicture}
+\end{minipage}
+\begin{tikzpicture}[overlay, remember picture]
+	\draw[->, thick] (-7.3, 0.5) -- (-6, 0.5);
+\end{tikzpicture}
+\end{center}
+\captionsetup{width=0.9\textwidth}
+\caption*{Typical energy spectrum of a noisy signal, before and after sampling. $f_s$ is a sampling rate of our choosing.}
+\end{figure}
+
+In practice we expect to sample a signal frequently enough to capture fluctuations of interest in the data, so signal energy should be concentrated in frequencies below some cutoff.  Noise energy, decaying up to higher frequencies, is added in linearly.
+
+To reach the frequency domain, we use the FFT, which requires \textit{equispaced} samples and a \textit{periodic} signal, because a discontinuity or corner causes \hyperref[artefacts]{artefacts at higher frequency}, which become impossible to model in finitely many coefficients and impossible to distinguish from noise. Nyquist theorem\cite{oppenheim} tells us that we need $>2$ equispaced samples per cycle to unambiguously reconstruct a frequency, so this process creates a natural cutoff at the Nyquist rate, $f_s/2$. Equispaced samples taken from frequencies slightly over this limit are \hyperref[bandlimited]{best matched} by frequencies slightly under the limit, just as unitary complex numbers alias: $e^{j(\pi + \epsilon)} = e^{-j(\pi - \epsilon)}$. This creates a \textit{folding} pattern in the bandlimited FFT spectrum, which distributes decaying noise energy somewhat evenly.
+
+Notice the more we sample, the more we can concentrate the legitimate signal's energy in low frequencies, and the more we can distribute noise energy across higher frequencies. We can then \textit{zero out} or otherwise dampen the upper part of the spectrum to chop down the noise that hasn't aliased on to the periodic signal's band! The \href{http://pavelkomarov.com/spectral-derivatives/specderiv.html}{\texttt{filter} parameter} is designed exactly for this. If we then inverse transform, we get a smoother signal, or we can multiply by $(jk)^\nu$ and then inverse transform to sample the derivative of that smoother signal.
+
+\subsection{The Advantage of Spectral Smoothing}
+
+Most alternative noise-quelling techniques can only take advantage of local information, but a spectral representation builds a function out of basis functions that span the entire domain, so every point's value takes holistic fit under consideration. This makes the reconstruction much more \textit{robust} to perturbations than one that uses only a few neighboring points. I.e. it's much harder to \textit{corrupt} the signal so thoroughly that it can't be successfully recovered.
+
+In the Fourier case, this has an analogy with \href{https://www.youtube.com/watch?v=X8jsijhllIA}{error-correcting codes}\cite{sanderson}\cite{hamming}; notice the locations corresponding to Hamming code parity checks constitute selections of different frequency:
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+	\foreach \x in {1,3} { % Draw shaded rectangles
+		\fill[gray!50] (\x,0) rectangle (\x+1,4);}
+	\fill[gray!50] (7,0) rectangle (9,4);
+	\foreach \y in {0,2} {
+		\fill[gray!50] (10,\y) rectangle (14,\y+1);}
+	\fill[gray!50] (15,0) rectangle (19,2);
+	\foreach \xy in {0,1,2,3,4} { % Draw the vertical lines
+		\foreach \offset in {0,5,10,15} { 
+			\draw (\xy+\offset,0) -- (\xy+\offset,4);
+			\draw (0+\offset,\xy) -- (4+\offset,\xy);}}
+	\foreach \offset in {0,5,10,15} {
+		\foreach \i in {0,1,2,3} {
+			\foreach \j in {0,1,2,3} {
+				\pgfmathtruncatemacro{\n}{\i*4+\j+1}
+				\node at (\j+0.75+\offset,3.75-\i) {\footnotesize \n};}}}
+	\node at (2, -0.5) {check \#1};
+	\node at (7, -0.5) {check \#2};
+	\node at (12, -0.5) {check \#3};
+	\node at (17, -0.5) {check \#4};
+\end{tikzpicture}
+\end{center}
+
+Of course there are distinctions: In the context of continuous signals, ``corruption" means (discrete representations of) continous numbers have slightly inaccurate values, whereas in error correcting codes each datum is a single discrete bit which can simply be flipped. Likewise, a Fourier coefficient indicates ``We need this much of the $k^{th}$ basis function", whereas the analogous parity check indicates ``There is/isn't a parity error among my bits."
+
+But in both cases a spot-corruption will stand out, because it appears in a particular combination of parity checks or introduces a value that can't as easily be represented with a finite combination of smooth basis functions. In this sense, the Fourier basis is \textit{the ideal} basis for filtering high frequency noise, so long as the signal of interest is periodic, and other methods are merely trying to approximate a lowpass filter.
 
 \subsection{Measurement versus Process Uncertainty}
 
-Different kinds of noise explanation, also largely covered in the notebook
+Noise can have a couple different sources. If noise is due to imperfect sensing, then each sample is drawn from a random variable. By contrast, if there is uncertainty in the underlying dynamics, then we might say there is noise in the process itself. If we sample our signal uniformly, as we do when using the Fourier basis and most other filtering methods, since they tend to be more computationally expensive to generalize to non-uniform samplings\cite{nonuniform}, then we don't really need to make a distinction between these noise sources, because they look the same. But if we cosine-sample our data for expediency when using the Chebyshev basis, there will be a difference, because samples taken closer together will have greater correlation.
 
-\subsection{Filtering in the Fourier Basis}
+\begin{center}
+\begin{minipage}{0.32\textwidth}
+\centering
+\begin{tikzpicture}
+  \begin{axis}[width=7cm, height=4cm,
+    xlabel={\small \shortstack{cosine-spaced noise\\measurement noise in $x$ domain\\\phantom{0}}}, xlabel style={yshift=5mm},
+    xmin=0, xmax=101, xticklabels={},
+    ymin=-2.5, ymax=3, yticklabels={}]
+ 	\addplot[blue, thick] coordinates {
+    (1, 0.44924) (1.02467, -0.99617) (1.09866, 1.57128) (1.22190, 0.52507) (1.39426, -1.28970)
+    (1.61558, -1.44505) (1.88564, 0.27104) (2.20416, 1.43915) (2.57084, -0.13549) (2.98532, -0.09529)
+    (3.44717, -1.07594) (3.95596, 1.26427) (4.51118, 0.07829) (5.11227, 1.00133) (5.75865, -0.69820)
+    (6.44967, 0.09316) (7.18467, -0.47154) (7.96290, -0.45974) (8.78360, 1.46259) (9.64597, -0.72314)
+    (10.54915, -0.62851) (11.49225, -0.55570) (12.47434, 0.02975) (13.49445, -0.05741) (14.55157, 0.12502)
+    (15.64466, 1.32299) (16.77264, -0.11373) (17.93441, 0.47265) (19.12880, 0.13899) (20.35465, 0.55774)
+    (21.61074, -1.31526) (22.89583, 0.69607) (24.20866, -0.28113) (25.54793, 0.39325) (26.91232, 1.00132)
+    (28.30048, 0.27553) (29.71104, -0.68995) (31.14261, -0.41917) (32.59377, -0.66658) (34.06310, -0.39784)
+    (35.54915, 0.07289) (37.05044, 1.65013) (38.56551, 1.58383) (40.09284, -1.60049) (41.63093, -0.15252)
+    (43.17828, 0.29528) (44.73334, 0.70752) (46.29458, -0.36491) (47.86047, -0.60486) (49.42946, -1.99844)
+    (51, 1.21089) (52.57054, 0.80667) (54.13953, 0.79436) (55.70542, 0.36514) (57.26666, 0.87209)
+    (58.82172, -1.30100) (60.36907, 0.63087) (61.90716, 0.72403) (63.43449, -0.44550) (64.94956, 1.28720)
+    (66.45085, 0.70524) (67.93690, -1.32819) (69.40623, -1.39457) (70.85739, -1.30535) (72.28896, -2.20101)
+    (73.69952, -0.41779) (75.08768, 1.51886) (76.45207, 0.06770) (77.79134, 1.36965) (79.10417, -0.13765)
+    (80.38926, 0.21485) (81.64535, -0.67176) (82.87120, 1.17936) (84.06559, -0.01664) (85.22736, -0.79795)
+    (86.35534, -0.86843) (87.44843, -1.47980) (88.50555, 1.12616) (89.52566, -0.44343) (90.50775, 0.55058)
+    (91.45085, -0.39320) (92.35403, -0.96446) (93.21640, 0.47854) (94.03710, -0.34660) (94.81533, -0.09097)
+    (95.55033, -0.24364) (96.24135, 0.36869) (96.88773, 1.27397) (97.48882, -0.08068) (98.04404, 1.16712)
+    (98.55283, -0.85430) (99.01468, -1.33674) (99.42916, 2.06015) (99.79584, 0.19364) (100.11436, 1.02679)
+    (100.38442, -0.80207) (100.60574, 0.80308) (100.77810, 3.02958) (100.90134, -0.50121) (100.97533, -1.25102)
+    (101, 0.83996)};
+  \end{axis}
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.32\textwidth}
+\centering
+\begin{tikzpicture}
+  \begin{axis}[width=7cm, height=4cm,
+    xlabel={\small \shortstack{equispaced noise\\measurement noise in $\theta$ domain or\\process noise in $x$ domain}},
+    xlabel style={yshift=5mm},
+    xmin=0, xmax=101, xticklabels={},
+    ymin=-2.5, ymax=3, yticklabels={}]
+ 	\addplot[blue, thick] coordinates {
+    (1, 0.44924) (2, -0.99617) (3, 1.57128) (4, 0.52507) (5, -1.28970)
+    (6, -1.44505) (7, 0.27104) (8, 1.43915) (9, -0.13549) (10, -0.09529)
+    (11, -1.07594) (12, 1.26427) (13, 0.07829) (14, 1.00133) (15, -0.69820)
+    (16, 0.09316) (17, -0.47154) (18, -0.45974) (19, 1.46259) (20, -0.72314)
+    (21, -0.62851) (22, -0.55570) (23, 0.02975) (24, -0.05741) (25, 0.12502)
+    (26, 1.32299) (27, -0.11373) (28, 0.47265) (29, 0.13899) (30, 0.55774)
+    (31, -1.31526) (32, 0.69607) (33, -0.28113) (34, 0.39325) (35, 1.00132)
+    (36, 0.27553) (37, -0.68995) (38, -0.41917) (39, -0.66658) (40, -0.39784)
+    (41, 0.07289) (42, 1.65013) (43, 1.58383) (44, -1.60049) (45, -0.15252)
+    (46, 0.29528) (47, 0.70752) (48, -0.36491) (49, -0.60486) (50, -1.99844)
+    (51, 1.21089) (52, 0.80667) (53, 0.79436) (54, 0.36514) (55, 0.87209)
+    (56, -1.30100) (57, 0.63087) (58, 0.72403) (59, -0.44550) (60, 1.28720)
+    (61, 0.70524) (62, -1.32819) (63, -1.39457) (64, -1.30535) (65, -2.20101)
+    (66, -0.41779) (67, 1.51886) (68, 0.06770) (69, 1.36965) (70, -0.13765)
+    (71, 0.21485) (72, -0.67176) (73, 1.17936) (74, -0.01664) (75, -0.79795)
+    (76, -0.86843) (77, -1.47980) (78, 1.12616) (79, -0.44343) (80, 0.55058)
+    (81, -0.39320) (82, -0.96446) (83, 0.47854) (84, -0.34660) (85, -0.09097)
+    (86, -0.24364) (87, 0.36869) (88, 1.27397) (89, -0.08068) (90, 1.16712)
+    (91, -0.85430) (92, -1.33674) (93, 2.06015) (94, 0.19364) (95, 1.02679)
+    (96, -0.80207) (97, 0.80308) (98, 3.02958) (99, -0.50121) (100, -1.25102)
+    (101, 0.83996)};
+  \end{axis}
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.32\textwidth}
+\centering
+\begin{tikzpicture}
+  \begin{axis}[width=7cm, height=4cm,
+    xlabel={\small \shortstack{cosine-sampling of equispaced noise\\process noise in $\theta$ domain\\\phantom{0}}},
+    xlabel style={yshift=5mm},
+    xmin=0, xmax=101, xticklabels={},
+    ymin=-2.5, ymax=3, yticklabels={}]
+ 	\addplot[blue, thick] coordinates {
+    (1, 0.83996) (2, 0.78837) (3, 0.63365) (4, 0.37597) (5, 0.01556)
+    (6, -0.44721) (7, -1.01189) (8, -1.09794) (9, -0.82300) (10, -0.51222)
+    (11, 1.07767) (12, 2.87409) (13, 1.89145) (14, 0.62287) (15, -0.41466)
+    (16, 0.02032) (17, 0.87294) (18, 0.22456) (19, 1.65625) (20, -0.13414)
+    (21, -1.07181) (22, 0.14074) (23, 0.57524) (24, 0.58912) (25, 0.77465)
+    (26, -0.02606) (27, -0.12568) (28, -0.32984) (29, 0.29268) (30, -0.76186)
+    (31, 0.18320) (32, -0.33988) (33, 0.58240) (34, -1.14481) (35, -0.80413)
+    (36, 0.34273) (37, -0.13685) (38, 0.16458) (39, 0.75734) (40, 0.15927)
+    (41, 0.45535) (42, -2.15583) (43, -1.35580) (44, -1.13941) (45, 1.07242)
+    (46, -0.23700) (47, 0.65571) (48, -0.66084) (49, 0.43587) (50, 0.79965)
+    (51, 1.21089) (52, -1.20335) (53, -0.21528) (54, 0.41672) (55, -0.53864)
+    (56, 1.01614) (57, 1.06803) (58, -0.35413) (59, -0.55908) (60, -0.67629)
+    (61, 0.60275) (62, 0.43162) (63, 0.11584) (64, -1.02843) (65, 0.43674)
+    (66, 0.37239) (67, 0.01225) (68, 0.78143) (69, -0.01935) (70, -0.03124)
+    (71, -0.58404) (72, -0.68958) (73, 1.18107) (74, -0.46051) (75, -0.34315)
+    (76, -0.18804) (77, 0.06392) (78, 0.53468) (79, 0.70172) (80, 0.07603)
+    (81, -0.63381) (82, -0.10952) (83, 0.20526) (84, 1.39582) (85, 0.48675)
+    (86, -0.67337) (87, -1.40756) (88, -1.30714) (89, -0.40260) (90, 0.57114)
+    (91, 1.10344) (92, 1.53358) (93, 0.46944) (94, -0.47199) (95, -0.83087)
+    (96, -0.44053) (97, -0.12063) (98, 0.12850) (99, 0.30663) (100, 0.41358)
+    (101, 0.44924)};
+  \end{axis}
+\end{tikzpicture}
+\end{minipage}
+\end{center}
 
-This way actually works pretty well.
+When we sample at cosine-space points, $\Delta x$ decreases near the edges. In the case of measurement noise, effects on $\Delta y$ are undiminished in these regions, so the error in $\frac{\Delta y}{\Delta x}$ increases dramatically. In the case of process noise the situation is a little more hopeful, because its effects on $\Delta y$ naturally get smaller as $\Delta x$ shrinks.
 
-\subsection{Filtering in the Chebyshev Basis}
+\subsection{Filtering with the Chebyshev Basis}
 
-This way doesn't work so well due to systematic edge blowup. Give explanation.
+To avert Gibbs phenomenon in the case of aperiodic data or to achieve better compression (more energy represented in fewer modes) in case we know something about how our data should look, we may prefer to use another basis, like Chebyshev polynomials or PCA modes for representation. All bases have ``lower frequency" and ``higher frequency" elements, meaning some modes have fewer transitions between low and high values, and some have more. Similar to Fourier basis representations, signal energy empirically tends to cluster in lower modes, and noise tends to be scattered across modes, similar to the \hyperref[spectrum]{typical spectrum} above.
+
+However, unlike Fourier basis functions, which have uniform frequency throughout their domain, other bases are typically nonuniform, which makes them better at filtering high frequency noise in some regions of the domain compared to others. This may be desired, because noise may have a shape, but if we are naive about the noise or expect white noise, then nonuniform basis functions can be prone to bad initial fits due to variable expressive power over the domain. Chebyshev polynomials exhibit this problem, getting steeper and therefore higher frequency at the edges of their domain, which makes them worse at filtering and better at \textit{fitting} noise near the boundaries, i.e. more \textit{sensitive} to disruptions there.
+
+This problem is perhaps best shown mathematically in the \hyperref[algo]{Chebyshev-via-Fourier method}, where we not only implicitly warp the function to be $y(\cos(\theta))$ by taking a DCT (thereby treating measurement noise as if it's evenly distributed in the $\theta$ domain), but we later also explicitly \textit{unwarp} to get back to the $x$ domain, involving \hyperref[pyramid]{division by powers of $\sqrt{1-x^2}$}\cite{brown}\cite{trefethen8}, which $ \rightarrow 0$ as $x \rightarrow \pm 1$.
+
+Numerically equivalent, in the \hyperref[seriesrule]{Chebyshev series-based method}, ``Tight coupling between coefficients enables propagation of errors from high frequency to low frequency modes."\cite{brown} We see that higher-order coefficients have an impact on \href{https://scicomp.stackexchange.com/q/44939/48402}{ever-other lower-order coefficient}\cite{dcoefs}, and this effect is cumulative, so a slight error in coefficient values, especially higher-order ones, compounds in a very nasty way when we differentiate. Thus ``while the representation of a function by a Chebyshev series may be most accurate near $x = \pm 1$, these results indicate that the derivatives computed from a Chebyshev series are \textit{least accurate} at the edges of the domain."\cite{brown}
+
+This is a fundamental limitation of Chebyshev-based methods in the presence of noise. Occasionally it can be made to work okay by filtering higher modes, but there is always \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/filtering_noise.ipynb}{systematic blowup} in higher-order derivatives.
 
 \printendnotes
 
@@ -1144,6 +1353,10 @@ This way doesn't work so well due to systematic edge blowup. Give explanation.
 	Komarov, P., 2025, Chebyshev Series Derivative in terms of Coefficients, \url{https://scicomp.stackexchange.com/q/44939/48402}
 \bibitem{powerrule}
 	Power Rule, \url{https://mathworld.wolfram.com/PowerRule.html}
+\bibitem{sanderson}
+	Sanderson, G., 2020, But what are Hamming codes? The origin of error correction, \url{https://www.youtube.com/watch?v=X8jsijhllIA}
+\bibitem{nonuniform}
+	2012, Savitzky-Golay smoothing filter for not equally spaced data, \url{https://dsp.stackexchange.com/a/9494/40873}
 \end{thebibliography}
 
 \end{document}
