@@ -1283,6 +1283,12 @@ To avert Gibbs phenomenon in the case of aperiodic data or to achieve better com
 
 However, unlike Fourier basis functions, which have uniform frequency throughout their domain, other bases are typically nonuniform, which makes them better at filtering high frequency noise in some regions of the domain compared to others. This may be desired, because noise may have a shape, but if we are naive about the noise or expect white noise, then nonuniform basis functions can be prone to bad initial fits due to variable expressive power over the domain. Chebyshev polynomials exhibit this problem, getting steeper and therefore higher frequency at the edges of their domain, which makes them worse at filtering and better at \textit{fitting} noise near the boundaries, i.e. more \textit{sensitive} to disruptions there.
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{chebnoise.png}
+	\caption*{An example of systematic edge blowup for Chebyshev derivatives in the presence of noise.}
+\end{figure}
+
 This problem is perhaps best shown mathematically in the \hyperref[algo]{Chebyshev-via-Fourier method}, where we not only implicitly warp the function to be $y(\cos(\theta))$ by taking a DCT (thereby treating measurement noise as if it's evenly distributed in the $\theta$ domain), but we later also explicitly \textit{unwarp} to get back to the $x$ domain, involving \hyperref[pyramid]{division by powers of $\sqrt{1-x^2}$}\cite{brown}\cite{trefethen8}, which $ \rightarrow 0$ as $x \rightarrow \pm 1$.
 
 Numerically equivalent, in the \hyperref[seriesrule]{Chebyshev series-based method}, ``Tight coupling between coefficients enables propagation of errors from high frequency to low frequency modes."\cite{brown} We see that higher-order coefficients have an impact on \href{https://scicomp.stackexchange.com/q/44939/48402}{ever-other lower-order coefficient}\cite{dcoefs}, and this effect is cumulative, so a slight error in coefficient values, especially higher-order ones, compounds in a very nasty way when we differentiate. Thus ``while the representation of a function by a Chebyshev series may be most accurate near $x = \pm 1$, these results indicate that the derivatives computed from a Chebyshev series are \textit{least accurate} at the edges of the domain."\cite{brown}
