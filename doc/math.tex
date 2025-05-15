@@ -1277,7 +1277,7 @@ Noise can have a couple different sources. If noise is due to imperfect sensing,
 
 When we sample at cosine-space points, $\Delta x$ decreases near the edges. In the case of measurement noise, effects on $\Delta y$ are undiminished in these regions, so the error in $\frac{\Delta y}{\Delta x}$ increases dramatically. In the case of process noise the situation is a little more hopeful, because its effects on $\Delta y$ naturally get smaller as $\Delta x$ shrinks.
 
-\subsection{Filtering with Polynomial Bases}
+\subsection{Filtering with Polynomial Bases (is Terrible)}
 
 To avert Gibbs phenomenon in the case of aperiodic data or to achieve better compression (more energy represented in fewer modes) in case we know something about how our data should look, we may prefer to use another basis, like Chebyshev polynomials or PCA modes for representation. All bases have ``lower frequency" and ``higher frequency" elements, meaning some modes have fewer transitions between low and high values, and some have more. Similar to Fourier basis representations, signal energy empirically tends to cluster in lower modes, and noise tends to be scattered across modes, similar to the \hyperref[spectrum]{typical spectrum} above.
 
