@@ -10,8 +10,8 @@ def cheb_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, filter
 	"""Evaluate derivatives with Chebyshev polynomials via series derivative rule.
 
 	Args:
-		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
-			of differentiation.
+		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, best sampled at cosine-spaced points in the
+			dimension of differentiation.
 		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. Use cosine-spaced
 			points, i.e. :code:`t_n = x_n * (b - a)/2 + (b + a)/2` for a domain between :math:`a` and :math:`b`, where
 			:code:`x_n = np.cos(np.arange(N+1) * np.pi / N)`, to enable :math:`O(N \\log N)` transforms to and from the basis
@@ -126,15 +126,15 @@ def legendre_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, fi
 	:math:`O(N \\log N)`.
 
 	Args:
-		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
-			of differentiation.
+		y_n (np.ndarray): one-or-multi-dimensional array, values of a function.
 		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. Note both
-			endpoints are *inclusive*.
+			endpoints are *inclusive*. A sampling that clusters at the domain edges is better for keeping down Runge
+			phenomenon.
 		order (int): The order of differentiation, also called :math:`\\nu`. Must be :math:`\\geq 1`.
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to
 			the first dimension (axis=0).
 		filter (callable, optional): A function or :code:`lambda` that takes the 1D array of mode numbers, :math:`k = [0, ... N]`,
-			 and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of
+			and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of
 			the data, :math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.
 
 	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function
@@ -167,10 +167,10 @@ def bern_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, cutoff
 	guarantee <https://en.wikipedia.org/wiki/Bernstein_polynomial>`_.
 
 	Args:
-		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
-			of differentiation.
+		y_n (np.ndarray): one-or-multi-dimensional array, values of a function.
 		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. Note both
-			endpoints are *inclusive*.
+			endpoints are *inclusive*. A sampling that clusters at the domain edges is better for keeping down Runge
+			phenomenon.
 		order (int): The order of differentiation, also called :math:`\\nu`. Must be :math:`\\geq 1`.
 		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to
 			the first dimension (axis=0).
