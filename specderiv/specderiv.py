@@ -189,14 +189,10 @@ def bern_deriv(y_n: np.ndarray, t_n: np.ndarray, order: int, axis: int=0, cutoff
 		raise ValueError("t_n should be monotonically and strictly increasing or decreasing")
 
 	def bernstein_vandermonde(x_n, d):
-		"""Compute the Bernstein polynomial Vandermonde matrix for given points `x_n` and degree `d`.
-		x_n (array_like): 1D array of evaluation points in [0, 1].
-		d (int): Degree of the Bernstein polynomials.
-		"""
+		"""Compute the Bernstein polynomial Vandermonde matrix for points `x_n` in [0, 1] and degree `d`."""
 		B = np.zeros((len(x_n), d+1))
 		for k in range(d+1):
-			# Compute the kth Bernstein basis polynomial of degree n: B_k^n(t) = C(n,k) * t^k * (1-t)^(n-k)
-			B[:, k] = comb(d, k) * x_n**k * (1 - x_n)**(d-k)
+			B[:, k] = comb(d, k) * x_n**k * (1 - x_n)**(d-k) # the kth Bernstein basis polynomial of degree d
 		return B
 
 	N = y_n.shape[axis] - 1
