@@ -4,7 +4,7 @@
 
 [Documentation](https://pavelkomarov.com/spectral-derivatives/specderiv.html), [How it works](https://pavelkomarov.com/spectral-derivatives/math.pdf).
 
-This repository is home to Python code that can take spectral derivatives using the Chebyshev, Fourier, Legendre, and Bernstein bases, grounded in some [pretty elegant, deep math](https://pavelkomarov.com/spectral-derivatives/math.pdf). That is, given a vector representing samples of a smooth function, the code returns numerical derivatives, indicating slope, curvature, etc. at the sample points of an interpolation built from the basis functions.
+This repository is home to Python code that can take spectral derivatives using the [Chebyshev](https://en.wikipedia.org/wiki/Chebyshev_polynomials), [Fourier](https://mathworld.wolfram.com/FourierSeries.html), [Legendre](https://en.wikipedia.org/wiki/Legendre_polynomials), and [Bernstein](https://en.wikipedia.org/wiki/Bernstein_polynomial) bases, grounded in some [pretty elegant, deep math](https://pavelkomarov.com/spectral-derivatives/math.pdf). That is, given a vector representing samples of a smooth function, the code returns numerical derivatives, indicating slope, curvature, etc. at the sample points of an interpolation built from the basis functions.
 
 When using the Fourier basis, spectral derivatives require periodic boundaries, but the polynomial bases (fastest to fit being the Chebyshev basis) allow arbitrary boundaries, extending the method to a much wider class of functions (albeit best with nonuniform sampling).
 
