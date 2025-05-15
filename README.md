@@ -4,7 +4,7 @@
 
 [Documentation](https://pavelkomarov.com/spectral-derivatives/specderiv.html), [How it works](https://pavelkomarov.com/spectral-derivatives/math.pdf).
 
-This repository is home to Python code that can take spectral derivatives with the Chebyshev basis or the Fourier basis, based on some [pretty elegant, deep math](https://pavelkomarov.com/spectral-derivatives/math.pdf). That is, given a vector representing samples of a smooth function, the code returns numerical derivatives, indicating slope, curvature, etc. at the sample points of an interpolation built from the basis functions.
+This repository is home to Python code that can take spectral derivatives using the Chebyshev, Fourier, Legendre, and Bernstein bases, grounded in some [pretty elegant, deep math](https://pavelkomarov.com/spectral-derivatives/math.pdf). That is, given a vector representing samples of a smooth function, the code returns numerical derivatives, indicating slope, curvature, etc. at the sample points of an interpolation built from the basis functions.
 
 When using the Fourier basis, spectral derivatives require periodic boundaries, but the Chebyshev basis allows arbitrary boundaries, extending the method to a much wider class of functions (albeit via nonuniform sampling).
 
@@ -34,9 +34,9 @@ You should now be able to
 >>> y_n = np.sin(th_n) # must be periodic on domain [a, b)
 >>> dy_n = fourier_deriv(y_n, th_n, 1)
 ```
-For further usage examples, including in higher dimension, see the Jupyter notebooks: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb) and [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/fourier.ipynb).
+For further usage examples, including in higher dimension, see the Jupyter notebooks: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb), [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/fourier.ipynb), [Legendre](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/legendre.ipynb), and [Bernstein](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/bernstein.ipynb).
 
-Note that for accurate results you'll need to use equispaced samples on an open periodic interval for `fourier` and cosine-spaced points for `chebyshev`. For examples which use arbitrary domains, see [this notebook](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/arbitrary_domains.ipynb).
+Note that for fastest and most accurate results you should use equispaced samples on an open periodic interval with `fourier` and cosine-spaced points with `chebyshev`. `legendre` and `bernstein` are slower. For examples which use arbitrary domains, see [this notebook](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/arbitrary_domains.ipynb).
 
 ## References
 

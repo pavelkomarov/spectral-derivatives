@@ -3,7 +3,7 @@
 
 import pytest
 import numpy as np
-from ..specderiv import cheb_deriv, fourier_deriv
+from ..specderiv import cheb_deriv, fourier_deriv, legendre_deriv, bern_deriv
 
 # for use with Chebyshev
 N = 20
@@ -14,28 +14,29 @@ x_u = np.linspace(-1, 1, N+1, endpoint=True) # uniformly distributed points
 M = 20					# It's important this be an *open* periodic domain, or we get artefacting
 th_n = np.arange(0, M) * 2*np.pi / M # e.g. th_n = np.linspace(0, M, M)*2*np.pi/M is no good
 
+y = lambda x: np.exp(x) * np.sin(5*x) # Test function used throughout
+analytic_truth = [lambda x: np.exp(x) * (5*np.cos(5*x) + np.sin(5*x)),			# 1st
+				lambda x: 2*np.exp(x) * (5*np.cos(5*x) - 12*np.sin(5*x)),		# 2nd
+				lambda x: -2*np.exp(x) * (37*np.sin(5*x) + 55*np.cos(5*x)),		# 3rd
+				lambda x: 4*np.exp(x) * (119*np.sin(5*x) - 120*np.cos(5*x)),	# 4th
+				lambda x: 4*np.exp(x) * (719*np.sin(5*x) + 475*np.cos(5*x)),	# 5th
+				lambda x: 8*np.exp(x) * (2035*np.cos(5*x) - 828*np.sin(5*x))]	# 6th
+
 @pytest.mark.filterwarnings('ignore::UserWarning') # Not worrying about warnings in this test
-@pytest.mark.parametrize("x_n, run_num", [(x_n, 0), (x_u, 1)]) # Test using DCT-I points and uniform points
-def test_cheb_deriv_accurate_to_6th(x_n, run_num):
+@pytest.mark.parametrize("x_s, ndx", [(x_n, 0), (x_u, 1)]) # Test using DCT-I points and uniform points
+@pytest.mark.parametrize("method", [cheb_deriv, legendre_deriv, bern_deriv])
+def test_poly_derivs_accurate_to_6th(method, x_s, ndx):
 	"""A test that the MSE of derivatives of a non-periodic function vs truth is suitably low up to some
-	high power. Implicitly tests the middle polynomial-finding code, the endpoints-finding code, and even
-	derivatives as well as odd derivatives.
+	high power.
 	"""
-	y_n = np.exp(x_n) * np.sin(5*x_n)
-	analytic_truth = [5*np.exp(x_n) * np.cos(5*x_n) + np.exp(x_n) * np.sin(5*x_n),	# 1st
-						2*np.exp(x_n) * (5*np.cos(5*x_n) - 12*np.sin(5*x_n)),		# 2nd
-						-2*np.exp(x_n) * (37*np.sin(5*x_n) + 55*np.cos(5*x_n)),		# 3rd
-						4*np.exp(x_n) * (119*np.sin(5*x_n) - 120*np.cos(5*x_n)),	# 4th
-						4*np.exp(x_n) * (719*np.sin(5*x_n) + 475*np.cos(5*x_n)),	# 5th
-						8*np.exp(x_n) * (2035*np.cos(5*x_n) - 828*np.sin(5*x_n))]	# 6th
 	# Things get less accurate for higher derivatives, so check < 10^f(nu)
 	L2_powers = [[-19, -14, -10, -6, -3, 1], [-14, -10, -7, -4, -1, 2]]
 	Linf_powers = [[-9, -6, -4, -2, -1, 1], [-6, -4, -3, -1, 0, 2]]
 
 	for order in range(1,7):
-		computed = cheb_deriv(y_n, x_n, order) # strangely, this can be slightly different (but close) in CI vs local, despite same package versions
-		assert np.mean((analytic_truth[order-1] - computed)**2) < 10**L2_powers[run_num][order-1]
-		assert np.max(np.abs(analytic_truth[order-1] - computed)) < 10**Linf_powers[run_num][order-1]
+		computed = method(y(x_s), x_s, order) # strangely, this can be slightly different (but close) in CI vs local, despite same package versions
+		assert np.mean((analytic_truth[order-1](x_s) - computed)**2) < 10**L2_powers[ndx][order-1]
+		assert np.max(np.abs(analytic_truth[order-1](x_s) - computed)) < 10**Linf_powers[ndx][order-1]
 
 def test_fourier_deriv_accurate_to_3rd():
 	"""A test for derivatives of a periodic function sampled at equispaced points
@@ -163,21 +164,18 @@ def test_fourier_filter():
 			assert np.mean((analytic_truth[nu-1] - computed_noisy_with_filter)**2) < np.mean((analytic_truth[nu-1] - computed_noisy)**2)
 			assert np.max(np.abs(analytic_truth[nu-1] - computed_noisy_with_filter)) < np.max(np.abs(analytic_truth[nu-1] - computed_noisy))
 
-@pytest.mark.filterwarnings('ignore::UserWarning') # Not worrying about warnings in this test
-def test_cheb_filter():
+@pytest.mark.parametrize("method", [cheb_deriv, legendre_deriv, bern_deriv])
+def test_poly_filters(method):
 	"""A test that applying a filter helps take noise-resistant derivatives of a noisy aperiodic function.
 	This test can occasionally fail, related to https://github.com/pavelkomarov/spectral-derivatives/issues/14
 	"""
-	y_n_with_noise = np.exp(x_n) * np.sin(5*x_n) + 0.1*np.random.randn(*x_n.shape)
-	analytic_truth = [5*np.exp(x_n) * np.cos(5*x_n) + np.exp(x_n) * np.sin(5*x_n),	# 1st
-						2*np.exp(x_n) * (5*np.cos(5*x_n) - 12*np.sin(5*x_n)),		# 2nd
-						-2*np.exp(x_n) * (37*np.sin(5*x_n) + 55*np.cos(5*x_n)),		# 3rd
-						4*np.exp(x_n) * (119*np.sin(5*x_n) - 120*np.cos(5*x_n)),	# 4th
-						4*np.exp(x_n) * (719*np.sin(5*x_n) + 475*np.cos(5*x_n)),	# 5th
-						8*np.exp(x_n) * (2035*np.cos(5*x_n) - 828*np.sin(5*x_n))]	# 6th
-
-	for nu in range(1,7):
-		computed_noisy = cheb_deriv(y_n_with_noise, x_n, nu)
-		computed_noisy_with_filter = cheb_deriv(y_n_with_noise, x_n, nu, filter=lambda k: k < 10)
-		assert np.mean((analytic_truth[nu-1] - computed_noisy_with_filter)**2) < np.mean((analytic_truth[nu-1] - computed_noisy)**2) # I've seen this assertion fail in CI before. Tests based on randomness are handwavy.
-		assert np.max(np.abs(analytic_truth[nu-1] - computed_noisy_with_filter)) < np.max(np.abs(analytic_truth[nu-1] - computed_noisy))
+	passed = 0
+	for trial in range(7):
+		y_n_with_noise = y(x_n) + 0.1*np.random.randn(*x_n.shape)
+		for nu in range(1,7):
+			computed_noisy = method(y_n_with_noise, x_n, nu)
+			computed_noisy_with_filter = method(y_n_with_noise, x_n, nu, 0, (lambda k: k < 7) if 'bern' not in method.__name__ else 7)
+			dy_n = analytic_truth[nu-1](x_n)
+			passed += np.mean((dy_n - computed_noisy_with_filter)**2) < np.mean((dy_n - computed_noisy)**2) # I've seen this assertion fail in CI before. Tests based on randomness are handwavy.
+			passed += np.max(np.abs(dy_n - computed_noisy_with_filter)) < np.max(np.abs(dy_n - computed_noisy))
+	assert passed/84 > 0.95
