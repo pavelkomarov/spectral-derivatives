@@ -35,6 +35,34 @@
   <section id="module-specderiv">
 <span id="specderiv-module"></span><h1>specderiv module<a class="headerlink" href="#module-specderiv" title="Link to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="specderiv.bern_deriv">
+<span class="sig-prename descclassname"><span class="pre">specderiv.</span></span><span class="sig-name descname"><span class="pre">bern_deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/specderiv.html#bern_deriv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#specderiv.bern_deriv" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate derivatives with Bernstein polynomials via series derivative rule. Warning: This function is relatively
+expensive, <span class="math notranslate nohighlight">\(O(N^3)\)</span> rather than <span class="math notranslate nohighlight">\(O(N \log N)\)</span>. However, it comes with a neat <a class="reference external" href="https://en.wikipedia.org/wiki/Bernstein_polynomial">uniform convergence
+guarantee</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
+of differentiation.</p></li>
+<li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentation. Note both
+endpoints are <em>inclusive</em>.</p></li>
+<li><p><strong>order</strong> (<em>int</em>) – The order of differentiation, also called <span class="math notranslate nohighlight">\(\nu\)</span>. Must be <span class="math notranslate nohighlight">\(\geq 1\)</span>.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to
+the first dimension (axis=0).</p></li>
+<li><p><strong>cutoff</strong> (<em>int</em><em>, </em><em>optional</em>) – Bernstein fits work differently than the other bases, because each basis function looks like
+a little bump, effectively focusing its contribution to a particular part of the domain. As such, all modes have
+about the same frequency content, so we don’t filter higher modes; we instead decide to fit only <code class="code docutils literal notranslate"><span class="pre">cutoff</span></code>
+<span class="math notranslate nohighlight">\(&lt;N\)</span> of them, which makes each one broader and hence reduces its ability to fit noise.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(<em>np.ndarray</em>) – <code class="code docutils literal notranslate"><span class="pre">dy_n</span></code>, shaped like <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, samples of the <span class="math notranslate nohighlight">\(\nu^{th}\)</span> derivative of the function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="specderiv.cheb_deriv">
 <span class="sig-prename descclassname"><span class="pre">specderiv.</span></span><span class="sig-name descname"><span class="pre">cheb_deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/specderiv.html#cheb_deriv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#specderiv.cheb_deriv" title="Link to this definition">¶</a></dt>
 <dd><p>Evaluate derivatives with Chebyshev polynomials via series derivative rule.</p>
@@ -45,16 +73,17 @@
 of differentiation.</p></li>
 <li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentation. Use cosine-spaced
 points, i.e. <code class="code docutils literal notranslate"><span class="pre">t_n</span> <span class="pre">=</span> <span class="pre">x_n</span> <span class="pre">*</span> <span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)/2</span> <span class="pre">+</span> <span class="pre">(b</span> <span class="pre">+</span> <span class="pre">a)/2</span></code> for a domain between <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span>, where
-<code class="code docutils literal notranslate"><span class="pre">x_n</span> <span class="pre">=</span> <span class="pre">np.cos(np.arange(N+1)</span> <span class="pre">*</span> <span class="pre">np.pi</span> <span class="pre">/</span> <span class="pre">N)</span></code>, to enable <span class="math notranslate nohighlight">\(O(N \log N)\)</span> transforms to and from the basis domain.
-Note the ordering of these points counts <em>up</em> in <span class="math notranslate nohighlight">\(n\)</span>, which is right-to-left, from 1 to -1 in the <span class="math notranslate nohighlight">\(x\)</span> domain.
-If instead you want to use arbitrary sample points, this is allowed, but the code will warn that you are incurring
-<span class="math notranslate nohighlight">\(O(N^3)\)</span> cost. Note both endpoints are <em>inclusive</em>.</p></li>
+<code class="code docutils literal notranslate"><span class="pre">x_n</span> <span class="pre">=</span> <span class="pre">np.cos(np.arange(N+1)</span> <span class="pre">*</span> <span class="pre">np.pi</span> <span class="pre">/</span> <span class="pre">N)</span></code>, to enable <span class="math notranslate nohighlight">\(O(N \log N)\)</span> transforms to and from the basis
+domain. Note the ordering of these points counts <em>up</em> in <span class="math notranslate nohighlight">\(n\)</span>, which is right-to-left, from 1 to -1 in the
+<span class="math notranslate nohighlight">\(x\)</span> domain. If instead you want to use arbitrary sample points, this is allowed, but the code will warn that
+you are incurring <span class="math notranslate nohighlight">\(O(N^3)\)</span> cost. Note both endpoints are <em>inclusive</em>.</p></li>
 <li><p><strong>order</strong> (<em>int</em>) – The order of differentiation, also called <span class="math notranslate nohighlight">\(\nu\)</span>. Must be <span class="math notranslate nohighlight">\(\geq 1\)</span>.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to the
-first dimension (axis=0).</p></li>
-<li><p><strong>filter</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function or <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> that takes the 1D array of Chebyshev polynomial numbers, <span class="math notranslate nohighlight">\(k
-= [0, ... N]\)</span>, and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of
-the data, <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to
+the first dimension (axis=0).</p></li>
+<li><p><strong>filter</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function or <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> that takes the 1D array of Chebyshev polynomial numbers,
+<span class="math notranslate nohighlight">\(k = [0, ... N]\)</span>, and returns a same-shaped array of weights, which get multiplied in to the initial frequency
+transform of the data, <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking derivatives of noisy data. The default is to apply
+#nofilter.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -77,18 +106,48 @@ the data, <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be help
 <li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a period of a periodic function, sampled at equispaced points
 in the dimension of differentiation.</p></li>
 <li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentiation. If you’re using
-canonical Fourier points, this will be <code class="code docutils literal notranslate"><span class="pre">th_n</span> <span class="pre">=</span> <span class="pre">np.arange(M)</span> <span class="pre">*</span> <span class="pre">2*np.pi</span> <span class="pre">/</span> <span class="pre">M</span></code> (<span class="math notranslate nohighlight">\(\theta \in [0, 2\pi)\)</span>). If
-you’re sampling on a domain from <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(b\)</span>, this needs to be <code class="code docutils literal notranslate"><span class="pre">t_n</span> <span class="pre">=</span> <span class="pre">np.arange(0,</span> <span class="pre">M)/M</span> <span class="pre">*</span> <span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)</span> <span class="pre">+</span> <span class="pre">a</span></code>.
-Note the lower, left bound is <em>inclusive</em> and the upper, right bound is <em>exclusive</em>.</p></li>
+canonical Fourier points, this will be <code class="code docutils literal notranslate"><span class="pre">th_n</span> <span class="pre">=</span> <span class="pre">np.arange(M)</span> <span class="pre">*</span> <span class="pre">2*np.pi</span> <span class="pre">/</span> <span class="pre">M</span></code> (<span class="math notranslate nohighlight">\(\theta \in [0, 2\pi)\)</span>).
+If you’re sampling on a domain from <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(b\)</span>, this needs to be <code class="code docutils literal notranslate"><span class="pre">t_n</span> <span class="pre">=</span> <span class="pre">np.arange(0,</span> <span class="pre">M)/M</span> <span class="pre">*</span>
+<span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)</span> <span class="pre">+</span> <span class="pre">a</span></code>. Note the lower, left bound is <em>inclusive</em> and the upper, right bound is <em>exclusive</em>.</p></li>
 <li><p><strong>order</strong> (<em>int</em>) – The order of differentiation, also called <span class="math notranslate nohighlight">\(\nu\)</span>. Can be positive (derivative) or negative
 (antiderivative, raises warning).</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to the
-first dimension (axis=0).</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to
+the first dimension (axis=0).</p></li>
 <li><p><strong>filter</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function or <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> that takes the array of wavenumbers, <span class="math notranslate nohighlight">\(k = [0, ...
 \frac{M}{2} , -\frac{M}{2} + 1, ... -1]\)</span> for even <span class="math notranslate nohighlight">\(M\)</span> or <span class="math notranslate nohighlight">\(k = [0, ... \lfloor \frac{M}{2} \rfloor,
 -\lfloor \frac{M}{2} \rfloor, ... -1]\)</span> for odd <span class="math notranslate nohighlight">\(M\)</span>, and returns a same-shaped array of weights, which get
 multiplied in to the initial frequency transform of the data, <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking derivatives
 of noisy data. The default is to apply #nofilter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(<em>np.ndarray</em>) – <code class="code docutils literal notranslate"><span class="pre">dy_n</span></code>, shaped like <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, samples of the <span class="math notranslate nohighlight">\(\nu^{th}\)</span> derivative of the function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="specderiv.legendre_deriv">
+<span class="sig-prename descclassname"><span class="pre">specderiv.</span></span><span class="sig-name descname"><span class="pre">legendre_deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/specderiv.html#legendre_deriv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#specderiv.legendre_deriv" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate derivatives with Legendre polynomials via series derivative rule, completely analogous to the Chebyshev
+method with not-cosine-spaced sample points. Warning: This function is relatively expensive, <span class="math notranslate nohighlight">\(O(N^3)\)</span> rather than
+<span class="math notranslate nohighlight">\(O(N \log N)\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
+of differentiation.</p></li>
+<li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentation. Note both
+endpoints are <em>inclusive</em>.</p></li>
+<li><p><strong>order</strong> (<em>int</em>) – The order of differentiation, also called <span class="math notranslate nohighlight">\(\nu\)</span>. Must be <span class="math notranslate nohighlight">\(\geq 1\)</span>.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to
+the first dimension (axis=0).</p></li>
+<li><p><strong>filter</strong> (<em>callable</em><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>A function or <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> that takes the 1D array of mode numbers, <span class="math notranslate nohighlight">\(k = [0, ... N]\)</span>,</dt><dd><p>and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of</p>
+</dd>
+</dl>
+<p>the data, <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
