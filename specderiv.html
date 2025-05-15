@@ -43,10 +43,10 @@ guarantee</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
-of differentiation.</p></li>
+<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a function.</p></li>
 <li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentation. Note both
-endpoints are <em>inclusive</em>.</p></li>
+endpoints are <em>inclusive</em>. A sampling that clusters at the domain edges is better for keeping down Runge
+phenomenon.</p></li>
 <li><p><strong>order</strong> (<em>int</em>) – The order of differentiation, also called <span class="math notranslate nohighlight">\(\nu\)</span>. Must be <span class="math notranslate nohighlight">\(\geq 1\)</span>.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to
 the first dimension (axis=0).</p></li>
@@ -69,8 +69,8 @@ about the same frequency content, so we don’t filter higher modes; we instead 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
-of differentiation.</p></li>
+<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a function, best sampled at cosine-spaced points in the
+dimension of differentiation.</p></li>
 <li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentation. Use cosine-spaced
 points, i.e. <code class="code docutils literal notranslate"><span class="pre">t_n</span> <span class="pre">=</span> <span class="pre">x_n</span> <span class="pre">*</span> <span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)/2</span> <span class="pre">+</span> <span class="pre">(b</span> <span class="pre">+</span> <span class="pre">a)/2</span></code> for a domain between <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span>, where
 <code class="code docutils literal notranslate"><span class="pre">x_n</span> <span class="pre">=</span> <span class="pre">np.cos(np.arange(N+1)</span> <span class="pre">*</span> <span class="pre">np.pi</span> <span class="pre">/</span> <span class="pre">N)</span></code>, to enable <span class="math notranslate nohighlight">\(O(N \log N)\)</span> transforms to and from the basis
@@ -135,19 +135,16 @@ method with not-cosine-spaced sample points. Warning: This function is relativel
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension
-of differentiation.</p></li>
+<li><p><strong>y_n</strong> (<em>np.ndarray</em>) – one-or-multi-dimensional array, values of a function.</p></li>
 <li><p><strong>t_n</strong> (<em>np.ndarray</em>) – 1D array, where the function <span class="math notranslate nohighlight">\(y\)</span> is sampled in the dimension of differentation. Note both
-endpoints are <em>inclusive</em>.</p></li>
+endpoints are <em>inclusive</em>. A sampling that clusters at the domain edges is better for keeping down Runge
+phenomenon.</p></li>
 <li><p><strong>order</strong> (<em>int</em>) – The order of differentiation, also called <span class="math notranslate nohighlight">\(\nu\)</span>. Must be <span class="math notranslate nohighlight">\(\geq 1\)</span>.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – For multi-dimensional <code class="code docutils literal notranslate"><span class="pre">y_n</span></code>, the dimension along which to take the derivative. Defaults to
 the first dimension (axis=0).</p></li>
-<li><p><strong>filter</strong> (<em>callable</em><em>, </em><em>optional</em>) – <dl class="simple">
-<dt>A function or <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> that takes the 1D array of mode numbers, <span class="math notranslate nohighlight">\(k = [0, ... N]\)</span>,</dt><dd><p>and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of</p>
-</dd>
-</dl>
-<p>the data, <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.</p>
-</p></li>
+<li><p><strong>filter</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function or <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> that takes the 1D array of mode numbers, <span class="math notranslate nohighlight">\(k = [0, ... N]\)</span>,
+and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of
+the data, <span class="math notranslate nohighlight">\(Y_k\)</span>. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

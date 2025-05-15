@@ -45,8 +45,8 @@
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;Evaluate derivatives with Chebyshev polynomials via series derivative rule.</span>
 
 <span class="sd">	Args:</span>
-<span class="sd">		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension</span>
-<span class="sd">			of differentiation.</span>
+<span class="sd">		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, best sampled at cosine-spaced points in the</span>
+<span class="sd">			dimension of differentiation.</span>
 <span class="sd">		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. Use cosine-spaced</span>
 <span class="sd">			points, i.e. :code:`t_n = x_n * (b - a)/2 + (b + a)/2` for a domain between :math:`a` and :math:`b`, where</span>
 <span class="sd">			:code:`x_n = np.cos(np.arange(N+1) * np.pi / N)`, to enable :math:`O(N \\log N)` transforms to and from the basis</span>
@@ -167,15 +167,15 @@
 <span class="sd">	:math:`O(N \\log N)`.</span>
 
 <span class="sd">	Args:</span>
-<span class="sd">		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension</span>
-<span class="sd">			of differentiation.</span>
+<span class="sd">		y_n (np.ndarray): one-or-multi-dimensional array, values of a function.</span>
 <span class="sd">		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. Note both</span>
-<span class="sd">			endpoints are *inclusive*.</span>
+<span class="sd">			endpoints are *inclusive*. A sampling that clusters at the domain edges is better for keeping down Runge</span>
+<span class="sd">			phenomenon.</span>
 <span class="sd">		order (int): The order of differentiation, also called :math:`\\nu`. Must be :math:`\\geq 1`.</span>
 <span class="sd">		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to</span>
 <span class="sd">			the first dimension (axis=0).</span>
 <span class="sd">		filter (callable, optional): A function or :code:`lambda` that takes the 1D array of mode numbers, :math:`k = [0, ... N]`,</span>
-<span class="sd">			 and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of</span>
+<span class="sd">			and returns a same-shaped array of weights, which get multiplied in to the initial frequency transform of</span>
 <span class="sd">			the data, :math:`Y_k`. Can be helpful when taking derivatives of noisy data. The default is to apply #nofilter.</span>
 
 <span class="sd">	:returns: (*np.ndarray*) -- :code:`dy_n`, shaped like :code:`y_n`, samples of the :math:`\\nu^{th}` derivative of the function</span>
@@ -211,10 +211,10 @@
 <span class="sd">	guarantee &lt;https://en.wikipedia.org/wiki/Bernstein_polynomial&gt;`_.</span>
 
 <span class="sd">	Args:</span>
-<span class="sd">		y_n (np.ndarray): one-or-multi-dimensional array, values of a function, sampled at cosine-spaced points in the dimension</span>
-<span class="sd">			of differentiation.</span>
+<span class="sd">		y_n (np.ndarray): one-or-multi-dimensional array, values of a function.</span>
 <span class="sd">		t_n (np.ndarray): 1D array, where the function :math:`y` is sampled in the dimension of differentation. Note both</span>
-<span class="sd">			endpoints are *inclusive*.</span>
+<span class="sd">			endpoints are *inclusive*. A sampling that clusters at the domain edges is better for keeping down Runge</span>
+<span class="sd">			phenomenon.</span>
 <span class="sd">		order (int): The order of differentiation, also called :math:`\\nu`. Must be :math:`\\geq 1`.</span>
 <span class="sd">		axis (int, optional): For multi-dimensional :code:`y_n`, the dimension along which to take the derivative. Defaults to</span>
 <span class="sd">			the first dimension (axis=0).</span>
