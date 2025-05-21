@@ -24,7 +24,7 @@ This document sets out the math behind the \texttt{spectral-derivatives} package
 
 \section{Bases}
 
-A \textit{basis} is a set of ``orthogonal" functions, call them $\{\xi_k\}$, that can be summed together in various quantities to produce other functions. Othogonal means that if we take the ``inner product" of one funtion from the set with itself, we get back a constant (often normalized to be 1), and if we take the inner product of a function with a different member of the set, we get back 0. In this sense the members of the basis set are independent of one another, just like perpendicular directions on a graph.
+A \textit{basis} is a set of functions, call them $\{\xi_k\}$, that can be summed together in various quantities to produce other functions. Often these are chosen to be orthogonal, meaning that if we take the ``inner product" of one funtion from the set with itself, we get back a constant (often normalized to be 1), and if we take the inner product of a function with a different member of the set, we get back 0. In this sense the members of an orthogonal basis set are independent of one another, just like perpendicular directions on a graph.
 
 The inner product between two functions $f$ and $g$ is a generalization of the inner product between vectors, where instead of summing over a finite number of discrete entries, we integrate over infinitely many infinitesimally-separated points in the domain. We define it as:
 
@@ -89,11 +89,11 @@ If we inner product mismatched wiggles, they misalign and integrate to 0, but if
 
 We can use a basis to ``transform" a function, meaning we take the function's inner product with each of the basis functions to produce numbers:
 
-$$ \langle f,\xi_k \rangle = \int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx = \text{a constant coefficient}, c_k $$
+$$\langle f,\xi_k \rangle = \int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx = \text{a constant coefficient}, c_k$$
 
 These numbers descibe \textit{how much} of each basis function $\xi_k$ is present in the signal $f$ on a domain between $a$ and $b$. If we do this for all the $\{\xi_k\}$, we essentially get a \textit{recipe}, which says: ``We need this much of $\xi_0$ and that much of $\xi_1$ and howevermuch of $\xi_2$ ... added together to reproduce the original signal."
 
-$$ f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b] $$
+$$f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b]$$
 
 where $M$ is the number of basis functions we're using in our reconstruction and $k$ iterates through them.\newline
 
