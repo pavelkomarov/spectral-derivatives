@@ -36,7 +36,7 @@ You should now be able to
 ```
 For further usage examples, including in higher dimension, see the Jupyter notebooks: [Chebyshev](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev.ipynb), [Fourier](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/fourier.ipynb), [Legendre](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/legendre.ipynb), and [Bernstein](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/bernstein.ipynb).
 
-Note that for fastest and most accurate results you should use equispaced samples on an open periodic interval with `fourier_deriv` and cosine-spaced points with `cheb_deriv`. `legendre_deriv` and `bern_deriv` are slower. All methods support [arbitrary domains](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/arbitrary_domains.ipynb) by internally performing an affine transformation to some canonical domain.
+Note that for fastest and most accurate results you should use equispaced samples on an open periodic interval with `fourier_deriv` and cosine-spaced points with `cheb_deriv`. `legendre_deriv` and `bern_deriv` are slower. All methods support [arbitrary domains](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/arbitrary_domains.ipynb) by internally performing an affine transformation to some canonical domain. And all methods support differentiating multidimensional data along an `axis`.
 
 ## References
 
