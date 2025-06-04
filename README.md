@@ -1,7 +1,10 @@
 
-| <img src="logo.png" width="300"> | [![Build Status](https://github.com/pavelkomarov/spectral-derivatives/actions/workflows/build.yml/badge.svg)](https://github.com/pavelkomarov/spectral-derivatives/actions) [![Coverage Status](https://coveralls.io/repos/github/pavelkomarov/spectral-derivatives/badge.svg?branch=main)](https://coveralls.io/github/pavelkomarov/spectral-derivatives?branch=main) [Documentation](https://pavelkomarov.com/spectral-derivatives/specderiv.html), [How it works](https://pavelkomarov.com/spectral-derivatives/math.pdf)|
+| <img src="logo.png" width="300"> |
+[![Build Status](https://github.com/pavelkomarov/spectral-derivatives/actions/workflows/build.yml/badge.svg)](https://github.com/pavelkomarov/spectral-derivatives/actions)
+[![Coverage Status](https://coveralls.io/repos/github/pavelkomarov/spectral-derivatives/badge.svg?branch=main)](https://coveralls.io/github/pavelkomarov/spectral-derivatives?branch=main)<br>
+[Documentation](https://pavelkomarov.com/spectral-derivatives/specderiv.html),
+[How it works](https://pavelkomarov.com/spectral-derivatives/math.pdf)|
 |:---:|:---:|
-
 
 This repository is home to Python code that can take spectral derivatives using the [Chebyshev](https://en.wikipedia.org/wiki/Chebyshev_polynomials), [Fourier](https://mathworld.wolfram.com/FourierSeries.html), [Legendre](https://en.wikipedia.org/wiki/Legendre_polynomials), and [Bernstein](https://en.wikipedia.org/wiki/Bernstein_polynomial) bases, grounded in some [pretty elegant, deep math](https://pavelkomarov.com/spectral-derivatives/math.pdf). That is, given a vector representing samples of a smooth function, the code returns numerical derivatives, indicating slope, curvature, etc. at the sample points of an interpolation built from the basis functions.
 
