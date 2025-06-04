@@ -38,6 +38,8 @@ For further usage examples, including in higher dimension, see the Jupyter noteb
 
 Note that for fastest and most accurate results you should use equispaced samples on an open periodic interval with `fourier_deriv` and cosine-spaced points with `cheb_deriv`. `legendre_deriv` and `bern_deriv` are slower. All methods support [arbitrary domains](https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/arbitrary_domains.ipynb) by internally performing an affine transformation to some canonical domain.
 
+All methods support differentiating multidimensional data along an `axis`.
+
 ## References
 
 1. Trefethen, N., 2000, Spectral Methods in Matlab, https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8
