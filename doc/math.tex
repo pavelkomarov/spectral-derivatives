@@ -87,17 +87,17 @@ If we inner product mismatched wiggles, they misalign and integrate to 0, but if
 
 \section{Transforms}
 
-We can use a basis to ``transform" a function, meaning we find coefficients that reconstruct the function from a linear combination of the basis functions. We essentially want a \textit{recipe}, which tells us \textit{how much} of each basis function $\xi_k$ is present in the signal $f$ on a domain between $a$ and $b$:
+We can attempt to reconstruct a function from a linear combination of basis functions:
 
 $$f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b]$$
 
-\noindent where $M$ is the number of basis functions we're using in our reconstruction and $k$ iterates through them.
+\noindent where $M$ is the number of basis functions we're using in our reconstruction and $k$ iterates through them. This is essentially a \textit{recipe}, which tells us \textit{how much} of each basis function $\xi_k$ is present in the signal $f$ on a domain between $a$ and $b$.
 
 We can find the quantities $\{c_k\}$ by taking the inner product of the above with each of the basis functions to produce a system of $M$ equations, then solving. In the special case where $\{\xi_k\}$ are orthogonal, the system's equations untangle, and we get the simple relationship:
 
 $$c_k = \frac{\langle \xi_k,f \rangle}{\langle \xi_k,\xi_k \rangle} = \frac{\int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx}{||\xi_k||_2^2}$$
 
-The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. This is completely analogous to changing coordinate systems in linear algebra, where we can express vector $\vec{f}$ in terms of a new orthogonal basis $(\vec{\xi}_0, \vec{\xi}_1)$ instead of axis-aligned unit vectors $(\vec{e}_0,\vec{e}_1)$ via $\vec{f} = \frac{\langle \vec{\xi}_0,\vec{f}\rangle}{||\vec{\xi}_0||_2^2} \vec{\xi}_0 + \frac{\langle \vec{\xi}_1,\vec{f}\rangle}{||\vec{\xi}_1||_2^2} \vec{\xi}_1$:
+The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. The function has been \textit{transformed}, completely analogous to changing coordinate systems in linear algebra, where we can express vector $\vec{f}$ in terms of a new orthogonal basis $(\vec{\xi}_0, \vec{\xi}_1)$ instead of axis-aligned unit vectors $(\vec{e}_0,\vec{e}_1)$ via $\vec{f} = \frac{\langle \vec{\xi}_0,\vec{f}\rangle}{||\vec{\xi}_0||_2^2} \vec{\xi}_0 + \frac{\langle \vec{\xi}_1,\vec{f}\rangle}{||\vec{\xi}_1||_2^2} \vec{\xi}_1$:
 
 \begin{center}
 \begin{tikzpicture}[scale=3, >=stealth]
@@ -122,7 +122,7 @@ Using Fourier's original real-sinusoid-based formulation, we can write the recon
 
 $$ f(x) = a_0 + \sum_{k=1}^{\infty} (a_k \cos(k \omega_0 x) + b_k \sin(k \omega_0 x))$$
 
-\noindent where
+where
 \begin{itemize}[noitemsep, topsep=0pt, after=\newline]
 	\item $f$ is periodic with fundamental frequency $\omega_0$, so the $k^{th}$ frequency becomes $k \cdot \omega_0$
 	\item $a_k$ and $b_k$ are coefficients describing how much cosine and sine to add in, respectively
@@ -148,7 +148,7 @@ f(x) &= \frac{1}{2\pi} \int\limits_{-\infty}^{\infty} \hat{f}(\omega) e^{j \omeg
 \end{aligned}
 \end{equation}
 
-where the hat $\hat{\circ}$ represents a function in the Fourier domain, and the $\frac{1}{2\pi}$ is a scaling factor that corrects for the fact the inner product of a Fourier basis function with itself integrates to $2\pi$ over a period instead of to $1$ as we need for orthonormality.
+\noindent where the hat $\hat{\circ}$ represents a function in the Fourier domain, and the $\frac{1}{2\pi}$ is a scaling factor that corrects for the fact the inner product of a Fourier basis function with itself integrates to $2\pi$ over a period instead of to $1$ as we need for orthonormality.
 
 Just like the $\{c_k\}$, $\hat{f}(\omega)$ can be complex, but if the original $f(x)$ is real, then $\hat{f}$'s complexity will perfectly interact with the complex exponentials to produce only a real function in the reconstruction.
 
