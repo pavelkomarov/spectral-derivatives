@@ -97,20 +97,20 @@ We can find the quantities $\{c_k\}$ by taking the inner product of the above wi
 
 $$c_k = \frac{\langle \xi_k,f \rangle}{\langle \xi_k,\xi_k \rangle} = \frac{\int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx}{||\xi_k||_2^2}$$
 
-The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. This is completely analogous to changing coordinate systems in linear algebra, where we can express vector $\vec{f}$ in terms of a new orthogonal basis $(\vec{\xi}_1, \vec{\xi}_2)$ instead of axis-aligned unit vectors $(\vec{e}_1,\vec{e}_2)$ via $\vec{f} = \frac{\langle \vec{\xi}_1,\vec{f}\rangle}{||\vec{\xi}_1||_2^2} \vec{\xi}_1 + \frac{\langle \vec{\xi}_2,\vec{f}\rangle}{||\vec{\xi}_2||_2^2} \vec{\xi}_2$:
+The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. This is completely analogous to changing coordinate systems in linear algebra, where we can express vector $\vec{f}$ in terms of a new orthogonal basis $(\vec{\xi}_0, \vec{\xi}_1)$ instead of axis-aligned unit vectors $(\vec{e}_0,\vec{e}_1)$ via $\vec{f} = \frac{\langle \vec{\xi}_0,\vec{f}\rangle}{||\vec{\xi}_0||_2^2} \vec{\xi}_0 + \frac{\langle \vec{\xi}_1,\vec{f}\rangle}{||\vec{\xi}_1||_2^2} \vec{\xi}_1$:
 
 \begin{center}
 \begin{tikzpicture}[scale=3, >=stealth]
   \filldraw (0,0) circle (0.5pt);
-  \draw[->, thick] (0,0) -- (1,0) node[anchor=west] {$\vec{e}_1$};
-  \draw[->, thick] (0,0) -- (0,1) node[anchor=east] {$\vec{e}_2$};
+  \draw[->, thick] (0,0) -- (1,0) node[anchor=west] {$\vec{e}_0$};
+  \draw[->, thick] (0,0) -- (0,1) node[anchor=east] {$\vec{e}_1$};
   \draw[->, thick] (0,0) -- (1.2,0.9) node[anchor=south west] {$\vec{f}$};
-  \draw[->, thick, red] (0,0) -- (0.66407830863,-0.2213594362) node[anchor=north east] {$\vec{\xi}_1$};
-  \draw[->, thick, green!60!black] (0,0) -- (0.45,1.35) node[anchor=south] {$\vec{\xi}_2$};
+  \draw[->, thick, red] (0,0) -- (0.66407830863,-0.2213594362) node[anchor=north east] {$\vec{\xi}_0$};
+  \draw[->, thick, green!60!black] (0,0) -- (0.45,1.35) node[anchor=south] {$\vec{\xi}_1$};
   \draw[dashed, gray] (1.2,0.9) -- (0.81,-0.27);
   \draw[dashed, gray] (1.2,0.9) -- (0.39,1.17);
-  \draw[->, dashed] (0,0) -- (0.81,-0.27) node[right] {$\mathrm{proj}_{\vec{\xi}_1} \vec{f}$};
-  \draw[->, dashed] (0,0) -- (0.39,1.17) node[left] {$\mathrm{proj}_{\vec{\xi}_2} \vec{f}$};
+  \draw[->, dashed] (0,0) -- (0.81,-0.27) node[right] {$\mathrm{proj}_{\vec{\xi}_0} \vec{f}$};
+  \draw[->, dashed] (0,0) -- (0.39,1.17) node[left] {$\mathrm{proj}_{\vec{\xi}_1} \vec{f}$};
 \end{tikzpicture}
 \end{center}
 
