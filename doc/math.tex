@@ -24,13 +24,13 @@ This document sets out the math behind the \texttt{spectral-derivatives} package
 
 \section{Bases}
 
-A \textit{basis} is a set of functions, call them $\{\xi_k\}$, that can be linearly combined to produce other functions. Often these are chosen to be orthogonal, meaning that if we take the ``inner product" of one funtion from the set with itself, we get back a constant (often normalized to be 1), and if we take the inner product of a function with a different member of the set, we get back 0. In this sense the members of an orthogonal basis set are independent of one another, just like perpendicular directions on a graph.
+A \textit{basis} is a set of functions, call them $\{\xi_k\}$, that can be linearly combined to produce other functions. Often these are chosen to be orthogonal, meaning that if we take the ``inner product" of one funtion from the set with itself, we get back a constant (often normalized to be 1), and if we take the inner product of one of these functions with a different member of the set, we get back 0. In this sense the members of an orthogonal basis set are like perpendicular directions on a graph.
 
 The inner product between two functions $f$ and $g$ is a generalization of the inner product between vectors, where instead of summing over a finite number of discrete entries, we integrate over infinitely many infinitesimally-separated points in the domain. We define it as:
 
 $$ \langle f,g \rangle = \int\limits_{a}^{b} \overline{f(x)} g(x) dx $$
 
-where the overbar $\overline{\circ}$ denotes a complex conjugate.\newline
+\noindent where the overbar $\overline{\circ}$ denotes a complex conjugate.
 
 The inner product is symmetrical, so
 
@@ -65,7 +65,7 @@ In that spirit, with Patron Saint Hamming watching over us, let's continue: \aut
 e^{j \omega} = \cos(\omega) + j \sin(\omega)
 \end{equation}
 
-where I use $j$ to represent the imaginary unit ($\sqrt{-1}$), because I'm from Electrical Engineering, and because Python uses \texttt{j}.\newline
+\noindent where I use $j$ to represent the imaginary unit ($\sqrt{-1}$), because I'm from Electrical Engineering, and because Python uses \texttt{j}.
 
 Why this identity is true isn't obvious at first but can be seen by \href{https://math.stackexchange.com/a/492165/278341}{Taylor Expanding}\cite{taylor} the exponential function and trigonometric functions:
 
@@ -87,19 +87,34 @@ If we inner product mismatched wiggles, they misalign and integrate to 0, but if
 
 \section{Transforms}
 
-We can use a basis to ``transform" a function, meaning we take the function's inner product with each of the basis functions to produce numbers:
-
-$$\langle f,\xi_k \rangle = \int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx = \text{a constant coefficient}, c_k$$
-
-These numbers descibe \textit{how much} of each basis function $\xi_k$ is present in the signal $f$ on a domain between $a$ and $b$. If we do this for all the $\{\xi_k\}$, we essentially get a \textit{recipe}, which says: ``We need this much of $\xi_0$ and that much of $\xi_1$ and howevermuch of $\xi_2$ ... added together to reproduce the original signal."
+We can use a basis to ``transform" a function, meaning we find coefficients that reconstruct the function from a linear combination of the basis functions. We essentially want a \textit{recipe}, which tells us \textit{how much} of each basis function $\xi_k$ is present in the signal $f$ on a domain between $a$ and $b$:
 
 $$f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b]$$
 
-where $M$ is the number of basis functions we're using in our reconstruction and $k$ iterates through them.\newline
+\noindent where $M$ is the number of basis functions we're using in our reconstruction and $k$ iterates through them.
 
-The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. We've \textit{transformed} the function to a set of numbers which now live in a different domain.
+We can find the quantities $\{c_k\}$ by taking the inner product of the above with each of the basis functions to produce a system of $M$ equations, then solving. In the special case where $\{\xi_k\}$ are orthogonal, the system's equations untangle, and we get the simple relationship:
 
-Beware the terminology ``transform" and ``domain" is not always used to describe transforming a continuous function to a discrete set of $\{c_k\}$ like this, because ``domain" technically refers to a ``connected" set, not just a collection of $M$ things. To be precise, some authors use ``series" instead. However, it is possible for members of the basis set to be related through a continuous parameter which in some sense makes the set dense, having infinitely many members which are infinitesimally close together, even in cases where we only take discrete members of this more general set to be our basis set for a particular scenario. This is the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain.
+$$c_k = \frac{\langle \xi_k,f \rangle}{\langle \xi_k,\xi_k \rangle} = \frac{\int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx}{||\xi_k||_2^2}$$
+
+The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. This is completely analogous to changing coordinate systems in linear algebra, where we can express vector $\vec{f}$ in terms of a new orthogonal basis $(\vec{\xi}_1, \vec{\xi}_2)$ instead of axis-aligned unit vectors $(\vec{e}_1,\vec{e}_2)$ via $\vec{f} = \frac{\langle \vec{\xi}_1,\vec{f}\rangle}{||\vec{\xi}_1||_2^2} \vec{\xi}_1 + \frac{\langle \vec{\xi}_2,\vec{f}\rangle}{||\vec{\xi}_2||_2^2} \vec{\xi}_2$:
+
+\begin{center}
+\begin{tikzpicture}[scale=3, >=stealth]
+  \filldraw (0,0) circle (0.5pt);
+  \draw[->, thick] (0,0) -- (1,0) node[anchor=west] {$\vec{e}_1$};
+  \draw[->, thick] (0,0) -- (0,1) node[anchor=east] {$\vec{e}_2$};
+  \draw[->, thick] (0,0) -- (1.2,0.9) node[anchor=south west] {$\vec{f}$};
+  \draw[->, thick, red] (0,0) -- (0.66407830863,-0.2213594362) node[anchor=north east] {$\vec{\xi}_1$};
+  \draw[->, thick, green!60!black] (0,0) -- (0.45,1.35) node[anchor=south] {$\vec{\xi}_2$};
+  \draw[dashed, gray] (1.2,0.9) -- (0.81,-0.27);
+  \draw[dashed, gray] (1.2,0.9) -- (0.39,1.17);
+  \draw[->, dashed] (0,0) -- (0.81,-0.27) node[right] {$\mathrm{proj}_{\vec{\xi}_1} \vec{f}$};
+  \draw[->, dashed] (0,0) -- (0.39,1.17) node[left] {$\mathrm{proj}_{\vec{\xi}_2} \vec{f}$};
+\end{tikzpicture}
+\end{center}
+
+The $\{c_k\}$ are often said to live in another ``domain", although we have to be careful with this terminology, because it technically refers to a ``connected" set, not just a collection of $M$ things. To be precise, some authors use ``series" to describe $\{c_k\}$ instead. However, it is possible for members of the basis set to be related through a continuous parameter which in some sense makes the set dense, even in cases where we only take discrete members of this more general set to be our basis set for a particular scenario. This is the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain.
 
 \subsection{The Fourier Transform}\label{fourierT}
 
@@ -107,7 +122,7 @@ Using Fourier's original real-sinusoid-based formulation, we can write the recon
 
 $$ f(x) = a_0 + \sum_{k=1}^{\infty} (a_k \cos(k \omega_0 x) + b_k \sin(k \omega_0 x))$$
 
-where
+\noindent where
 \begin{itemize}[noitemsep, topsep=0pt, after=\newline]
 	\item $f$ is periodic with fundamental frequency $\omega_0$, so the $k^{th}$ frequency becomes $k \cdot \omega_0$
 	\item $a_k$ and $b_k$ are coefficients describing how much cosine and sine to add in, respectively
@@ -208,7 +223,7 @@ Because we're going to want to use a computer, and a computer can only operate o
 \begin{equation}\label{dft}
 \begin{aligned}
 \text{DFT: \ \ } Y_k &= \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M} n k} \\
-\text{DFT} ^{-1} \text{: \ \ } y_n &= \frac{1}{M} \sum_{k=0}^{M-1} Y_k e^{j \frac{2\pi}{M} n k}
+\text{DFT}^{-1} \text{: \ \ } y_n &= \frac{1}{M} \sum_{k=0}^{M-1} Y_k e^{j \frac{2\pi}{M} n k}
 \end{aligned}
 \end{equation}
 
@@ -221,7 +236,18 @@ where
 	\item $Y$ denotes the signal in the frequency domain
 \end{itemize}
 
-To see where this comes from, see \cite{oppenheim} or \cite{bretherton}; it comes down to cleverly solving a linear inverse problem.\newline
+We can express this as the linear inverse problem:
+
+$$\frac{1}{M}\begin{bmatrix}
+  e^{j \frac{2\pi}{M} 0 0} & e^{j \frac{2\pi}{M} 0 1} & \cdots & e^{j \frac{2\pi}{M} 0 (M-1)}\\
+  e^{j \frac{2\pi}{M} 1 0} & e^{j \frac{2\pi}{M} 1 1} & \cdots & e^{j \frac{2\pi}{M} 1 (M-1)} \\
+  \vdots & \vdots & \ddots & \vdots\\
+  e^{j \frac{2\pi}{M} (M-1) 0} & e^{j \frac{2\pi}{M} (M-1) 1} & \cdots & e^{j \frac{2\pi}{M} (M-1) (M-1)}
+\end{bmatrix}
+\begin{bmatrix} Y_0 \\ Y_1 \\ \vdots \\ Y_{M-1} \end{bmatrix}
+= \begin{bmatrix} y_0 \\ y_1 \\ \vdots \\ y_{M-1} \end{bmatrix}$$
+
+\noindent which, thanks to its special matrix structure, can be solved by a divide-and-conquer strategy that recursively builds the solution to a larger problem out of smaller ones (FFT)\cite{kutz}.
 
 For simplicity, we can collect $\frac{2\pi}{M}n$ as a single term, $\theta_n \in [0, 2\pi)$, or $\frac{2\pi}{M}k$ as a single term, $\omega_k$. We then get $y_n = y(\theta_n)$ and $Y_k = Y(\omega_k)$. This may help highlight the fact the \href{https://dsp.stackexchange.com/a/18931/40873}{original signal and transformed signal live on a domain which maps to the unit circle}\cite{bristow} (hence periodicity and aliasing) and are being sampled at equally-spaced angles/angular velocities.
 
@@ -301,7 +327,7 @@ If we use the above in the mean-squared slope derivation instead of $Y_k e^{j \t
 &= |Y_{M/2}|^2 \frac{1}{2\pi} (|u|^2 2\pi + |1 - u|^2 2\pi) = |Y_{M/2}|^2 (|u|^2 + |1 - u|^2)
 \end{align*}
 
-because integrating something periodic over a multiple of its period yields 0.\newline
+\noindent because integrating something periodic over a multiple of its period yields 0.
 
 We now know that the contribution to the mean-squared slope from the $\frac{M}{2}^{th}$ term $\propto |u|^2 + |1 - u|^2$. What's the optimal $u$?\vspace{-2mm}
 
@@ -1060,7 +1086,7 @@ For higher derivatives:
 
 $$\frac{d^\nu y}{\big( dx \cdot \text{smoosh})^\nu} = \frac{d^\nu y}{dx^\nu} \cdot \text{scale}^\nu$$
 
-So we can always correct the derivative by dividing by scale$^\nu$.\newline
+\noindent So we can always correct the derivative by dividing by scale$^\nu$.
 
 To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub and especially confusing with the DCT-II), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter} and raise error messages with correct examples if the sampling is invalid.
 
@@ -1328,8 +1354,6 @@ In fact, the Chebyshev basis is not the only one suffer this weakness, because o
 	Kutz, J.N., 2023, \textit{Data-Driven Modeling \& Scientific Computation}, Ch. 11, \url{https://faculty.washington.edu/kutz/kutz_book_v2.pdf}
 \bibitem{numpy}
 	Discrete Fourier Transform, \url{https://numpy.org/doc/2.1/reference/routines.fft.html}
-\bibitem{bretherton}
-	The Fourier spectral method, \url{https://atmos.washington.edu/~breth/classes/AM585/lect/DFT_FS_585_notes.pdf}
 \bibitem{bristow}
 	Bristow-Johnson, R., 2014, About Discrete Fourier Transform vs. Discrete Fourier Series, \url{https://dsp.stackexchange.com/a/18931/40873}
 \bibitem{johnson}
