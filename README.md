@@ -1,6 +1,5 @@
 
-| <img src="logo.png" width="300"> |
-[![Build Status](https://github.com/pavelkomarov/spectral-derivatives/actions/workflows/build.yml/badge.svg)](https://github.com/pavelkomarov/spectral-derivatives/actions)
+| <img src="logo.png" width="300"> | [![Build Status](https://github.com/pavelkomarov/spectral-derivatives/actions/workflows/build.yml/badge.svg)](https://github.com/pavelkomarov/spectral-derivatives/actions)
 [![Coverage Status](https://coveralls.io/repos/github/pavelkomarov/spectral-derivatives/badge.svg?branch=main)](https://coveralls.io/github/pavelkomarov/spectral-derivatives?branch=main)
 [Documentation](https://pavelkomarov.com/spectral-derivatives/specderiv.html),
 [How it works](https://pavelkomarov.com/spectral-derivatives/math.pdf)|
