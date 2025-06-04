@@ -104,13 +104,13 @@ The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of th
   \filldraw (0,0) circle (0.5pt);
   \draw[->, thick] (0,0) -- (1,0) node[anchor=west] {$\vec{e}_0$};
   \draw[->, thick] (0,0) -- (0,1) node[anchor=east] {$\vec{e}_1$};
-  \draw[->, thick] (0,0) -- (1.2,0.9) node[anchor=south west] {$\vec{f}$};
-  \draw[->, thick, red] (0,0) -- (0.66407830863,-0.2213594362) node[anchor=north east] {$\vec{\xi}_0$};
-  \draw[->, thick, green!60!black] (0,0) -- (0.45,1.35) node[anchor=south] {$\vec{\xi}_1$};
-  \draw[dashed, gray] (1.2,0.9) -- (0.81,-0.27);
-  \draw[dashed, gray] (1.2,0.9) -- (0.39,1.17);
-  \draw[->, dashed] (0,0) -- (0.81,-0.27) node[right] {$\mathrm{proj}_{\vec{\xi}_0} \vec{f}$};
-  \draw[->, dashed] (0,0) -- (0.39,1.17) node[left] {$\mathrm{proj}_{\vec{\xi}_1} \vec{f}$};
+  \draw[->, thick] (0,0) -- (0.9,1.2) node[anchor=west] {$\vec{f}$};
+  \draw[->, thick, green!60!black] (0,0) -- (1.35, 0.45) node[anchor=south] {$\vec{\xi}_0$};
+  \draw[->, thick, red] (0,0) -- (-0.2213594362, 0.66407830863) node[anchor=north east] {$\vec{\xi}_1$};
+  \draw[dashed, gray] (0.9,1.2) -- (-0.27,0.81);
+  \draw[dashed, gray] (0.9,1.2) -- (1.17, 0.39);
+  \draw[->, dashed] (0,0) -- (1.17,0.39) node[below] {$\mathrm{proj}_{\vec{\xi}_0} \vec{f}$};
+  \draw[->, dashed] (0,0) -- (-0.27,0.81) node[left] {$\mathrm{proj}_{\vec{\xi}_1} \vec{f}$};
 \end{tikzpicture}
 \end{center}
 
@@ -247,7 +247,7 @@ $$\frac{1}{M}\begin{bmatrix}
 \begin{bmatrix} Y_0 \\ Y_1 \\ \vdots \\ Y_{M-1} \end{bmatrix}
 = \begin{bmatrix} y_0 \\ y_1 \\ \vdots \\ y_{M-1} \end{bmatrix}$$
 
-\noindent which, thanks to its special matrix structure, can be solved by a divide-and-conquer strategy that recursively builds the solution to a larger problem out of smaller ones (FFT)\cite{kutz}.
+\noindent which, thanks the special structure of its matrix, can be solved by a divide-and-conquer strategy that recursively builds the solution to a larger problem out of smaller ones (FFT)\cite{kutz}.
 
 For simplicity, we can collect $\frac{2\pi}{M}n$ as a single term, $\theta_n \in [0, 2\pi)$, or $\frac{2\pi}{M}k$ as a single term, $\omega_k$. We then get $y_n = y(\theta_n)$ and $Y_k = Y(\omega_k)$. This may help highlight the fact the \href{https://dsp.stackexchange.com/a/18931/40873}{original signal and transformed signal live on a domain which maps to the unit circle}\cite{bristow} (hence periodicity and aliasing) and are being sampled at equally-spaced angles/angular velocities.
 
@@ -397,7 +397,7 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 
 \section{The Chebyshev Basis}
 
-\href{https://www.youtube.com/watch?v=HloOBYPwlmU}{There is another} basis which we can use to represent arbitrary functions, called the \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Chebyshev polynomials}\cite{trefethen8}, which has a really neat relationship to the Fourier basis.
+\href{https://www.youtube.com/watch?v=HloOBYPwlmU}{There is another} basis which we can use to represent arbitrary functions, called the \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Chebyshev polynomials}\cite{trefethen8}, which has a really neat relationship to the Fourier basis.\pagebreak
 
 \begin{figure}[h!]
 \begin{center}
@@ -499,13 +499,13 @@ This all suggests a solution procedure:
 \STATE Inverse transform using the DST if odd function, DCT if even function.
 \STATE Change variables back from $\theta$ to $x$, the Chebyshev variable, taking care that this entails an extra chain rule.
 \end{algorithmic}
-\end{algorithm}\pagebreak
+\end{algorithm}
 
 \begin{figure}[h!]
 \begin{center}
-\begin{minipage}{0.49\textwidth}
+\begin{minipage}{0.45\textwidth}
 \centering
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.8]
 	\begin{axis}[axis lines=middle, xlabel={$x$}, xlabel style={right},
 		xmin=-1, xmax=1, xtick={-1, 0, 1},
 		ymin=-2.5, ymax=2.5,
@@ -518,9 +518,9 @@ This all suggests a solution procedure:
 	\node at (3,3.75) {$e^x \sin(7x),\ x_n = \cos(\theta_n)$};
 \end{tikzpicture}
 \end{minipage}
-\begin{minipage}{0.49\textwidth}
+\begin{minipage}{0.45\textwidth}
 \centering
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.8]
 	\begin{axis}[axis lines=middle, xlabel={$\theta$}, xlabel style={right},
 		xmin=0, xmax=pi, xtick={0, pi/2, pi}, xticklabels={0, $\frac{\pi}{2}$, $\pi$},
 		ymin=-2.5, ymax=2.5,
@@ -533,7 +533,7 @@ This all suggests a solution procedure:
 	\node at (3.25,3.75) {$e^{\cos(\theta)} \sin(7\cos(\theta)),\ \theta_n = \frac{2\pi}{10}n$};
 \end{tikzpicture}
 \end{minipage}
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.8]
 	\begin{axis}[axis lines=middle, xlabel={$\theta$}, xlabel style={right},
 		xmin=-pi, xmax=2*pi, xtick={-pi, -pi/2, 0, pi/2, pi, 3*pi/2, 2*pi}, xticklabels={$-\pi$, $-\frac{\pi}{2}$, 0, $\frac{\pi}{2}$, $\pi$, $\frac{3\pi}{2}$, $2\pi$},
 		ymin=-2.5, ymax=2.5,
@@ -541,9 +541,9 @@ This all suggests a solution procedure:
 		height=5cm]
 		\addplot[domain=-pi:2*pi, samples=200, thick] {exp(cos(deg(x)))*sin(deg(7*cos(deg(x))))};
 	\end{axis}
-	\node at (8,0) {$e^{\cos(\theta)} \sin(7\cos(\theta)),\ \theta \in [-\pi, 2\pi]$};
+	\node at (9.5,0) {$e^{\cos(\theta)} \sin(7\cos(\theta)),\ \theta \in [-\pi, 2\pi]$};
 \end{tikzpicture}
-\begin{tikzpicture}[overlay, remember picture]
+\begin{tikzpicture}[overlay, remember picture, scale=0.8]
 	\draw[->, thick] (-8.3, 5.5) -- (-6.8, 5.5) node[midway, above] {\parbox{12mm}{flip and warp}};
 	\draw[->, thick] (-4, 4) -- (-5, 3) node[midway, right] {periodically extend};
 \end{tikzpicture}
@@ -770,7 +770,7 @@ This relationship holds no matter which, $\mu, c, p, q$ we're addressing, which 
 \end{tikzpicture}
 \end{minipage}
 \end{center}
-\end{figure}\pagebreak
+\end{figure}
 
 $q$ always refers to the element up and to the left, and $p$ always refers to the element above. If the arrows roll out of the pyramid, the corresponding $p$ or $q$ is $0$. I've done the above programmatically in \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/alternative_chebyshev_derivative_methods.ipynb}{code}, such that we can find and apply the factors---and thereby accomplish the variable transformation back to the Chebyshev domain---for arbitrarily high derivatives.
 
