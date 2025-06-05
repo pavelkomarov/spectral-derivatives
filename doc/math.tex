@@ -2,7 +2,7 @@
 \usepackage[margin=0.7in]{geometry}
 \usepackage{amsmath, amssymb, amsfonts, bbm, enumitem, enotez, tikz, pgfplots, cancel, graphicx,
 caption, algorithm, algorithmic, hyperref}
-\usetikzlibrary{matrix, arrows.meta, positioning, angles}
+\usetikzlibrary{matrix, arrows, positioning, angles}
 \hypersetup{colorlinks=true, urlcolor=blue, linkcolor=violet}
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 \renewcommand{\theendnote}{\alph{endnote}}
@@ -124,9 +124,9 @@ $$ f(x) = a_0 + \sum_{k=1}^{\infty} (a_k \cos(k \omega_0 x) + b_k \sin(k \omega_
 
 where
 \begin{itemize}[noitemsep, topsep=0pt, after=\newline]
-	\item $f$ is periodic with fundamental frequency $\omega_0$, so the $k^{th}$ frequency becomes $k \cdot \omega_0$
-	\item $a_k$ and $b_k$ are coefficients describing how much cosine and sine to add in, respectively
-	\item $k$ goes up to $\infty$ because in general we need an infinite number of ever-higher-frequency sinusoids to reconstruct the function with perfect fidelity
+	\item $f$ is periodic with fundamental frequency $\omega_0$, so the $k^{th}$ frequency becomes $k \cdot \omega_0$.
+	\item $a_k$ and $b_k$ are coefficients describing how much cosine and sine to add in, respectively.
+	\item $k$ goes up to $\infty$ because in general we need an infinite number of ever-higher-frequency sinusoids to reconstruct the function with perfect fidelity.
 \end{itemize}
 
 Let's now use $\cos(x) = \frac{e^{jx} + e^{-jx}}{2}$ and $\sin(x) = \frac{e^{jx} - e^{-jx}}{2j}$, which can be verified by manipulating Euler's formula, \autoref{euler}.\vspace{-2mm}
