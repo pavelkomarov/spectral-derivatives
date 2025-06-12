@@ -152,7 +152,7 @@ If instead of a fundamental frequency $\omega_0 = \frac{2\pi}{T}$, where $T$ is 
 \end{aligned}
 \end{equation}
 
-\noindent where the hat $\hat{\circ}$ represents a function in the Fourier domain, and the $\frac{1}{2\pi}$ is a scaling factor that corrects for the fact $\hat{f}$ hasn't been normalized like the $\{c_k\}$ in the discrete case. Here, rather than divide by $||e^{j \omega x}||_2^2 = b - a$ (which doesn't make a ton of sense as $a, b \to \pm \infty$), we consider the domain $[\frac{-T}{2}, \frac{T}{2}]$ and let normalizing factor $T = \frac{2\pi}{\omega_0} \to \infty = \frac{2\pi}{d\omega}$\cite{oppenheim}.
+\noindent where the hat $\hat{\circ}$ represents a function in the Fourier domain, and the $\frac{1}{2\pi}$ is a scaling factor that corrects for the fact $\hat{f}$ hasn't been normalized like the $\{c_k\}$ in the discrete case. Here, rather than divide by $||e^{j \omega x}||_2^2$, which diverges as the domain edges $\to \pm \infty$, we consider the domain $[\frac{-T}{2}, \frac{T}{2}]$ and let normalizing factor $T = \frac{2\pi}{\omega_0} \to \infty = \frac{2\pi}{d\omega}$\cite{oppenheim}.
 
 Just like the $\{c_k\}$, $\hat{f}(\omega)$ can be complex, but if the original $f(x)$ is real, then $\hat{f}$'s complexity will perfectly interact with the complex exponentials to produce only a real function in the reconstruction.
 
