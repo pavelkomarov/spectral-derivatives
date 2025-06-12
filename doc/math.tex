@@ -79,7 +79,7 @@ $$\sin(\omega) = \omega - \frac{\omega^3}{3!} + \frac{\omega^5}{5!} - \frac{\ome
 
 $$\cos(\omega) = 1 - \frac{\omega^2}{2!} + \frac{\omega^4}{4!} - \frac{\omega^6}{6!} + ...$$\vspace{0mm}
 
-Notice all of the even-power terms appear with alternating sign as in the cosine expansion, and the odd-power terms appear with alternating sign as in the sine expansion, but with an extra $j$ multiplied in.
+Notice all the even-power terms appear with alternating sign as in the cosine expansion, and the odd-power terms appear with alternating sign as in the sine expansion, but with an extra $j$ multiplied in.
 
 The presence of complex numbers to make this work can be confusing at first, but don't be scared! All we're really doing is using a compressed representation of a sine plus a cosine, where the real and imaginary parts (orthogonal in the complex plane, and therefore independent and non-interfering) allow us to describe the contributions of sine and cosine simultaneously. In fact, \href{https://math.stackexchange.com/a/1293127/278341}{Joseph Fourier originally used only real trigonometric functions}\cite{complex}, and it wasn't until later someone decided it would be easier to work with complex exponentials. Later (\autoref{fourierT}) we'll see that for real signals all the complex numbers cancel, leaving only a \textit{real} sine and \textit{real} cosine, which when added together make \textit{a single, phase-shifted sinusoid!} So think of $e^{j \omega}$ as oscillations at a particular frequency, $\omega$.
 
@@ -114,7 +114,7 @@ The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of th
 \end{tikzpicture}
 \end{center}
 
-The $\{c_k\}$ are often said to live in another ``domain", although we have to be careful with this terminology, because it technically refers to a ``connected" set, not just a collection of $M$ things. To be precise, some authors use ``series" to describe $\{c_k\}$ instead. However, it is possible for members of the basis set to be related through a continuous parameter which in some sense makes the set dense, even in cases where we only take discrete members of this more general set to be our basis set for a particular scenario. This is the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain.
+The $\{c_k\}$ are often said to live in another ``domain", although we have to be careful with this terminology, because it technically refers to a ``connected" set, not just a collection of $M$ things. To be precise, some authors instead use ``series" to describe $\{c_k\}$. However, it is possible for members of the basis set to be related through a continuous parameter which in some sense makes the set dense, even in cases where we only take discrete members of this more general set to be our basis set for a particular scenario. This is the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain.
 
 \subsection{The Fourier Transform}\label{fourierT}
 
