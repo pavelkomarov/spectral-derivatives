@@ -62,40 +62,44 @@ Lo and behold, the famous transfer function [contains] exactly the eigenvalues o
 In that spirit, with Patron Saint Hamming watching over us, let's continue: \autoref{fourierB}}, which is the set of complex exponentials:\vspace{-2mm}
 
 \begin{equation}\label{euler}
-e^{j \omega} = \cos(\omega) + j \sin(\omega)
+e^{j \omega x} = \cos(\omega x) + j \sin(\omega x)
 \end{equation}
 
 \noindent where I use $j$ to represent the imaginary unit ($\sqrt{-1}$), because I'm from Electrical Engineering, and because Python uses \texttt{j}.
 
 Why this identity is true isn't obvious at first but can be seen by \href{https://math.stackexchange.com/a/492165/278341}{Taylor Expanding}\cite{taylor} the exponential function and trigonometric functions:
 
-$$e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + ... = \sum_{n=0}^{\infty} \frac{x^n}{n!}$$
+$$e^a = 1 + a + \frac{a^2}{2!} + \frac{a^3}{3!} + ... = \sum_{n=0}^{\infty} \frac{a^n}{n!}$$
 
 So\vspace{-2mm}
 
-$$e^{j \omega} = 1 + j \omega + \frac{(j \omega)^2}{2!} + \frac{(j \omega)^3}{3!} + ... = 1 + j \omega - \frac{\omega^2}{2!} - j \frac{\omega^3}{3!} + \frac{\omega^4}{4!} - ...$$
+$$e^{j \omega x} = 1 + j \omega x + \frac{(j \omega x)^2}{2!} + \frac{(j \omega x)^3}{3!} + ... = 1 + j \omega x - \frac{(\omega x)^2}{2!} - j \frac{(\omega x)^3}{3!} + \frac{(\omega x)^4}{4!} - ...$$
 
-$$\sin(\omega) = \omega - \frac{\omega^3}{3!} + \frac{\omega^5}{5!} - \frac{\omega^7}{7!} + ...$$
+$$\sin(\omega x) = \omega x - \frac{(\omega x)^3}{3!} + \frac{(\omega x)^5}{5!} - \frac{(\omega x)^7}{7!} + ...$$
 
-$$\cos(\omega) = 1 - \frac{\omega^2}{2!} + \frac{\omega^4}{4!} - \frac{\omega^6}{6!} + ...$$\vspace{0mm}
+$$\cos(\omega x) = 1 - \frac{(\omega x)^2}{2!} + \frac{(\omega x)^4}{4!} - \frac{(\omega x)^6}{6!} + ...$$\vspace{0mm}
 
 Notice all the even-power terms appear with alternating sign as in the cosine expansion, and the odd-power terms appear with alternating sign as in the sine expansion, but with an extra $j$ multiplied in.
 
-The presence of complex numbers to make this work can be confusing at first, but don't be scared! All we're really doing is using a compressed representation of a sine plus a cosine, where the real and imaginary parts (orthogonal in the complex plane, and therefore independent and non-interfering) allow us to describe the contributions of sine and cosine simultaneously. In fact, \href{https://math.stackexchange.com/a/1293127/278341}{Joseph Fourier originally used only real trigonometric functions}\cite{complex}, and it wasn't until later someone decided it would be easier to work with complex exponentials. Later (\autoref{fourierT}) we'll see that for real signals all the complex numbers cancel, leaving only a \textit{real} sine and \textit{real} cosine, which when added together make \textit{a single, phase-shifted sinusoid!} So think of $e^{j \omega}$ as oscillations at a particular frequency, $\omega$.
+The presence of complex numbers to make this work can be confusing at first, but don't be scared! All we're really doing is using a compressed representation of a sine plus a cosine, where the real and imaginary parts (orthogonal in the complex plane, and therefore independent and non-interfering) allow us to describe the contributions of sine and cosine simultaneously. In fact, \href{https://math.stackexchange.com/a/1293127/278341}{Joseph Fourier originally used only real trigonometric functions}\cite{complex}, and it wasn't until later someone decided it would be easier to work with complex exponentials. Later (\autoref{fourierT}) we'll see that for real signals all the complex numbers cancel, leaving only a \textit{real} sine and \textit{real} cosine, which when added together make \textit{a single, phase-shifted sinusoid!} So think of $e^{j \omega x}$ as oscillations of frequency $\omega$ along direction $x$.
 
-If we inner product mismatched wiggles, they misalign and integrate to 0, but if we inner product matched wiggles, they align, multiply to 1 because of the complex conjugate, and integrate to $2\pi$ over a period.
+If we inner product sinusoidal wiggles of mismatched frequency, differing by $\Delta \omega$, they misalign and integrate to 0 over a period of length $T = \frac{2\pi}{\Delta \omega}$. But if we inner product matched wiggles, they align, multiply to 1 because of the inner product's complex conjugate, and integrate to a constant, the length of whichever domain we choose to consider, so this basis is orthogonal.
 
 \section{Transforms}
 
 We can reconstruct a function from a linear combination of basis functions:
 
-$$f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b]$$
+\begin{equation}\label{spectralreconstruction}
+f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b]
+\end{equation}
 
 \noindent where $M$ is the number of basis functions we're using in our reconstruction and $k$ iterates through them. This is essentially a \textit{recipe}, which tells us \textit{how much} of each basis function $\xi_k$ is present in the signal $f$ on a domain between $a$ and $b$.
 
-We can find the quantities $\{c_k\}$ by taking the inner product of the above with each of the basis functions to produce a system of $M$ equations, then solving. In the special case where $\{\xi_k\}$ are orthogonal, the system's equations untangle, and we get the simple relationship:
+We can find the quantities $\{c_k\}$ by taking the inner product of the above with each of the basis functions to produce a system of $M$ equations, then solving. In the special case where $\{\xi_k\}$ are orthogonal, only one of the inner-producted terms from the sum will be nonzero, so the system's equations untangle to yield the simple relationship:
 
-$$c_k = \frac{\langle \xi_k,f \rangle}{\langle \xi_k,\xi_k \rangle} = \frac{\int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx}{||\xi_k||_2^2}$$
+\begin{equation}\label{spectralcoefs}
+c_k = \frac{\langle \xi_k,f \rangle}{\langle \xi_k,\xi_k \rangle} = \frac{\int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx}{||\xi_k||_2^2}
+\end{equation}
 
 The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. The function has been \textit{transformed}, completely analogous to changing coordinate systems in linear algebra, where we can express vector $\vec{f}$ in terms of a new orthogonal basis $(\vec{\xi}_0, \vec{\xi}_1)$ instead of axis-aligned unit vectors $(\vec{e}_0,\vec{e}_1)$ via $\vec{f} = \frac{\langle \vec{\xi}_0,\vec{f}\rangle}{||\vec{\xi}_0||_2^2} \vec{\xi}_0 + \frac{\langle \vec{\xi}_1,\vec{f}\rangle}{||\vec{\xi}_1||_2^2} \vec{\xi}_1$:
 
@@ -137,18 +141,18 @@ f(x) &= a_0 + \sum_{k=1}^{\infty} (a_k \frac{e^{j k \omega_0 x} + e^{-j k \omega
 \end{align*}
 
 \phantomsection\label{phase}
-So if we choose $c_0 = a_0$ and $c_k = \overline{c_{-k}} = \frac{a_k}{2} + \frac{b_k}{2j}$, then the complex exponential formulation is \href{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}{exactly equivalent to the trigonometric formulation}\cite{swarthmore}. That is, we can choose \textit{complex} $c_k$ such that when multiplied by \textit{complex} exponentials, we get back only \textit{real} signal! Essentially, the relative balance of real and complex in $c_k$ affects how much cosine and sine are present at the $k^{th}$ frequency, \href{https://dsego.github.io/demystifying-fourier/}{thereby accomplishing a phase shift}\cite{sego}. Without accounting for phase shifts, we would only be able to model \textit{symmetric} signals!
+So if we choose $c_0 = a_0$ and $c_k = \overline{c_{-k}} = \frac{a_k}{2} + \frac{b_k}{2j}$, then the complex exponential formulation is \href{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}{exactly equivalent to the trigonometric formulation}\cite{swarthmore}. That is, we can evaluate \autoref{spectralcoefs} using the \textit{complex} exponentials as basis functions to find \textit{complex} $c_k$ such that when multiplied in the reconstruction, \autoref{spectralreconstruction}, we get back only \textit{real} signal! Essentially, the relative balance of real and complex in $c_k$ affects how much cosine and sine are present at the $k^{th}$ frequency, \href{https://dsego.github.io/demystifying-fourier/}{thereby accomplishing a phase shift}\cite{sego}. Without accounting for phase shifts, we would only be able to model \textit{symmetric} signals!
 
-If instead of a fundamental frequency $\omega_0 = \frac{2\pi}{T}$, where $T$ is a period of repetition, the signal contains dense frequencies (because it has no repetition, $T \rightarrow \infty$, $\omega_0 \rightarrow 0$), and if we care about a domain of the entire set of $\mathbb{R}$, then it makes more sense to express the transformed coefficients as a function in $\omega$ and to make both our inner product and reconstruction expression integrals from $-\infty$ to $+\infty$:
+If instead of a fundamental frequency $\omega_0 = \frac{2\pi}{T}$, where $T$ is a period of repetition, the signal contains dense frequencies (because it has no repetition, $T \rightarrow \infty$, $\omega_0 \rightarrow 0$), and if we care about a domain over the whole of $\mathbb{R}$, then it makes more sense to express both the basis functions and transformed coefficients as functions in $\omega$ and to make both our inner product and reconstruction expression integrals from $-\infty$ to $+\infty$:
 
 \begin{equation}\label{pair}
 \begin{aligned}
-\hat{f}(\omega) &= \int\limits_{-\infty}^{\infty} f(x) e^{-j \omega x} dx = \mathcal{F}\{f(x)\} \\
-f(x) &= \frac{1}{2\pi} \int\limits_{-\infty}^{\infty} \hat{f}(\omega) e^{j \omega x} d \omega = \mathcal{F}^{-1}\{\hat{f}(\omega)\}
+\text{inner product with }\xi(\omega)\!:\quad\hat{f}(\omega) &= \int\limits_{-\infty}^{\infty} f(x) e^{-j \omega x} dx = \mathcal{F}\{f(x)\}\hspace{3cm} \\
+\text{reconstruction}\!:\quad f(x) &= \frac{1}{2\pi} \int\limits_{-\infty}^{\infty} \hat{f}(\omega) e^{j \omega x} d \omega = \mathcal{F}^{-1}\{\hat{f}(\omega)\}
 \end{aligned}
 \end{equation}
 
-\noindent where the hat $\hat{\circ}$ represents a function in the Fourier domain, and the $\frac{1}{2\pi}$ is a scaling factor that corrects for the fact the inner product of a Fourier basis function with itself integrates to $2\pi$ over a period instead of to $1$ as we need for orthonormality.
+\noindent where the hat $\hat{\circ}$ represents a function in the Fourier domain, and the $\frac{1}{2\pi}$ is a scaling factor that corrects for the fact $\hat{f}$ hasn't been normalized like the $\{c_k\}$ in the discrete case. Here, rather than divide by $||e^{j \omega x}||_2^2 = b - a$ (which doesn't make a ton of sense as $a, b \to \pm \infty$), we consider the domain $[\frac{-T}{2}, \frac{T}{2}]$ and let normalizing factor $T = \frac{2\pi}{\omega_0} \to \infty = \frac{2\pi}{d\omega}$\cite{oppenheim}.
 
 Just like the $\{c_k\}$, $\hat{f}(\omega)$ can be complex, but if the original $f(x)$ is real, then $\hat{f}$'s complexity will perfectly interact with the complex exponentials to produce only a real function in the reconstruction.
 
@@ -159,9 +163,7 @@ Part of what makes Fourier transforms confusing is the proliferation of differen
 \begin{center}
 \begin{tikzpicture}
 \matrix (m) [
-	matrix of nodes,
-	nodes={draw, align=center, text height=1.5ex, text depth=.25ex, anchor=center}, column sep=0pt, row sep=0pt,
-	cells={nodes={draw, minimum width=5cm, minimum height=4cm, outer sep=0pt}}
+	cells={nodes={draw, minimum width=13em, minimum height=10em, outer sep=0pt}}
 ] at (0, 0) {
 	\node (A) {}; & \node (B) {}; \\
 	\node (C) {}; & \node (D) {}; \\
@@ -1330,6 +1332,8 @@ In fact, the Chebyshev basis is not the only one suffer this weakness, because o
 	Hamming, R., 1996, \textit{The Art of Doing Science and Engineering}
 \bibitem{taylor}
 	Pego, B., Simplest proof of Taylor's theorem, \url{https://math.stackexchange.com/a/492165/278341}
+\bibitem{oppenheim}
+	Oppenheim, A. \& Willsky, A., 1996, \textit{Signals and Systems, 2nd Ed.}
 \bibitem{complex}
 	Disintegration By Parts, Why do Fourier transforms use complex numbers?, \url{https://math.stackexchange.com/a/1293127/278341}
 \bibitem{michigan}
@@ -1344,8 +1348,6 @@ In fact, the Chebyshev basis is not the only one suffer this weakness, because o
 	Sego, D., Demystifying Fourier analysis, \url{https://dsego.github.io/demystifying-fourier/}
 \bibitem{medium}
 	Nakagome, S. Fourier Transform 101 — Part 4: Discrete Fourier Transform, \url{https://medium.com/sho-jp/fourier-transform-101-part-4-discrete-fourier-transform-8fc3fbb763f3}
-\bibitem{oppenheim}
-	Oppenheim, A. \& Willsky, A., 1996, \textit{Signals and Systems, 2nd Ed.}
 \bibitem{brunton}
 	Brunton, S., The Fourier Transform and Derivatives, \url{https://www.youtube.com/watch?v=d5d0ORQHNYs}
 \bibitem{trefethen4}
