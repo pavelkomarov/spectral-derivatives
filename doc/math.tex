@@ -87,7 +87,7 @@ If we inner product sinusoidal wiggles of mismatched frequency, differing by $\D
 
 \section{Transforms}
 
-We can reconstruct a function from a linear combination of basis functions:
+We can construct a function from a linear combination of basis functions as:
 
 \begin{equation}\label{spectralreconstruction}
 f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b]
@@ -101,7 +101,7 @@ We can find the quantities $\{c_k\}$ by taking the inner product of the above wi
 c_k = \frac{\langle \xi_k,f \rangle}{\langle \xi_k,\xi_k \rangle} = \frac{\int\limits_{a}^{b} f(x) \overline{\xi_k(x)} dx}{||\xi_k||_2^2}
 \end{equation}
 
-The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. The function has been \textit{transformed}, completely analogous to changing coordinate systems in linear algebra, where we can express vector $\vec{f}$ in terms of a new orthogonal basis $(\vec{\xi}_0, \vec{\xi}_1)$ instead of axis-aligned unit vectors $(\vec{e}_0,\vec{e}_1)$ via $\vec{f} = \frac{\langle \vec{\xi}_0,\vec{f}\rangle}{||\vec{\xi}_0||_2^2} \vec{\xi}_0 + \frac{\langle \vec{\xi}_1,\vec{f}\rangle}{||\vec{\xi}_1||_2^2} \vec{\xi}_1$:
+This is completely analogous to a vector change-of-coordinates\footnote{We are working with functions that live in $L^2$ space, L for Lebesgue, meaning functions which are square integrable on the domain, so the inner product integrals converge. Essentially, an element of this space is akin to a vector packed infinitely densely with values, until you get a function on a continuum. This is the only $L^p$ space which is also a Hilbert space, i.e.~has a nice inner product and ``induced norm" from that inner product which gives nice notions of distances analogous to standard Euclidean distance.}, where $\vec{f}$ can be represented in terms of a new orthogonal basis $(\vec{\xi}_0, \vec{\xi}_1)$ instead of axis-aligned unit vectors $(\vec{e}_0,\vec{e}_1)$ via $\vec{f} = \frac{\langle \vec{\xi}_0,\vec{f}\rangle}{||\vec{\xi}_0||_2^2} \vec{\xi}_0 + \frac{\langle \vec{\xi}_1,\vec{f}\rangle}{||\vec{\xi}_1||_2^2} \vec{\xi}_1$:
 
 \begin{center}
 \begin{tikzpicture}[scale=3, >=stealth]
@@ -117,6 +117,18 @@ The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of th
   \draw[->, dashed] (0,0) -- (-0.27,0.81) node[left] {$\mathrm{proj}_{\vec{\xi}_1} \vec{f}$};
 \end{tikzpicture}
 \end{center}
+
+because:
+
+\begin{align*}
+\langle \vec{\xi}_k, \vec{f} - \mathrm{proj}_{\vec{\xi}_k} \vec{f} \rangle &= 0\quad\text{due to orthogonality}\\
+\langle \vec{\xi}_k, \vec{f} - c_k\vec{\xi}_k \rangle &= 0\quad\text{because proj}_{\vec{\xi}_k}\vec{f} = c_k\vec{\xi}_k\\
+\langle \vec{\xi}_k, \vec{f} \rangle - c_k \langle \vec{\xi}_k, \vec{\xi}_k \rangle &= 0\quad\text{by linearity}\\
+\rightarrow c_k &= \frac{\langle \vec{\xi}_k, \vec{f} \rangle}{\langle \vec{\xi}_k, \vec{\xi}_k \rangle}
+\end{align*}
+
+
+The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. The function has been \textit{transformed}.
 
 The $\{c_k\}$ are often said to live in another ``domain", although we have to be careful with this terminology, because it technically refers to a ``connected" set, not just a collection of $M$ things. To be precise, some authors instead use ``series" to describe $\{c_k\}$. However, it is possible for members of the basis set to be related through a continuous parameter which in some sense makes the set dense, even in cases where we only take discrete members of this more general set to be our basis set for a particular scenario. This is the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain.
 
@@ -399,20 +411,21 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 
 \section{The Chebyshev Basis}
 
-\href{https://www.youtube.com/watch?v=HloOBYPwlmU}{There is another} basis which we can use to represent arbitrary functions, called the \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Chebyshev polynomials}\cite{trefethen8}, which has a really neat relationship to the Fourier basis.\pagebreak
+\href{https://www.youtube.com/watch?v=HloOBYPwlmU}{There is another} basis which we can use to represent arbitrary functions, called the \href{https://epubs.siam.org/doi/epdf/10.1137/1.9780898719598.ch8}{Chebyshev polynomials}\cite{trefethen8}, which has a really neat relationship to the Fourier basis.
 
 \begin{figure}[h!]
 \begin{center}
 \begin{minipage}{0.45\textwidth}
-\begin{tikzpicture}
-	\begin{axis}[axis lines=middle, xlabel={Re$\{z\}$}, xlabel style={right},
-		ylabel={Im$\{z\}$}, ylabel style={yshift=3mm}, xmin=-1.1, xmax=1.2, xtick={1},
+\centering
+\begin{tikzpicture}[scale=0.9]
+	\begin{axis}[axis lines=middle, xlabel={Re$\{z\}$}, xlabel style={right, xshift=2mm},
+		ylabel={Im$\{z\}$}, ylabel style={xshift=3mm, yshift=7mm}, xmin=-1.1, xmax=1.2, xtick={1},
 		xticklabels={1}, xticklabel style={xshift=1mm, yshift=5mm}, ymin=-1.1, ymax=1.2, ytick=\empty,
 		axis line style={->}, width=7.5cm, height=7.5cm]
-		\addplot[domain=0:360,samples=100, smooth, thick] ({cos(x)}, {sin(x)}); %  Plot the unit circle
-		\pgfmathsetmacro{\angle}{50}  % Angle in degrees
-		\pgfmathsetmacro{\xcoord}{cos(\angle)}  % Re{z} = cos(theta)
-		\pgfmathsetmacro{\ycoord}{sin(\angle)}  % Im{z} = sin(theta)
+		\addplot[domain=0:360,samples=100, smooth, thick] ({cos(x)}, {sin(x)}); % Plot the unit circle
+		\pgfmathsetmacro{\angle}{50} % Angle in degrees
+		\pgfmathsetmacro{\xcoord}{cos(\angle)} % Re{z} = cos(theta)
+		\pgfmathsetmacro{\ycoord}{sin(\angle)} % Im{z} = sin(theta)
 		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, \ycoord)};
 		\node at (axis cs:\xcoord, \ycoord) [above right] {$z = e^{j\theta}$};
 		\addplot[only marks, mark=*, mark size=2pt] coordinates {(\xcoord, -\ycoord)};
@@ -456,8 +469,8 @@ Due to the relationship between $\theta$ and $x$ on their respective domains, yo
 
 \begin{figure}[h]\label{cylinder}
 	\centering
-	\includegraphics[width=0.5\textwidth]{cylinder.png}
-	\captionsetup{width=0.65\textwidth}
+	\includegraphics[width=0.4\textwidth]{cylinder.png}
+	\captionsetup{width=0.75\textwidth}
 	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{dedalus}. Notice the cosines are horizontally flipped. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen8}), but I prefer $k$ to enumerate basis modes, for consistency.}
 \end{figure}
 
@@ -477,8 +490,8 @@ Why might we prefer this basis to the Fourier basis? Well, the advantage of a po
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.6\textwidth]{runge.png}
-	\captionsetup{width=0.6\textwidth}
+	\includegraphics[width=0.8\textwidth]{runge.png}
+	\captionsetup{width=\textwidth}
 	\caption*{The Runge phenomenon, demonstrated in (a) and (b), mitigated in (c) and (d), from \cite{kutz}}
 \end{figure}
 
@@ -507,7 +520,7 @@ This all suggests a solution procedure:
 \begin{center}
 \begin{minipage}{0.45\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.8]
+\begin{tikzpicture}[scale=0.7]
 	\begin{axis}[axis lines=middle, xlabel={$x$}, xlabel style={right},
 		xmin=-1, xmax=1, xtick={-1, 0, 1},
 		ymin=-2.5, ymax=2.5,
@@ -546,7 +559,7 @@ This all suggests a solution procedure:
 	\node at (9.5,0) {$e^{\cos(\theta)} \sin(7\cos(\theta)),\ \theta \in [-\pi, 2\pi]$};
 \end{tikzpicture}
 \begin{tikzpicture}[overlay, remember picture, scale=0.8]
-	\draw[->, thick] (-8.3, 5.5) -- (-6.8, 5.5) node[midway, above] {\parbox{12mm}{flip and warp}};
+	\draw[->, thick] (-8.7, 5.5) -- (-6.5, 5.5) node[midway, above] {\parbox{12mm}{flip and warp}};
 	\draw[->, thick] (-4, 4) -- (-5, 3) node[midway, right] {periodically extend};
 \end{tikzpicture}
 \end{center}
@@ -626,9 +639,9 @@ Where $[:\!N+1]$ truncates to only the first $N+1$ elements ($\{0, ... N\}$). Gi
 \end{minipage}
 \begin{minipage}{0.3\textwidth}\raggedright where truncate$^{-1}$ does periodic extension, stacking back in redundant information\end{minipage}
 \end{center}
-\end{figure}\vspace{-2mm}
+\end{figure}
 
-We can now easily see that in addition to the inverse relationship (\autoref{ifftidct}), we also have the forward relationship:\vspace{-2mm}
+We can now easily see that in addition to the inverse relationship (\autoref{ifftidct}), we also have the forward relationship:
 
 $$\text{FFT}([y_0, ... y_N, y_{N-1}, ... y_1])[:\!N+1] = \text{DCT-I}([y_0, ... y_N])$$
 
