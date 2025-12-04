@@ -397,7 +397,7 @@ So far it has all been good news, but there is a serious caveat to using the Fou
 
 Although a Fourier transform tends to have more ``mass" at lower frequencies and fall off as we go to higher ones (otherwise the reconstruction integral would diverge), and therefore we can get really great reconstructions by leaving off higher modes\cite{kutz} (or equivalently only sampling and transforming $M$ components), we in fact need \textit{all} the infinite modes to reconstruct an \textit{arbitrary} signal\cite{oppenheim}. Even then, the Fourier basis can not represent true discontinuities nor non-smooth corners, instead converging ``almost everywhere", which is math speak for the ``measure" or volume of the set where it doesn't work being 0, meaning it only doesn't work \textit{at} the discontinuities or corners themselves.\cite{oppenheim}
 
-If there are discontinuities or corners, we get what's called the Gibbs Phenomenon\cite{oppenheim}, essentially overshoot as the set of basis functions tries to fit a sudden change. These extra wiggles are bad news for function approximation but even worse news for taking derivatives: If we end up on one of those oscillations, the slope might wildly disagree with that of the true function!
+If there are discontinuities or corners, we get what's called the Gibbs Phenomenon\cite{oppenheim} (see next figure), essentially overshoot as the set of basis functions tries to fit a sudden change. These extra wiggles are bad news for function approximation but even worse news for taking derivatives: If we end up on one of those oscillations, the slope might wildly disagree with that of the true function!
 
 \begin{figure}[h!]
 	\centering
