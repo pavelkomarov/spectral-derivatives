@@ -140,7 +140,7 @@ $$ f(x) = a_0 + \sum_{k=1}^{\infty} (a_k \cos(k \omega_0 x) + b_k \sin(k \omega_
 
 where
 \begin{itemize}[noitemsep, topsep=0pt, after=\newline]
-	\item $f$ is periodic with fundamental frequency $\omega_0$, so the $k^{th}$ frequency becomes $k \cdot \omega_0$.
+	\item $f$ is periodic with fundamental frequency $\omega_0$, so the $k^\text{th}$ frequency becomes $k \cdot \omega_0$.
 	\item $a_k$ and $b_k$ are coefficients describing how much cosine and sine to add in, respectively.
 	\item $k$ goes up to $\infty$ because in general we need an infinite number of ever-higher-frequency sinusoids to reconstruct the function with perfect fidelity.
 \end{itemize}
@@ -153,7 +153,7 @@ f(x) &= a_0 + \sum_{k=1}^{\infty} (a_k \frac{e^{j k \omega_0 x} + e^{-j k \omega
 \end{align*}
 
 \phantomsection\label{phase}
-So if we choose $c_0 = a_0$ and $c_k = \overline{c_{-k}} = \frac{a_k}{2} + \frac{b_k}{2j}$, then the complex exponential formulation is \href{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}{exactly equivalent to the trigonometric formulation}\cite{swarthmore}. That is, we can evaluate \autoref{spectralcoefs} using the \textit{complex} exponentials as basis functions to find \textit{complex} $c_k$ such that when multiplied in the reconstruction, \autoref{spectralreconstruction}, we get back only \textit{real} signal! Essentially, the relative balance of real and complex in $c_k$ affects how much cosine and sine are present at the $k^{th}$ frequency, \href{https://dsego.github.io/demystifying-fourier/}{thereby accomplishing a phase shift}\cite{sego}. Without accounting for phase shifts, we would only be able to model \textit{symmetric} signals!
+So if we choose $c_0 = a_0$ and $c_k = \overline{c_{-k}} = \frac{a_k}{2} + \frac{b_k}{2j}$, then the complex exponential formulation is \href{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}{exactly equivalent to the trigonometric formulation}\cite{swarthmore}. That is, we can evaluate \autoref{spectralcoefs} using the \textit{complex} exponentials as basis functions to find \textit{complex} $c_k$ such that when multiplied in the reconstruction, \autoref{spectralreconstruction}, we get back only \textit{real} signal! Essentially, the relative balance of real and complex in $c_k$ affects how much cosine and sine are present at the $k^\text{th}$ frequency, \href{https://dsego.github.io/demystifying-fourier/}{thereby accomplishing a phase shift}\cite{sego}. Without accounting for phase shifts, we would only be able to model \textit{symmetric} signals!
 
 If instead of a fundamental frequency $\omega_0 = \frac{2\pi}{T}$, where $T$ is a period of repetition, the signal contains dense frequencies (because it has no repetition, $T \rightarrow \infty$, $\omega_0 \rightarrow 0$), and if we care about a domain over the whole of $\mathbb{R}$, then it makes more sense to express both the basis functions and transformed coefficients as functions in $\omega$ and to make both our inner product and reconstruction expression integrals from $-\infty$ to $+\infty$:
 
@@ -343,7 +343,7 @@ If we use the above in the mean-squared slope derivation instead of $Y_k e^{j \t
 
 \noindent because integrating something periodic over a multiple of its period yields its mean, which is 0 in this case.
 
-We now know that the contribution to the mean-squared slope from the $\frac{M}{2}^{th}$ term $\propto |u|^2 + |1 - u|^2$. What's the optimal $u$?\vspace{-2mm}
+We now know that the contribution to the mean-squared slope from the $\frac{M}{2}^\text{th}$ term $\propto |u|^2 + |1 - u|^2$. What's the optimal $u$?\vspace{-2mm}
 
 $$\frac{d}{du} |u|^2 + |1 - u|^2 = 2u - 2(1-u) = 0 \longrightarrow u = \frac{1}{2}$$
 
@@ -449,7 +449,7 @@ This rules out the above spectral method for all but ``periodic boundary conditi
 \end{center}
 \end{figure}
 
-The $k^{th}$ Chebyshev polynomial is defined as $T_k(x) = Re\{z^k\} = \frac{1}{2}(z^k + z^{-k}) = \cos(k\theta)$ by Euler formula:
+The $k^\text{th}$ Chebyshev polynomial is defined as $T_k(x) = Re\{z^k\} = \frac{1}{2}(z^k + z^{-k}) = \cos(k\theta)$ by Euler formula:
 
 \begin{align*}
 T_0(x) &= Re\{z^0\} = 1\\
@@ -645,7 +645,7 @@ We can now easily see that in addition to the inverse relationship (\autoref{iff
 
 $$\text{FFT}([y_0, ... y_N, y_{N-1}, ... y_1])[:\!N+1] = \text{DCT-I}([y_0, ... y_N])$$
 
-Notice that the $0^{th}$ and $N^{th}$ terms appear \textit{outside the sum}, and that the sum \textit{is multiplied by 2}. In our original conception of the cosine series for $y(\theta)$ (\autoref{equivalent}), all the cosines appear equally within the sum, so our $Y_k$ are subtly different from the $a_k$ in that formulation (some scaled by a factor of $\frac{1}{2}$ and all scaled by $M$). Both are valid, but it's more computationally convenient to use the DCT-based formulation.
+Notice that the $0^\text{th}$ and $N^\text{th}$ terms appear \textit{outside the sum}, and that the sum \textit{is multiplied by 2}. In our original conception of the cosine series for $y(\theta)$ (\autoref{equivalent}), all the cosines appear equally within the sum, so our $Y_k$ are subtly different from the $a_k$ in that formulation (some scaled by a factor of $\frac{1}{2}$ and all scaled by $M$). Both are valid, but it's more computationally convenient to use the DCT-based formulation.
 
 \subsection{Even and Odd Derivatives and the Discrete Sine Transform}\label{evenodd}
 
@@ -719,7 +719,7 @@ Let's see it for the second derivative:
 \longrightarrow [\frac{d^2}{dx^2} y(\theta)]_n &= \frac{1}{1-x_n^2} \odot y''_n - \frac{x_n}{(1 - x_n^2)^{3/2}} \odot y'_n
 \end{align*}
 
-Notice that the $2^{nd}$ derivative in $x$ requires \textit{both} the $1^{st}$ and $2^{nd}$ derivatives in $\theta$! This \textit{splintering} phenomenon will be a considerable source of pain as we take higher derivatives: For the $\nu^{th}$ derivative in $x$ we require all derivatives up to order $\nu$ in $\theta$.
+Notice that the $2^{nd}$ derivative in $x$ requires \textit{both} the $1^{st}$ and $2^{nd}$ derivatives in $\theta$! This \textit{splintering} phenomenon will be a considerable source of pain as we take higher derivatives: For the $\nu^\text{th}$ derivative in $x$ we require all derivatives up to order $\nu$ in $\theta$.
 
 Let's see a few more:
 
@@ -827,17 +827,17 @@ Now we can evaluate these and the factor $\frac{1}{6x^2 - 3}$ at the limit value
 
 \subsubsection{Endpoints for Higher Derivatives}
 
-We can do the above for higher derivatives too. However, in general finding the endpoints for the $\nu^{th}$ derivative involves $\nu$ applications of L'Hôpital's rule, slowly cancelling one power of $\sqrt{1-x^2}$ at a time after each. The algebra gets to be pretty gnarly.
+We can do the above for higher derivatives too. However, in general finding the endpoints for the $\nu^\text{th}$ derivative involves $\nu$ applications of L'Hôpital's rule, slowly cancelling one power of $\sqrt{1-x^2}$ at a time after each. The algebra gets to be pretty gnarly.
 
 But there is some hope: We can see a pattern like the \hyperref[pyramid]{pyramid scheme} from earlier, because the functions multiplying each $y^{(\mu)}(\theta)$ in the numerator of the limit argument depend only on one or two terms from before the latest L'Hôpital. We can additionally use the relationship between variables $x = \cos(\theta)$ to recognize $\sqrt{1-x^2} = \sin(\theta)$ and substitute to put everything in terms of a single variable, and then just as well perform L'Hôpital's derivatives more simply w.r.t. $\theta$ rather than $x$ and cancel a $\sin(\theta)$ rather than a $\sqrt{1-x^2}$.
 
-When we proceed, the denominator eventually acquires a single standalone term of the form $D\cos^\nu(\theta)$, which at the domain endpoints $0$ and $\pi$ will be something nonzero, $D_0 = \pm D_\pi$, thereby ending our \textit{journey}. At the same iteration, the numerator reduces to a set of constants, $C$, multiplying even-order $\theta$-derivatives of $y(\theta)$ up to the $2\nu^{th}$. Putting it all together, the endpoint formulas can be found as:
+When we proceed, the denominator eventually acquires a single standalone term of the form $D\cos^\nu(\theta)$, which at the domain endpoints $0$ and $\pi$ will be something nonzero, $D_0 = \pm D_\pi$, thereby ending our \textit{journey}. At the same iteration, the numerator reduces to a set of constants, $C$, multiplying even-order $\theta$-derivatives of $y(\theta)$ up to the $2\nu^\text{th}$. Putting it all together, the endpoint formulas can be found as:
 
 $$\begin{cases}
 \frac{1}{D_0 M} \Big((... - C_3 N^6 + C_2 N^4 - C_1 N^2) Y_N + 2 \sum_{k=1}^{N-1} (... - C_3 k^6 + C_2 k^4 - C_1 k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{D_\pi M} \Big((... - C_3 N^6 + C_2 N^4 - C_1 N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (... - C_3 k^6 + C_2 k^4 - C_1 k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi
 \end{cases}$$
 
-where the alternating plus and minus in the $k$ and $N$ terms comes from the fact the $2^{nd}$ derivative contains $-$cosines, the $4^{th}$ +cosines, the $6^{th}$ $-$cosines again, and so on.
+where the alternating plus and minus in the $k$ and $N$ terms comes from the fact the $2^{nd}$ derivative contains $-$cosines, the $4^\text{th}$ +cosines, the $6^\text{th}$ $-$cosines again, and so on.
 
 Because the act of cancellation and the functions containing powers of $\sqrt{1-x^2} = \sin(\theta)$ can't be easily represented in \texttt{numpy}, computing $C$ and $D$ requires a symbolic solver like \texttt{sympy}. I've devised \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb}{an implementation} to construct expressions for the endpoints, up to arbitrary order.
 
@@ -1207,7 +1207,7 @@ In the Fourier case, this has an analogy with \href{https://www.youtube.com/watc
 \end{tikzpicture}
 \end{center}
 
-Of course there are distinctions: In the context of continuous signals, ``corruption" means (discrete representations of) continous numbers have slightly inaccurate values, whereas in error correcting codes each datum is a single discrete bit which can simply be flipped. Likewise, a Fourier coefficient indicates ``We need this much of the $k^{th}$ basis function", whereas the analogous parity check indicates ``There is/isn't a parity error among my bits."
+Of course there are distinctions: In the context of continuous signals, ``corruption" means (discrete representations of) continous numbers have slightly inaccurate values, whereas in error correcting codes each datum is a single discrete bit which can simply be flipped. Likewise, a Fourier coefficient indicates ``We need this much of the $k^\text{th}$ basis function", whereas the analogous parity check indicates ``There is/isn't a parity error among my bits."
 
 But in both cases a spot-corruption will stand out, because it appears in a particular combination of parity checks or introduces a value that can't as easily be represented with a finite combination of smooth basis functions. In this sense, the Fourier basis is \textit{the ideal} basis for filtering high frequency noise, so long as the signal of interest is periodic, and other methods are merely trying to approximate a lowpass filter.
 
