@@ -1,7 +1,6 @@
 \documentclass[10pt]{article}
 \usepackage[margin=0.7in]{geometry}
-\usepackage{amsmath, amssymb, amsfonts, bbm, enumitem, enotez, tikz, pgfplots, cancel, graphicx,
-caption, algorithm, algorithmic, hyperref}
+\usepackage{amsmath, amssymb, amsfonts, bbm, mathtools, enumitem, enotez, tikz, pgfplots, cancel, graphicx, caption, algorithm, algorithmic, hyperref}
 \usetikzlibrary{matrix, arrows, positioning, angles}
 \hypersetup{colorlinks=true, urlcolor=blue, linkcolor=violet}
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
@@ -36,7 +35,7 @@ The inner product is symmetrical, so
 
 $$ \langle f,g \rangle = \langle g,f \rangle = \int\limits_{a}^{b} f(x) \overline{g(x)} dx $$
 
-Note that if we set $a$ and $b$ at $\pm \infty$, this integral could diverge. If it doesn't diverge with infinite bounds, we say the argument is \href{https://mathworld.wolfram.com/LebesgueIntegrable.html}{``Lebesgue integrable"}\cite{lebesgue}. Some of what we'll do only makes sense for this class of functions, so be aware.
+\noindent Note that if we set $a$ and $b$ at $\pm \infty$, this integral could diverge. If it doesn't diverge with infinite bounds, we say the argument is \href{https://mathworld.wolfram.com/LebesgueIntegrable.html}{``Lebesgue integrable"}\cite{lebesgue}. Some of what we'll do only makes sense for this class of functions, so be aware.
 
 \subsection{The Fourier Basis}\label{fourierB}
 
@@ -71,7 +70,7 @@ Why this identity is true isn't obvious at first but can be seen by \href{https:
 
 $$e^a = 1 + a + \frac{a^2}{2!} + \frac{a^3}{3!} + ... = \sum_{n=0}^{\infty} \frac{a^n}{n!}$$
 
-So\vspace{-2mm}
+\noindent So\vspace{-2mm}
 
 $$e^{j \omega x} = 1 + j \omega x + \frac{(j \omega x)^2}{2!} + \frac{(j \omega x)^3}{3!} + ... = 1 + j \omega x - \frac{(\omega x)^2}{2!} - j \frac{(\omega x)^3}{3!} + \frac{(\omega x)^4}{4!} - ...$$
 
@@ -79,7 +78,7 @@ $$\sin(\omega x) = \omega x - \frac{(\omega x)^3}{3!} + \frac{(\omega x)^5}{5!} 
 
 $$\cos(\omega x) = 1 - \frac{(\omega x)^2}{2!} + \frac{(\omega x)^4}{4!} - \frac{(\omega x)^6}{6!} + ...$$\vspace{0mm}
 
-Notice all the even-power terms appear with alternating sign as in the cosine expansion, and the odd-power terms appear with alternating sign as in the sine expansion, but with an extra $j$ multiplied in.
+\noindent Notice all the even-power terms appear with alternating sign as in the cosine expansion, and the odd-power terms appear with alternating sign as in the sine expansion, but with an extra $j$ multiplied in.
 
 The presence of complex numbers to make this work can be confusing at first, but don't be scared! All we're really doing is using a compressed representation of a sine plus a cosine, where the real and imaginary parts (orthogonal in the complex plane, and therefore independent and non-interfering) allow us to describe the contributions of sine and cosine simultaneously. In fact, \href{https://math.stackexchange.com/a/1293127/278341}{Joseph Fourier originally used only real trigonometric functions}\cite{complex}, and it wasn't until later someone decided it would be easier to work with complex exponentials. Later (\autoref{fourierT}) we'll see that for real signals all the complex numbers cancel, leaving only a \textit{real} sine and \textit{real} cosine, which when added together make \textit{a single, phase-shifted sinusoid!} So think of $e^{j \omega x}$ as oscillations of frequency $\omega$ along direction $x$.
 
@@ -90,7 +89,7 @@ If we inner product sinusoidal wiggles of mismatched frequency, differing by $\D
 We can construct a function from a linear combination of basis functions as:
 
 \begin{equation}\label{spectralreconstruction}
-f(x) = \sum_{k=0}^{M-1} c_k \xi_k(x), \quad x \in [a, b]
+f(x) = \sum_{k=0}^{\mathclap{M-1}} c_k \xi_k(x), \quad x \in [a, b]
 \end{equation}
 
 \noindent where $M$ is the number of basis functions we're using in our reconstruction and $k$ iterates through them. This is essentially a \textit{recipe}, which tells us \textit{how much} of each basis function $\xi_k$ is present in the signal $f$ on a domain between $a$ and $b$.
@@ -118,7 +117,7 @@ This is completely analogous to a vector change-of-coordinates,\footnote{We are 
 \end{tikzpicture}
 \end{center}
 
-because:
+\noindent because:
 
 \begin{align*}
 \langle \vec{\xi}_k, \vec{f} - \mathrm{proj}_{\vec{\xi}_k} \vec{f} \rangle &= 0\quad\text{due to orthogonality}\\
@@ -128,7 +127,7 @@ because:
 \end{align*}
 
 
-The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. The function has been \textit{transformed}.
+\noindent The set of numbers $\{c_k\}$ is now \textit{an alternative representation} of the original function. In some sense it's equally descriptive, so long as we know which basis we're using to reconstruct. The function has been \textit{transformed}.
 
 The $\{c_k\}$ are often said to live in another ``domain", although we have to be careful with this terminology, because it technically refers to a ``connected" set, not just a collection of $M$ things. To be precise, some authors instead use ``series" to describe $\{c_k\}$. However, it is possible for members of the basis set to be related through a continuous parameter which in some sense makes the set dense, even in cases where we only take discrete members of this more general set to be our basis set for a particular scenario. This is the case for the Fourier basis, where we choose $\omega \in \mathbb{R}$, and hence $\omega$ really can become a new domain.
 
@@ -145,15 +144,15 @@ where
 	\item $k$ goes up to $\infty$ because in general we need an infinite number of ever-higher-frequency sinusoids to reconstruct the function with perfect fidelity.
 \end{itemize}
 
-Let's now use $\cos(x) = \frac{e^{jx} + e^{-jx}}{2}$ and $\sin(x) = \frac{e^{jx} - e^{-jx}}{2j}$, which can be verified by manipulating Euler's formula, \autoref{euler}.\vspace{-2mm}
+Let's now substitute $\cos(x) = \frac{e^{jx} + e^{-jx}}{2}$ and $\sin(x) = \frac{e^{jx} - e^{-jx}}{2j}$, which can be verified by manipulating Euler's formula, \autoref{euler}.\vspace{-2mm}
 
 \begin{align*}
 f(x) &= a_0 + \sum_{k=1}^{\infty} (a_k \frac{e^{j k \omega_0 x} + e^{-j k \omega_0 x}}{2} + b_k \frac{e^{j k \omega_0 x} - e^{-j k \omega_0 x}}{2j}) \\
-&= a_0 + \sum_{k = -\infty}^{-1} (\frac{a_{-k}}{2} - \frac{b_{-k}}{2j}) e^{j k \omega_0 x} + \sum_{k = 1}^{\infty} (\frac{a_k}{2} + \frac{b_k}{2j}) e^{j k \omega_0 x} = \sum_{k = -\infty}^{\infty} c_k e^{j k \omega_0 x}
+&= a_0 + \sum_{\mathclap{k = -\infty}}^{-1} (\frac{a_{-k}}{2} - \frac{b_{-k}}{2j}) e^{j k \omega_0 x} + \sum_{k = 1}^{\infty} (\frac{a_k}{2} + \frac{b_k}{2j}) e^{j k \omega_0 x} = \sum_{\mathclap{k = -\infty}}^{\infty} c_k e^{j k \omega_0 x}
 \end{align*}
 
 \phantomsection\label{phase}
-So if we choose $c_0 = a_0$ and $c_k = \overline{c_{-k}} = \frac{a_k}{2} + \frac{b_k}{2j}$, then the complex exponential formulation is \href{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}{exactly equivalent to the trigonometric formulation}\cite{swarthmore}. That is, we can evaluate \autoref{spectralcoefs} using the \textit{complex} exponentials as basis functions to find \textit{complex} $c_k$ such that when multiplied in the reconstruction, \autoref{spectralreconstruction}, we get back only \textit{real} signal! Essentially, the relative balance of real and complex in $c_k$ affects how much cosine and sine are present at the $k^\text{th}$ frequency, \href{https://dsego.github.io/demystifying-fourier/}{thereby accomplishing a phase shift}\cite{sego}. Without accounting for phase shifts, we would only be able to model \textit{symmetric} signals!
+\noindent So if we choose $c_0 = a_0$ and $c_k = \overline{c_{-k}} = \frac{a_k}{2} + \frac{b_k}{2j}$, then the complex exponential formulation is \href{http://lpsa.swarthmore.edu/Fourier/Series/DerFS.html}{exactly equivalent to the trigonometric formulation}\cite{swarthmore}. That is, we can evaluate \autoref{spectralcoefs} using the \textit{complex} exponentials as basis functions to find \textit{complex} $c_k$ such that when multiplied in the reconstruction, \autoref{spectralreconstruction}, we get back only \textit{real} signal! Essentially, the relative balance of real and complex in $c_k$ affects how much cosine and sine are present at the $k^\text{th}$ frequency, \href{https://dsego.github.io/demystifying-fourier/}{thereby accomplishing a phase shift}\cite{sego}. Without accounting for phase shifts, we would only be able to model \textit{symmetric} signals!
 
 If instead of a fundamental frequency $\omega_0 = \frac{2\pi}{T}$, where $T$ is a period of repetition, the signal contains dense frequencies (because it has no repetition, $T \rightarrow \infty$, $\omega_0 \rightarrow 0$), and if we care about a domain over the whole of $\mathbb{R}$, then it makes more sense to express both the basis functions and transformed coefficients as functions in $\omega$ and to make both our inner product and reconstruction expression integrals from $-\infty$ to $+\infty$:
 
@@ -206,7 +205,7 @@ Part of what makes Fourier transforms confusing is the proliferation of differen
 \end{tikzpicture}
 \end{center}
 
-Note that, following a more signal-processing-ish convention\cite{oppenheim}, the function we're transforming is now called $x$, and the independent variable, since it can no longer be $x$, is named $t$. For discrete signals, we use independent variable $n$ in square brackets.
+\noindent Note that, following a more signal-processing-ish convention\cite{oppenheim}, the function we're transforming is now called $x$, and the independent variable, since it can no longer be $x$, is named $t$. For discrete signals, we use independent variable $n$ in square brackets.
 
 Here FS stands for ``Fourier Series", which is the first situation covered above. FT stands for ``Fourier Transform", which is given by the integral pair, \autoref{pair}. But these are not the only possibilities! DTFT stands for ``Discrete Time Fourier Transform", where the signal we want to analyze is discrete but the transform is continuous. And finally DFT stands for ``Discrete Fourier Transform", not to be confused with the DTFT, which we use when \textit{both} the original and transformed signals are sampled.
 
@@ -218,13 +217,13 @@ The notation of all these different functions and transforms is easy to mix up a
 
 Let's \href{https://www.youtube.com/watch?v=d5d0ORQHNYs}{take a Fourier transform of the derivative of a function}\cite{brunton}:
 
-$$\mathcal{F}\{\frac{d}{dx} f(x)\} = \int\limits_{-\infty}^{\infty} \underbrace{\frac{df}{dx}}_{dv} \underbrace{e^{-j \omega x}}_{u} dx = \underbrace{f(x) e^{-j \omega x} \Big|_{-\infty}^{\infty}}_{\parbox{25mm}{\footnotesize \centering 0 for Lebesgue-integrable functions}} - \int\limits_{-\infty}^{\infty} f(x) (-j \omega) e^{-j \omega x} dx = j \omega \cdot \hat{f}(\omega)$$
+$$\mathcal{F}\{\frac{d}{dx} f(x)\} = \int\limits_{-\infty}^{\infty} \underbrace{\frac{df}{dx}}_{dv} \underbrace{e^{-j \omega x}}_{u} dx = \underbrace{f(x) e^{-j \omega x} \Big|_{-\infty}^{\infty}}_{\mathclap{\parbox{30mm}{\footnotesize \centering 0 for Lebesgue-\\integrable functions}}} - \int\limits_{-\infty}^{\infty} f(x) (-j \omega) e^{-j \omega x} dx = j \omega \cdot \hat{f}(\omega)$$
 
-We can use the inverse transform equation to see the same thing:
+\noindent We can use the inverse transform equation to see the same thing:
 
 $$\frac{d}{dx} f(x) = \frac{d}{dx} \frac{1}{2\pi} \int\limits_{-\infty}^{\infty} \hat{f}(\omega) e^{j \omega x} d \omega = \frac{1}{2\pi} \int\limits_{-\infty}^{\infty} \hat{f}(\omega) \frac{d}{dx} e^{j \omega x} d \omega = \mathcal{F}^{-1}\{j \omega \cdot \hat{f}(\omega)\}$$
 
-So a derivative in the $x$ domain can be accomplished by a \textit{multiplication} in the frequency domain. We can raise to higher derivatives simply by multiplying by $j \omega$ more times.
+\noindent So a derivative in the $x$ domain can be accomplished by a \textit{multiplication} in the frequency domain. We can raise to higher derivatives simply by multiplying by $j \omega$ more times.
 
 This is great because taking derivatives in the spatial domain is actually pretty hard, especially if we're working with discrete samples of a signal, whereas taking the derivative this way in the frequency domain, the \textit{spectral derivative}, gives us much better fidelity.\cite{trefethen4, kutz} The cost is that we have to do a Fourier transform and inverse Fourier transform to sandwich the actual differentiation, but there is an $O(N \log N)$ algorithm to accomplish the DFT (\autoref{family} and \autoref{dft}) for discrete signals called the Cooley-Tukey algorithm, also known as the Fast Fourier Transform (FFT)\cite{kutz}.
 
@@ -236,8 +235,8 @@ Because we're going to want to use a computer, and a computer can only operate o
 
 \begin{equation}\label{dft}
 \begin{aligned}
-\text{DFT: \ \ } Y_k &= \sum_{n=0}^{M-1} y_n e^{-j \frac{2\pi}{M} n k} \\
-\text{DFT}^{-1} \text{: \ \ } y_n &= \frac{1}{M} \sum_{k=0}^{M-1} Y_k e^{j \frac{2\pi}{M} n k}
+\text{DFT: \ \ } Y_k &= \sum_{n=0}^{\mathclap{M-1}} y_n e^{-j \frac{2\pi}{M} n k} \\
+\text{DFT}^{-1} \text{: \ \ } y_n &= \frac{1}{M} \sum_{k=0}^{\mathclap{M-1}} Y_k e^{j \frac{2\pi}{M} n k}
 \end{aligned}
 \end{equation}
 
@@ -275,7 +274,7 @@ I now quote \href{https://math.mit.edu/~stevenj/fft-deriv.pdf}{Steven Johnson}\c
 
 We can now posit a slightly more general formula for the underlying continuous, periodic (over interval length M) signal:\vspace{-2mm}
 
-$$ y(\theta) = \frac{1}{M} \sum_{k=0}^{M-1} Y_k e^{j \theta (k + m_k M)}, \quad m_k \in \mathbb{Z} $$
+$$ y(\theta) = \frac{1}{M} \sum_{k=0}^{\mathclap{M-1}} Y_k e^{j \theta (k + m_k M)}, \quad m_k \in \mathbb{Z} $$
 
 \begin{quotation}
 ``In order to uniquely determine the $m_k$, a useful criterion is that we wish to \textit{oscillate as little as possible} between the sample points $y_n$. One way to express this idea is to assume that $y(\theta)$ is \textit{bandlimited} to frequences $|k + m_k M| \leq \frac{M}{2}$. Another approach, that gives the same result ... is to \textit{minimize the mean-square slope}"\footnote{It's due to this ambiguity and constraint that spectral methods are only suitable for smooth functions!}
@@ -283,10 +282,10 @@ $$ y(\theta) = \frac{1}{M} \sum_{k=0}^{M-1} Y_k e^{j \theta (k + m_k M)}, \quad 
 
 \begin{align*}
 \frac{1}{2\pi} \int\limits_{0}^{2\pi} |y'(\theta)|^2 d\theta &= \frac{1}{2\pi} \int\limits_{0}^{2\pi} \Big|\frac{1}{M} \sum_{k=0}^{M-1} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big|^2 d\theta \\
-&= \frac{1}{2\pi M^2} \int\limits_{0}^{2\pi} \Big( \sum_{k=0}^{M-1} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big) \overline{\Big( \sum_{k=0}^{M-1} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big)} d\theta \\
+&= \frac{1}{2\pi M^2} \int\limits_{0}^{2\pi} \Big( \sum_{k=0}^{\mathclap{M-1}} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big) \overline{\Big( \sum_{k=0}^{\mathclap{M-1}} j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big)} d\theta \\
 &= \frac{1}{2\pi M^2} \int\limits_{0}^{2\pi} \sum_{k=0}^{M-1} \sum_{k'=0}^{M-1} \Big( j(k + m_k M) Y_k e^{j \theta (k + m_k M)} \Big) \overline{\Big( j(k' + m_{k'} M) Y_{k'} e^{j \theta (k' + m_{k'} M)} \Big)} d\theta \\
-&= \frac{1}{M^2} \sum_{k=0}^{M-1} \sum_{k'=0}^{M-1} (k + m_k M) \overline{(k' + m_{k'} M)} Y_k \overline{Y_{k'}} \underbrace{\frac{1}{2\pi} \int\limits_{0}^{2\pi} e^{j \theta (k + m_k M)} e^{-j \theta (k' + m_{k'} M)} d\theta}_{= \begin{cases} 0 & \text{if } k + m_k M \neq k' + m_{k'} M \\ & \iff k \neq k' \text{ for } 0 \leq k, k' < M \\ 1 & \text{if } k = k'\end{cases}} \\
-&= \frac{1}{M^2} \sum_{k=0}^{M-1} |Y_k|^2 (k + m_k M)^2
+&= \frac{1}{M^2} \sum_{k=0}^{M-1} \sum_{k'=0}^{M-1} (k + m_k M) \overline{(k' + m_{k'} M)} Y_k \overline{Y_{k'}} \underbrace{\frac{1}{2\pi} \int\limits_{0}^{2\pi} e^{j \theta (k + m_k M)} e^{-j \theta (k' + m_{k'} M)} d\theta}_{\mathclap{= \begin{cases} 0 & \text{if } k + m_k M \neq k' + m_{k'} M \\ & \iff k \neq k' \text{ for } 0 \leq k, k' < M \\ 1 & \text{if } k = k'\end{cases}}} \\
+&= \frac{1}{M^2} \sum_{k=0}^{\mathclap{M-1}} |Y_k|^2 (k + m_k M)^2
 \end{align*}
 
 We now seek to minimize this by choosing $m_k$ for each $k$. Only the last term depends on $m_k$, so it's sufficient to minimize only this:\vspace{-5mm}
@@ -352,7 +351,7 @@ So ``the $Y_{M/2}$ term should be \textit{equally split} between the frequencies
 Now if we put it all together we get ``the \textbf{unique ``minimal-oscillation" trigonometric interpolation} of order $M$":
 
 \begin{equation}\label{interpolant}
-y(\theta) = \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big(Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}\big) + Y_{M/2}\cos(\frac{M}{2}\theta) \Big)
+y(\theta) = \frac{1}{M} \Big(Y_0 + \sum_{\mathclap{0 < k < \frac{M}{2}}} \big(Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}\big) + Y_{M/2}\cos(\frac{M}{2}\theta) \Big)
 \end{equation}
 
 ``As a useful side effect, this choice of trigonometric interpolation has the property that real-valued samples $y_n$ (for which $Y_0$ is real and $Y_{M-k} = \overline{Y_k}$) will result in a purely real-valued interpolation $y(\theta)$ for all $\theta$."
@@ -361,23 +360,23 @@ y(\theta) = \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big(Y_k e^{j k \t
 
 Now at last, with this interpolation between integer $n$ in hand, we can take a derivative w.r.t. the spatial variable:
 
-$$\frac{d}{d\theta} y(\theta) = \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} j k (Y_k e^{j k \theta} - Y_{M-k} e^{-j k \theta}) - \frac{M}{2} Y_{M/2} \sin(\frac{M}{2}\theta) \Big)$$
+$$\frac{d}{d\theta} y(\theta) = \frac{1}{M} \Big( \sum_{\mathclap{0 < k < \frac{M}{2}}} j k (Y_k e^{j k \theta} - Y_{M-k} e^{-j k \theta}) - \frac{M}{2} Y_{M/2} \sin(\frac{M}{2}\theta) \Big)$$
 
 Evaluating at $\theta_n = \frac{2\pi}{M}n, n \in \mathbb{Z}$, we get:\vspace{-5mm}
 
 \begin{align*}
-y'_n &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} j k (Y_k e^{j k \frac{2\pi}{M}n} - Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \overset{\text{\large 0}}{\cancel{\frac{M}{2} Y_{M/2} \sin(\pi n)}} \Big) = \frac{1}{M} \sum_{k = 0}^{M-1} Y'_k e^{j\frac{2\pi}{M}kn} \\
+y'_n &= \frac{1}{M} \Big( \sum_{\mathclap{0 < k < \frac{M}{2}}} j k (Y_k e^{j k \frac{2\pi}{M}n} - Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \overset{\text{\large 0}}{\cancel{\frac{M}{2} Y_{M/2} \sin(\pi n)}} \Big) = \frac{1}{M} \sum_{k = 0}^{\mathclap{M-1}} Y'_k e^{j\frac{2\pi}{M}kn} \\
 & \text{where} \quad Y'_k = \begin{cases} j k \cdot Y_k & k < \frac{M}{2} \\ 0 & k = \frac{M}{2} \\ j(k - M) \cdot Y_k & k > \frac{M}{2} \leftarrow \text{comes from: } k_{new} = M - k_{old}, 0 < k_{old} < \frac{M}{2} \end{cases}\\ & \hspace{5cm} \rightarrow \frac{M}{2} < k_{new} < M; -jk_{old} \cdot Y_{M - k_{old}} \rightarrow -j(M - k_{new}) \cdot Y_{k_{new}}
 \end{align*}
 
 Easy! Now let's do the second derivative:
 
-$$\frac{d^2}{d\theta^2} y(\theta) = \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^2 (Y_k e^{j k \frac{2\pi}{M}n} + Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \Big(\frac{M}{2}\Big)^2 Y_{M/2} \cos(\frac{M}{2}\theta) \Big)$$
+$$\frac{d^2}{d\theta^2} y(\theta) = \frac{1}{M} \Big( \sum_{\mathclap{0 < k < \frac{M}{2}}} (jk)^2 (Y_k e^{j k \frac{2\pi}{M}n} + Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \Big(\frac{M}{2}\Big)^2 Y_{M/2} \cos(\frac{M}{2}\theta) \Big)$$
 
 And again evaluating at $\theta_n = \frac{2\pi}{M}n, n \in \mathbb{Z}$:\vspace{-5mm}
 
 \begin{align*}
-y''_n &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^2 (Y_k e^{j k \frac{2\pi}{M}n} + Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \Big(\frac{M}{2}\Big)^2 Y_{M/2} (-1)^n \Big) = \frac{1}{M} \sum_{k = 0}^{M-1} Y''_k e^{j\frac{2\pi}{M}kn} \\
+y''_n &= \frac{1}{M} \Big( \sum_{\mathclap{0 < k < \frac{M}{2}}} (jk)^2 (Y_k e^{j k \frac{2\pi}{M}n} + Y_{M-k} e^{-j k \frac{2\pi}{M}n}) - \Big(\frac{M}{2}\Big)^2 Y_{M/2} (-1)^n \Big) = \frac{1}{M} \sum_{k = 0}^{\mathclap{M-1}} Y''_k e^{j\frac{2\pi}{M}kn} \\
 & \text{where} \quad Y''_k = \begin{cases} (j k)^2 \cdot Y_k & k < \frac{M}{2} \\ \Big(j\frac{M}{2}\Big)^2 \cdot Y_k & k = \frac{M}{2} \\ (j(k - M))^2 \cdot Y_k & k > \frac{M}{2} \end{cases} \quad \text{or equivalently} \quad Y''_k = \begin{cases} (j k)^2 \cdot Y_k & k \leq \frac{M}{2} \\ (j(k - M))^2 \cdot Y_k & k > \frac{M}{2} \end{cases}
 \end{align*}
 
@@ -402,7 +401,7 @@ If there are discontinuities or corners, we get what's called the Gibbs Phenomen
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.7\textwidth]{gibbs.png}
-	\caption*{An example of the Gibbs phenomenon, from \cite{kutz}. Using more modes allows the solution to fit better in the middle of the domain but makes peaks at the edges more extreme.}
+	\caption*{\small An example of the Gibbs phenomenon, from \cite{kutz}. Using more modes allows the solution to fit better in the middle of the domain but makes peaks at the edges more extreme.}
 \end{figure}
 
 This is a bigger problem than it may first appear, because when we do this on a computer, we're using the DFT, which implicitly periodically extends the function (\autoref{family}, \autoref{dft}). So we not only need the function to have no jumps or corners internal to its domain; we need it to match up smoothly \textit{at the edges} of its domain too!
@@ -471,7 +470,7 @@ Due to the relationship between $\theta$ and $x$ on their respective domains, yo
 	\centering
 	\includegraphics[width=0.4\textwidth]{cylinder.png}
 	\captionsetup{width=0.75\textwidth}
-	\caption*{Relationship of Chebyshev domain and Fourier Domain, from \cite{dedalus}. Notice the cosines are horizontally flipped. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen8}), but I prefer $k$ to enumerate basis modes, for consistency.}
+	\caption*{\small Relationship of Chebyshev domain and Fourier Domain, from \cite{dedalus}. Notice the cosines are horizontally flipped. The authors use $n$ instead of $k$, which is common for Chebyshev polynomials (e.g. \cite{trefethen8}), but I prefer $k$ to enumerate basis modes, for consistency.}
 \end{figure}
 
 Essentially, on the domain $[-1, 1]$ each of these polynomials has ever more wiggles in the range $[-1, 1]$, and they perfectly coincide with the \textit{shadows} of horizontally-reversed $2\pi$-periodic cosines in the domain $[0, \pi]$. If we trace a function's value over $x = \cos(\theta)$ for linearly-increasing $\theta \in [0, \pi]$ instead of tracing it for linearly-decreasing $x \in [-1, 1]$, it's as if we're walking along the arc of the cylinder instead of along the shadow. We're effectively moving, horizontally flipping, and \textit{warping} the function (by expanding near the edges and compressing in the middle) to a new $\theta$ domain.
@@ -492,7 +491,7 @@ Why might we prefer this basis to the Fourier basis? Well, the advantage of a po
 	\centering
 	\includegraphics[width=0.8\textwidth]{runge.png}
 	\captionsetup{width=\textwidth}
-	\caption*{The Runge phenomenon, demonstrated in (a) and (b), mitigated in (c) and (d), from \cite{kutz}}
+	\caption*{\small The Runge phenomenon, demonstrated in (a) and (b), mitigated in (c) and (d), from \cite{kutz}}
 \end{figure}
 
 However, there is something we can do about the Runge phenomenon: By clustering fit points at the edges of the domain, the wild wobbles go away.
@@ -559,12 +558,12 @@ This all suggests a solution procedure:
 	\node at (9.5,0) {$e^{\cos(\theta)} \sin(7\cos(\theta)),\ \theta \in [-\pi, 2\pi]$};
 \end{tikzpicture}
 \begin{tikzpicture}[overlay, remember picture, scale=0.8]
-	\draw[->, thick] (-8.7, 5.5) -- (-6.5, 5.5) node[midway, above] {\parbox{12mm}{flip and warp}};
-	\draw[->, thick] (-4, 4) -- (-5, 3) node[midway, right] {periodically extend};
+	\draw[->, thick] (-8.7, 5.5) -- (-6.5, 5.5) node[midway, above] {\parbox{12mm}{\linespread{0.85}\selectfont flip and warp}};
+	\draw[->, thick] (-4, 4) -- (-5, 3) node[midway, right, xshift=2mm] {\parbox{12mm}{\linespread{0.85}\selectfont periodically extend}};
 \end{tikzpicture}
 \end{center}
 \captionsetup{width=0.85\textwidth}
-\caption*{Illustration of implicit function manipulations in the first two steps of the algorithm. The edges of the aperiodic function can be made to match by ``periodic extension", but this operation alone only fixes discontinuity; corners are created at 0 and $\pi$, resulting in Gibbs phenomenon when we frequency transform. Warping \textit{stretches} corners into smooth transitions.}
+\caption*{\small Illustration of implicit function manipulations in the first two steps of the algorithm. The edges of the aperiodic function can be made to match by ``periodic extension", but this operation alone only fixes discontinuity; corners are created at 0 and $\pi$, resulting in Gibbs phenomenon when we frequency transform. Warping \textit{stretches} corners into smooth transitions.}
 \end{figure}
 
 There are still a lot of details left to be worked out here, which we'll tackle in sequence.
@@ -598,7 +597,7 @@ So when $y_n$ are redundant this way, the $Y_k$ are too, in a very mirror way. W
 
 \begin{equation}\label{reconstruction}
 \begin{aligned}
-y(\theta) &= \frac{1}{M} \Big(Y_0 + \sum_{0 < k < \frac{M}{2}} \big( Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}\big) + Y_{M/2}\cos(\frac{M}{2}\theta) \Big) \\
+y(\theta) &= \frac{1}{M} \Big(Y_0 + \sum_{\mathclap{0 < k < \frac{M}{2}}} \big( Y_k e^{j k \theta} + Y_{M-k} e^{-j k \theta}\big) + Y_{M/2}\cos(\frac{M}{2}\theta) \Big) \\
 &= \frac{1}{M} \Big(Y_0 + 2 \sum_{k = 1}^{N-1} \big( Y_k \underbrace{\frac{e^{j k \theta} + e^{-j k \theta}}{2}}_{\cos(k\theta)} \big) + Y_N\cos(N \theta) \Big)
 \end{aligned}
 \end{equation}
@@ -632,9 +631,9 @@ Where $[:\!N+1]$ truncates to only the first $N+1$ elements ($\{0, ... N\}$). Gi
 	\draw[->, bend right=25] (y) to node[midway, left, xshift=1mm] {DCT-I} (Y);
 	\draw[->, bend right=25] (Y) to node[midway, right, xshift=-1mm] {DCT-I$^{-1}$} (y);
 	\draw[->, bend left=18] (y_ext) to node[midway, above, yshift=-0.5mm] {truncate} (y);
-	\draw[->, bend left=18] (y) to node[midway, below, yshift=1mm] {truncate$^{-1}$} (y_ext);
+	\draw[->, bend left=18] (y) to node[midway, below, yshift=1.5mm] {truncate$^{-1}$} (y_ext);
 	\draw[->, bend left=18] (Y_ext) to node[midway, above, yshift=-0.5mm] {truncate} (Y);
-	\draw[->, bend left=18] (Y) to node[midway, below, yshift=1mm] {truncate$^{-1}$} (Y_ext);
+	\draw[->, bend left=18] (Y) to node[midway, below, yshift=1.5mm] {truncate$^{-1}$} (Y_ext);
 \end{tikzpicture}
 \end{minipage}
 \begin{minipage}{0.3\textwidth}\raggedright where truncate$^{-1}$ does periodic extension, stacking back in redundant information\end{minipage}
@@ -678,17 +677,17 @@ $[0, 1, ... 1, 0, -1, ..., -1]$ is odd around entries $0$ and $N$, and $[0, 1, .
 Let's now use this to reconstruct samples in the $\theta$ domain, $y_n^{(\nu)}$, for odd and even derivatives:\vspace{-5mm}
 
 \begin{align}
-y_n^{(\text{odd } \nu)} &= \frac{1}{M} \sum_{0 < k < \frac{M}{2}} (jk)^\nu (Y_k e^{jk\theta_n} \color{blue}-\color{black} \underbrace{Y_{M-k}}_{= Y_k} e^{-jk\theta_n}) = \frac{1}{M} \sum_{k=1}^{N-1} (jk)^\nu Y_k \underbrace{(e^{jk\theta_n} - e^{-jk\theta_n})}_{2j\sin(k\theta_n)} \notag \\
+y_n^{(\text{odd } \nu)} &= \frac{1}{M} \sum_{\mathclap{0 < k < \frac{M}{2}}} (jk)^\nu (Y_k e^{jk\theta_n} \color{blue}-\color{black} \underbrace{Y_{M-k}}_{= Y_k} e^{-jk\theta_n}) = \frac{1}{M} \sum_{k=1}^{N-1} (jk)^\nu Y_k \underbrace{(e^{jk\theta_n} - e^{-jk\theta_n})}_{2j\sin(k\theta_n)} \notag \\
 &= \frac{1}{M} \underbrace{2 \sum_{k=1}^{N-1} (jk)^\nu Y_k j \sin(\frac{\pi nk}{N})}_{\text{\normalsize = a DST-I of $\vec{Y}^{(\nu)} \cdot j$!}} \label{y_prime_odd}\\
-y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{0 < k < \frac{M}{2}} (jk)^\nu (Y_k e^{jk\theta_n} \color{red}+\color{black} \underbrace{Y_{M-k}}_{= Y_k} e^{-jk\theta_n}) + (j\frac{M}{2})^\nu Y_{M/2} \cos(\frac{M}{2}\theta_n) \Big) \notag \\
+y_n^{(\text{even } \nu)} &= \frac{1}{M} \Big( \sum_{\mathclap{0 < k < \frac{M}{2}}} (jk)^\nu (Y_k e^{jk\theta_n} \color{red}+\color{black} \underbrace{Y_{M-k}}_{= Y_k} e^{-jk\theta_n}) + (j\frac{M}{2})^\nu Y_{M/2} \cos(\frac{M}{2}\theta_n) \Big) \notag \\
 &= \frac{1}{M} \Big( (jN)^\nu Y_N \cos(\pi n) + \sum_{k=1}^{N-1} (jk)^\nu Y_k \underbrace{(e^{jk\theta_n} + e^{-jk\theta_n})}_{2\cos(k\theta_n)} \Big) \notag \\
 &= \frac{1}{M} \Big( \underbrace{(j0)^\nu Y_0 + (jN)^\nu Y_N (-1)^n + 2 \sum_{k=1}^{N-1} (jk)^\nu Y_k \cos(\frac{\pi nk}{N})}_{\text{\normalsize = a DCT-I of $\vec{Y}^{(\nu)}$!}} \Big) \label{y_prime_even}
 \end{align}
 \begin{tikzpicture}[overlay, remember picture]
-	\node at (7.25,7.1) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
-	\node at (7.3,3.85) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
-	\draw[->, blue] (7.75,7.4) -- (7.95,7.65);
-	\draw[->, red] (7.85,4.1) -- (8.1,4.35);
+	\node at (7,7) {\parbox{13mm}{\footnotesize from oddness of $\tilde{\mathbbm{1}}^\nu$}};
+	\node at (7.05,3.75) {\parbox{14mm}{\footnotesize from evenness of $\tilde{\mathbbm{1}}^\nu$}};
+	\draw[->, blue] (7.5,7.3) -- (7.7,7.55);
+	\draw[->, red] (7.65,4) -- (7.85,4.25);
 \end{tikzpicture}
 
 Brilliant! So we can use only the non-redundant $Y_k^{(\nu)}$ with a DST-I or DCT-I to convert odd and even functions, respectively, back to the $\theta$ domain!
@@ -701,7 +700,7 @@ Even more confusing, the DST-I only takes the $k \in \{1, ... N-1\}$ elements, s
 
 At this point we've accomplished all but the last step of \hyperref[algo]{the algorithm}, but we've been operating with $y_n = y(\theta_n)$ and $y_n^{(\nu)} = y^{(\nu)}(\theta_n)$, which are really samples from the $\theta$ domain, when what we really need to do is take derivatives in the $x = \cos(\theta)$ domain.
 
-When we do this, we have to employ a chain rule, which introduces a new factor: the derivative of one of our variables w.r.t. the other. For the $1^{st}$ derivative it looks like:
+When we do this, we have to employ a chain rule, which introduces a new factor: the derivative of one of our variables w.r.t. the other. For the $1^\text{st}$ derivative it looks like:
 
 $$\frac{d}{dx} y(\theta) = \frac{d}{d\theta} y(\theta) \cdot \frac{d\theta}{dx} = y'(\theta) \cdot \frac{d}{dx} \cos^{-1}(x) = y'(\theta) \cdot \frac{-1}{\sqrt{1 - x^2}}$$
 
@@ -716,10 +715,10 @@ Let's see it for the second derivative:
 \begin{align*}
 \frac{d^2}{dx^2} y(\theta) &= \frac{d}{dx} \frac{y'(\theta)}{-\sqrt{1-x^2}} = \frac{-\sqrt{1-x^2} \frac{d}{dx} y'(\theta) - y'(\theta) \frac{d}{dx} (-\sqrt{1-x^2})}{1 - x^2} \\
 &= \frac{-\frac{d}{d\theta}y'(\theta)\cdot \frac{d\theta}{dx}}{\sqrt{1-x^2}} - \frac{y'(\theta)\frac{x}{\sqrt{1-x^2}}}{1 - x^2} = \frac{y''(\theta)}{1-x^2} - \frac{x y'(\theta)}{(1 - x^2)^{3/2}} \\
-\longrightarrow [\frac{d^2}{dx^2} y(\theta)]_n &= \frac{1}{1-x_n^2} \odot y''_n - \frac{x_n}{(1 - x_n^2)^{3/2}} \odot y'_n
+\rightarrow [\frac{d^2}{dx^2} y(\theta)]_n &= \frac{1}{1-x_n^2} \odot y''_n - \frac{x_n}{(1 - x_n^2)^{3/2}} \odot y'_n
 \end{align*}
 
-Notice that the $2^{nd}$ derivative in $x$ requires \textit{both} the $1^{st}$ and $2^{nd}$ derivatives in $\theta$! This \textit{splintering} phenomenon will be a considerable source of pain as we take higher derivatives: For the $\nu^\text{th}$ derivative in $x$ we require all derivatives up to order $\nu$ in $\theta$.
+Notice that the $2^\text{nd}$ derivative in $x$ requires \textit{both} the $1^\text{st}$ and $2^\text{nd}$ derivatives in $\theta$! This \textit{splintering} phenomenon will be a considerable source of pain as we take higher derivatives: For the $\nu^\text{th}$ derivative in $x$ we require all derivatives up to order $\nu$ in $\theta$.
 
 Let's see a few more:
 
@@ -741,7 +740,7 @@ We can see a bit of a pattern here, though. In particular, the function of $x$ m
 &\frac{q(x)}{(1-x^2)^{c-\frac{1}{2}}} y^{(\mu)} \cdot \frac{d\theta}{dx} + \frac{(1 - x^2)^{c-\frac{1}{2}} \frac{d}{dx} q(x) - q(x)(c-\frac{1}{2})(1-x^2)^{c-\frac{3}{2}}(-2x)}{(1-x^2)^{2c - 1}} y^{(\mu-1)}(\theta)
 \end{align*} 
 
-If we now gather the $y^{(\mu)}(\theta)$ terms and use the fact $\frac{d\theta}{dx} = \frac{-1}{\sqrt{1-x^2}}$, we can find its new multiplying factor is equal to:\vspace{-2mm}
+\noindent If we now gather the $y^{(\mu)}(\theta)$ terms and use the fact $\frac{d\theta}{dx} = \frac{-1}{\sqrt{1-x^2}}$, we can find its new multiplying factor is equal to:\vspace{-2mm}
 
 \begin{align*}
 \frac{(1-x^2)p'(x) + 2(c-1)xp(x) - q(x)}{(1 - x^2)^c}
@@ -762,8 +761,8 @@ This relationship holds no matter which, $\mu, c, p, q$ we're addressing, which 
 	\node[anchor=west] at (0, 0) {$-24x^4-72x^2-9$};\node[anchor=west] at (2.75, 0) {$50x^3+55x$};\node[anchor=west] at (4.5, 0) {$-35x^2-10$};\node[anchor=west] at (6.5, 0) {$10x$};\node[anchor=west] at (7.5, 0) {$-1$};
 	\node at (0.5, -0.75) {lower $\frac{d}{d\theta}$ of $y$};
 	\node at (8, -0.75) {higher $\frac{d}{d\theta}$ of $y$};
-	\node at (-1, 4) {\parbox{15mm}{\normalsize numerator $p$ and $q$:}};
-	\draw[->] (0,3.8) -- (0,0.2) node[midway, left, xshift=2mm] {\parbox{15mm}{increasing $\frac{d}{dx}$ of $y$}};
+	\node at (-1, 4) {\parbox{15mm}{\linespread{0.85}\selectfont \normalsize numerator $p$ and $q$:}};
+	\draw[->] (0,3.8) -- (0,0.2) node[midway, left] {\parbox{15mm}{\raggedleft increasing $\frac{d}{dx}$ of $y$}};
 	\draw[->] (0.5,-0.55) -- (0.75,-0.2);
 	\draw[->] (8,-0.55) -- (7.75,-0.2);
 	\draw[->] (3,1.25) -- (3,1.75) node[midway, right] {p};
@@ -779,8 +778,8 @@ This relationship holds no matter which, $\mu, c, p, q$ we're addressing, which 
 	\node[anchor=west] at (0, 1) {$\frac{7}{2}$};\node[anchor=west] at (1, 1) {$3$};\node[anchor=west] at (2, 1) {$\frac{5}{2}$};\node[anchor=west] at (3, 1) {$2$};
 	\node[anchor=west] at (0, 0) {$\frac{9}{2}$};\node[anchor=west] at (1, 0) {$4$};\node[anchor=west] at (2, 0) {$\frac{7}{2}$};\node[anchor=west] at (3, 0) {$3$};\node[anchor=west] at (4, 0) {$\frac{5}{2}$};
 	\node at (1, -0.75) {...};\node at (4, -0.75) {...};
-	\node at (-1, 4) {\parbox{15mm}{\normalsize $c$ at each location:}};
-	\draw[->] (0,3.8) -- (0,0.2) node[midway, left, xshift=2mm] {\parbox{15mm}{\footnotesize increasing $\nu$}};
+	\node at (-1, 4) {\parbox{15mm}{\linespread{0.85}\selectfont \normalsize $c$ at each location:}};
+	\draw[->] (0,3.8) -- (0,0.2) node[midway, left] {\parbox{15mm}{\footnotesize \raggedleft increasing $\nu$}};
 	\draw[->] (0.5,-0.5) -- (4.25,-0.5) node[midway, below, xshift=2mm] {\parbox{17mm}{\footnotesize increasing $\mu$}};
 \end{tikzpicture}
 \end{minipage}
@@ -797,18 +796,18 @@ However, this doesn't mean $\frac{d^\nu}{dx^\nu} y$ can't have a valid \textit{l
 
 This means the \textit{numerator} as well as the denominator is $0$ at the domain endpoints. $\frac{0}{0}$ is an indeterminate form, so we can use L'Hôpital's rule!
 
-Let's see it in fine detail for the $1^{st}$ derivative. The below uses the DCT-I reconstruction (\autoref{reconstruction}) for $y(\theta)$.
+Let's see it in fine detail for the $1^\text{st}$ derivative. The below uses the DCT-I reconstruction (\autoref{reconstruction}) for $y(\theta)$.
 
 \begin{align*}
 &\lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{d}{d\theta} \frac{1}{M} \Big( Y_0 + Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} Y_k \cos(k\theta) \Big) \cdot \frac{d\theta}{dx} = \lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\frac{1}{M} \Big(-N Y_N \sin(N\theta) - 2 \sum_{k=1}^{N-1} k Y_k \sin(k\theta) \Big)}{-\sqrt{1-x^2}} \\
-&\underset{\frac{d}{dx}}{\overset{\frac{d}{dx}}{\longrightarrow}}\ = \lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\frac{1}{M} \Big(-N^2 Y_N \cos(N\theta) - 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big) \cdot \frac{-1}{\cancel{\sqrt{1-x^2}}}}{\frac{x}{\cancel{\sqrt{1-x^2}}}} = \lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\frac{1}{M} \Big(N^2 Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big)}{x}
+&\underset{\frac{d}{dx}}{\overset{\frac{d}{dx}}{\longrightarrow}}\ = \lim_{\mathclap{\substack{x \to \pm 1 \\ \theta \to 0,\pi}}} \frac{\frac{1}{M} \Big(-N^2 Y_N \cos(N\theta) - 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big) \cdot \frac{-1}{\cancel{\sqrt{1-x^2}}}}{\frac{x}{\cancel{\sqrt{1-x^2}}}} = \lim_{\mathclap{\substack{x \to \pm 1 \\ \theta \to 0,\pi}}} \frac{\frac{1}{M} \Big(N^2 Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} k^2 Y_k \cos(k\theta) \Big)}{x}
 \end{align*}
 
 \[
-= \begin{cases} \frac{1}{M} \Big(N^2 Y_N + 2 \sum_{k=1}^{N-1} k^2 Y_k \Big) & \text{ at } x=1, \theta=0 \\ -\frac{1}{M} \Big(N^2 (-1)^N Y_N + 2 \sum_{k=1}^{N-1} k^2 (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$1^{st}$ endpoints}
+= \begin{cases} \frac{1}{M} \Big(N^2 Y_N + 2 \sum_{k=1}^{N-1} k^2 Y_k \Big) & \text{ at } x=1, \theta=0 \\ -\frac{1}{M} \Big(N^2 (-1)^N Y_N + 2 \sum_{k=1}^{N-1} k^2 (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$1^\text{st}$ endpoints}
 \]
 
-And now let's do it for the $2^{nd}$ derivative, with some slightly more compact notation, where we can be agnostic about $y(\theta)$'s exact structure until the end:
+And now let's do it for the $2^\text{nd}$ derivative, with some slightly more compact notation, where we can be agnostic about $y(\theta)$'s exact structure until the end:
 
 \begin{align*}
 &\lim_{\substack{x \to \pm 1 \\ \theta \to 0,\pi}} \frac{\sqrt{1 - x^2} y''(\theta) - x y'(\theta)}{(1-x^2)^{3/2}} \rightarrow \frac{0}{0} \underset{\frac{d}{dx}}{\overset{\frac{d}{dx}}{\longrightarrow}} \frac{\cancel{\sqrt{1-x^2}}y'''(\theta)\frac{-1}{\cancel{\sqrt{1-x^2}}} + \cancel{\frac{-x}{\sqrt{1-x^2}}y''(\theta)} - (\cancel{xy''(\theta)\frac{-1}{\sqrt{1-x^2}}} + y'(\theta))}{-3x\sqrt{1-x^2}}\\
@@ -822,7 +821,7 @@ $$y^{IV}(\theta) = \frac{1}{M} \Big(N^4 Y_N \cos(N\theta) + 2 \sum_{k=1}^{N-1} k
 Now we can evaluate these and the factor $\frac{1}{6x^2 - 3}$ at the limit values and put it all together to find: 
 
 \[
-\begin{cases} \frac{1}{3M} \Big((N^4 - N^2) Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{3M} \Big((N^4 - N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$2^{nd}$ endpoints}
+\begin{cases} \frac{1}{3M} \Big((N^4 - N^2) Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{3M} \Big((N^4 - N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (k^4 - k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi \end{cases} \tag{$2^\text{nd}$ endpoints}
 \]
 
 \subsubsection{Endpoints for Higher Derivatives}
@@ -837,7 +836,7 @@ $$\begin{cases}
 \frac{1}{D_0 M} \Big((... - C_3 N^6 + C_2 N^4 - C_1 N^2) Y_N + 2 \sum_{k=1}^{N-1} (... - C_3 k^6 + C_2 k^4 - C_1 k^2) Y_k \Big) & \text{ at } x=1, \theta=0 \\ \frac{1}{D_\pi M} \Big((... - C_3 N^6 + C_2 N^4 - C_1 N^2)(-1)^N Y_N + 2 \sum_{k=1}^{N-1} (... - C_3 k^6 + C_2 k^4 - C_1 k^2) (-1)^k Y_k \Big) & \text{ at } x=-1, \theta=\pi
 \end{cases}$$
 
-where the alternating plus and minus in the $k$ and $N$ terms comes from the fact the $2^{nd}$ derivative contains $-$cosines, the $4^\text{th}$ +cosines, the $6^\text{th}$ $-$cosines again, and so on.
+where the alternating plus and minus in the $k$ and $N$ terms comes from the fact the $2^\text{nd}$ derivative contains $-$cosines, the $4^\text{th}$ +cosines, the $6^\text{th}$ $-$cosines again, and so on.
 
 Because the act of cancellation and the functions containing powers of $\sqrt{1-x^2} = \sin(\theta)$ can't be easily represented in \texttt{numpy}, computing $C$ and $D$ requires a symbolic solver like \texttt{sympy}. I've devised \href{https://github.com/pavelkomarov/spectral-derivatives/blob/main/notebooks/chebyshev_domain_endpoints.ipynb}{an implementation} to construct expressions for the endpoints, up to arbitrary order.
 
@@ -865,7 +864,7 @@ To most easily explain the rule, we'll need a little extra machinery: There are 
 
 $$U_k(x) = \frac{\sin((k+1)\theta)}{\sin(\theta)}$$
 
-Notice that:
+\noindent Notice that:
 
 $$\frac{d}{dx} T_k(x) = \frac{d}{d\theta} \cos(k\theta) \cdot \frac{d\theta}{dx} = k(\cancel{-}\sin(k\theta)) \cdot \frac{\cancel{-1}}{\sqrt{1-x^2}} = \frac{k\sin(k\theta)}{\sin(\theta)} = k \cdot U_{k-1}(x)$$
 
@@ -874,18 +873,18 @@ But we really want the derivative in terms of $T$, not $U$. Lucky for us, there 
 \begin{align*}
 2\!\!\!\!\sum_{\text{odd }\kappa>0}^{\text{odd }k-1} \!\!\!\!&\cos(\kappa\theta)\sin(\theta) = \cancel{2}\!\!\!\!\sum_{\text{odd } \kappa>0}^{\text{odd }k-1} \cancel{\frac{1}{2}}(\sin((\kappa+1)\theta) - \sin((\kappa-1)\theta)\\
 &= \sin(k\theta) \cancel{-\sin((k-2)\theta) + \sin((k-2)\theta)} - ... \cancel{-\sin(2\theta) + \sin(2\theta)} - \overset{\text{\normalsize 0}}{\cancel{\sin(0\theta)}} = \sin(k\theta)\\
-&\longrightarrow \frac{\sin(k\theta)}{\sin(\theta)} = 2\!\!\!\!\sum_{\text{odd }\kappa>0}^{k-1} \!\!\!\!\cos(\kappa\theta) \quad \text{for even }k
+&\rightarrow \frac{\sin(k\theta)}{\sin(\theta)} = 2\!\!\!\!\sum_{\text{odd }\kappa>0}^{k-1} \!\!\!\!\cos(\kappa\theta) \quad \text{for even }k
 \end{align*}
 
-Similarly:
+\noindent Similarly:
 
 \begin{align*}
 2\!\!\!\!\sum_{\text{even }\kappa \geq 0}^{\text{even }k-1} \!\!\!\!&\cos(\kappa\theta)\sin(\theta) = \cancel{2}\!\!\!\!\sum_{\text{even } \kappa \geq 0}^{\text{even }k-1} \cancel{\frac{1}{2}}(\sin((\kappa+1)\theta) - \sin((\kappa-1)\theta)\\
 &= \sin(k\theta) \cancel{-\sin((k-2)\theta) + \sin((k-2)\theta)} - ... \cancel{-\sin(\theta) + \sin(\theta)} \underbrace{-\sin(-\theta)}_{=+\sin(\theta)} = \sin(k\theta) + \sin(\theta)\\
-&\longrightarrow \frac{\sin(k\theta)}{\sin(\theta)} = -1 + 2\!\!\!\!\sum_{\text{odd }\kappa>0}^{k-1} \!\!\!\!\cos(\kappa\theta) \quad \text{for odd }k
+&\rightarrow \frac{\sin(k\theta)}{\sin(\theta)} = -1 + 2\!\!\!\!\sum_{\text{odd }\kappa>0}^{k-1} \!\!\!\!\cos(\kappa\theta) \quad \text{for odd }k
 \end{align*}
 
-Thus:
+\noindent Thus:
 
 $$k \cdot U_{k-1}(x) = \frac{d}{dx} T_k(x) = k \cdot \begin{cases}
 2\sum_{\text{odd } \kappa>0}^{k-1} T_\kappa(x) & \text{for even } k \\
@@ -901,11 +900,11 @@ Because differentiation is linear, we can scale and stack these particular resul
 
 We are now fully equipped to find derivatives for 1-dimensional data. This is technically all we need, because, due to linearity of the derivative operator, we can find the derivative along a particular dimension of a multidimensional space by using our 1D solution along each constituent vector running in that direction, and we can find derivatives along multiple dimensions by applying the above in series along each dimension:
 
-$$\frac{\partial^2}{\partial x_1 \partial x_2} y(x_1, x_2) = \texttt{Algo}(\texttt{Algo}(y_i, 1^{st}, x_1)_j, 1^{st}, x_2) \quad \forall\ i, j$$
+$$\frac{\partial^2}{\partial x_1 \partial x_2} y(x_1, x_2) = \texttt{Algo}(\texttt{Algo}(y_i, 1^\text{st}, x_1)_j, 1^\text{st}, x_2) \quad \forall\ i, j$$
 
-$$ \nabla^2 y = (\frac{\partial^2}{\partial x_1^2} + \frac{\partial^2}{\partial x_2^2}) y = \texttt{Algo}(y_i, 2^{nd}, x_1) + \texttt{Algo}(y_j, 2^{nd}, x_2) \quad \forall\ i, j$$
+$$ \nabla^2 y = (\frac{\partial^2}{\partial x_1^2} + \frac{\partial^2}{\partial x_2^2}) y = \texttt{Algo}(y_i, 2^\text{nd}, x_1) + \texttt{Algo}(y_j, 2^\text{nd}, x_2) \quad \forall\ i, j$$
 
-where $i, j$ are indexers as in the computing sense and have nothing to do with the imaginary unit, \texttt{Algo} applies the algorithm to each vector along the dimension given by the third argument, and the $1^{st}$ and $2^{nd}$ in the second argument refer to the derivative order.
+\noindent where $i, j$ are indexers as in the computing sense and have nothing to do with the imaginary unit, \texttt{Algo} applies the algorithm to each vector along the dimension given by the third argument, and the $1^\text{st}$ and $2^\text{nd}$ in the second argument refer to the derivative order.
 
 Each application to a vector incurs $O(N \log N)$ cost, and fundamentally applying the method to higher-dimensional data must involve a loop, so the full cost of applying along any given direction is (assuming length $N$ in all dimensions) $O(N^D \log N)$, where $D$ is the dimension of the data. Aside from pushing this loop lower down into \texttt{numpy} to take advantage of vectorized compute, there can be no cost savings for a derivative in a particular dimension.
 
@@ -926,17 +925,17 @@ Due to the linearity of the Fourier transform (and DCT), transforming along all 
 	\draw[->] (jkY) -- (dy);
 	\draw[->] (-1,1.5) -- (-1,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
 	\draw[->] (-1.5,-1) -- (1.5,-1) node[midway, above] {\footnotesize FFT};
-	\draw[<->] (2.5,1.5) -- (2.5,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $\odot (jk)^{\nu_d}$};
+	\draw[<->] (2.5,1.5) -- (2.5,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $(jk)^{\nu_d}\odot$};
 	\draw[<->] (2,-1) -- (5,-1) node[midway, above] {\footnotesize $\odot (jk)^{\nu_{d'}}$};
 	\draw[<-] (6,1.5) -- (6,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
 	\draw[<-] (5.5,-1) -- (8.5,-1) node[midway, above] {\footnotesize FFT$^{-1}$};
-	\node[anchor=north, yshift=-2mm] at (y.south) {$O(D \cdot N^D \log N)$};
-	\node[anchor=north, yshift=-2mm] at (Y.south) {$O(D \cdot N^D)$};
-	\node[anchor=north, yshift=-2mm] at (jkY.south) {$O(D \cdot N^D \log N)$};
+	\node[anchor=north, yshift=-1mm] at (y.south) {$O(D \cdot N^D \log N)$};
+	\node[anchor=north, yshift=-1mm] at (Y.south) {$O(D \cdot N^D)$};
+	\node[anchor=north, yshift=-1mm] at (jkY.south) {$O(D \cdot N^D \log N)$};
 \end{tikzpicture}
 \end{center}
 
-That's neat, but does it save us anything, really? Let's see it in series:
+\noindent That's neat, but does it save us anything, really? Let's see it in series:
 
 \begin{center}
 \begin{tikzpicture}
@@ -955,15 +954,15 @@ That's neat, but does it save us anything, really? Let's see it in series:
 	\draw[->] (Y2) -- (jkY2);
 	\draw[->] (jkY2) -- (dy2);
 	\draw[->] (dy2) -- (dots);
-	\draw[->] (9.5,1.5) -- (9.5,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
-	\draw[->] (-1.5,-1) -- (1.5,-1) node[midway, above] {\footnotesize FFT};
-	\draw[<->] (9.5,-2) -- (9.5,-5) node[midway, above left, yshift=3mm, xshift=2mm] {\footnotesize $\odot (jk)^{\nu_{d'}}$};
-	\draw[<->] (2,-1) -- (5,-1) node[midway, above] {\footnotesize $\odot (jk)^{\nu_d}$};
-	\draw[<-] (6,-2) -- (6,-5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
-	\draw[<-] (5.5,-1) -- (8.5,-1) node[midway, above] {\footnotesize FFT$^{-1}$};
-	\node[anchor=north] at (y.south) {$O(N^D \log N)$};
-	\node[anchor=north] at (Y.south) {$O(N^D)$};
-	\node[anchor=north] at (jkY.south) {$O(N^D \log N)$};
+	\draw[->] (-1,1.5) -- (-1,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT};
+	\draw[->] (9,-1) -- (12,-1) node[midway, above] {\footnotesize FFT};
+	\draw[<->] (9,-4.5) -- (12,-4.5) node[midway, above] {\footnotesize $\odot(jk)^{\nu_{d'}}$};
+	\draw[<->] (2.5,1.5) -- (2.5,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize $(jk)^{\nu_d}\odot$};
+	\draw[<-] (6,1.5) -- (6,-1.5) node[midway, above left, yshift=3mm, xshift=1mm] {\footnotesize FFT$^{-1}$};
+	\draw[<-] (5.5,-4.5) -- (8.5,-4.5) node[midway, above] {\footnotesize FFT$^{-1}$};
+	\node[anchor=north, yshift=-1mm] at (y.south) {$O(N^D \log N)$};
+	\node[anchor=north, yshift=-1mm] at (Y.south) {$O(N^D)$};
+	\node[anchor=north, yshift=-1mm] at (jkY.south) {$O(N^D \log N)$};
 	\node at (0, -4.25) {\parbox{19mm}{repeat for $D$ dimensions}};
 \end{tikzpicture}
 \end{center}
@@ -984,7 +983,7 @@ Say we have $t \in [a, b)$ that we need to map to $\theta \in [0, 2\pi)$. We can
 
 $$\theta \in [0, 2\pi) \leftrightarrow t \in [a, b) = \underbrace{[0, 2\pi)}_{\theta} \cdot \frac{b - a}{2\pi} + a$$
 
-To get a sense this is true, let's see an example:
+\noindent To get a sense this is true, let's see an example:
 
 \begin{figure}[h!]
 \begin{center}
@@ -1025,7 +1024,7 @@ To get a sense this is true, let's see an example:
 \end{center}
 \end{figure}
 
-In the discrete case, where we have $M$ samples on $[a, b)$, then we can map $t_n$ with:
+\noindent In the discrete case, where we have $M$ samples on $[a, b)$, then we can map $t_n$ with:
 
 $$\theta_n \in \frac{\{0, ... M-1\} \cdot 2\pi}{M} \leftrightarrow t_n \in \frac{\{0, ... M-1\} \cdot \cancel{2\pi}}{M} \cdot \frac{b - a}{\cancel{2\pi}} + a$$
 
@@ -1037,7 +1036,7 @@ Here both ends are \textit{inclusive}, so we have $t \in [a, b]$ that we need to
 
 $$x \in [-1, 1] \leftrightarrow t \in [a,b] = \underbrace{[-1, 1]}_{x} \cdot \frac{b - a}{2} + \frac{b + a}{2}$$
 
-To get a sense this is true, let's see an example:
+\noindent An example to demonstrate this is given in the next figure.
 
 \begin{figure}[h!]
 \begin{center}
@@ -1079,7 +1078,7 @@ In the discrete case, where we have $N+1$ samples on $[a, b]$, then we can map $
 
 $$x_n \in \cos\!\Big(\frac{\pi \{0, ... N\}}{N}\Big) \leftrightarrow t_n \in \cos\!\Big(\frac{\pi \{0, ... N\}}{N}\Big) \cdot \frac{b - a}{2} + \frac{b + a}{2}$$
 
-In code this is \texttt{t\char`_n = np.cos(np.arange(N+1)*np.pi/N) * (b - a)/2 + (b + a)/2}.\newline
+\noindent In code this is \texttt{t\char`_n = np.cos(np.arange(N+1)*np.pi/N) * (b - a)/2 + (b + a)/2}.
 
 Notice the order has flipped here, that counting \textit{up} in $n$ means we traverse $x$ from $+1 \rightarrow -1$. This is actually what we want; it corresponds to the \hyperref[cylinder]{horizontal flip} necessary to make cosine shadows equate with Chebyshev polynomails.
 
@@ -1128,7 +1127,7 @@ It's helpful to see a picture:
 \begin{minipage}{0.6\textwidth}
 \centering
 \begin{tikzpicture}
-  \begin{axis}[width=10cm, height=6cm,
+  \begin{axis}[width=10cm, height=5cm,
     xlabel={Frequency $f$ (Hz)}, ylabel={Energy}, ylabel style={yshift=-9mm},
     xmin=0, xmax=1.5, xtick={0, 0.5, 1, 1.5}, xticklabels={$0$, $\frac{1}{2}f_s$, $f_s$, $\frac{3}{2}f_s$},
     ymin=0, ymax=1.1, yticklabels={},
@@ -1147,7 +1146,7 @@ It's helpful to see a picture:
 \begin{minipage}{0.35\textwidth}
 \centering
 \begin{tikzpicture}
-  \begin{axis}[width=6cm, height=6cm,
+  \begin{axis}[width=6cm, height=5cm,
     xlabel={Frequency $f$ (Hz)},
     xmin=0, xmax=0.5, xtick={0, 0.25, 0.5}, xticklabels={$0$, $\frac{1}{4}f_s$, $\frac{1}{2}f_s$},
     ymin=0, ymax=1.1, yticklabels={},
@@ -1167,8 +1166,9 @@ It's helpful to see a picture:
 	\draw[->, thick] (-7.3, 0.5) -- (-6, 0.5);
 \end{tikzpicture}
 \end{center}
+\vspace{-5mm}
 \captionsetup{width=0.9\textwidth}
-\caption*{Typical energy spectrum of a noisy signal, before and after sampling. $f_s$ is a sampling rate of our choosing.}
+\caption*{\small Typical energy spectrum of a noisy signal, before and after sampling. $f_s$ is a sampling rate of our choosing.}
 \end{figure}
 
 In practice we expect to sample a signal frequently enough to capture fluctuations of interest in the data, so signal energy should be concentrated in frequencies below some cutoff.  Noise energy, decaying up to higher frequencies, is added in linearly.
@@ -1205,6 +1205,7 @@ In the Fourier case, this has an analogy with \href{https://www.youtube.com/watc
 	\node at (12, -0.5) {check \#3};
 	\node at (17, -0.5) {check \#4};
 \end{tikzpicture}
+\vspace{-2mm}
 \end{center}
 
 Of course there are distinctions: In the context of continuous signals, ``corruption" means (discrete representations of) continous numbers have slightly inaccurate values, whereas in error correcting codes each datum is a single discrete bit which can simply be flipped. Likewise, a Fourier coefficient indicates ``We need this much of the $k^\text{th}$ basis function", whereas the analogous parity check indicates ``There is/isn't a parity error among my bits."
@@ -1322,12 +1323,12 @@ When we sample at cosine-space points, $\Delta x$ decreases near the edges. In t
 
 To avert Gibbs phenomenon in the case of aperiodic data or to achieve better compression (more energy represented in fewer modes) in case we know something about how our data should look, we may prefer to use another basis, like Chebyshev polynomials or PCA modes for representation. All bases have ``lower frequency" and ``higher frequency" elements, meaning some modes have fewer transitions between low and high values, and some have more. Similar to Fourier basis representations, signal energy empirically tends to cluster in lower modes, and noise tends to be scattered across modes, similar to the \hyperref[spectrum]{typical spectrum} above.
 
-However, smoothing aperiodic data is fundamentally more difficult than the periodic case at the edges of the domain, because in the periodic case we can smooth across the domain boundary, whereas with an aperiodic function we only get one-sided information about those regions. And unlike Fourier basis functions, which have uniform frequency throughout their domain, other bases are typically nonuniform. This may be desirable if the data or noise is known to fit a particular pattern, but in the naive case, where we don't know the noise shape or expect white noise, nonuniform basis functions' variable expressive power across the domain can mismatch the situation. Chebyshev polynomials exhibit this characteristic, getting steeper and therefore higher frequency near the boundaries, which makes them worse at filtering and better at \textit{fitting} high frequency noise in these regions, i.e. more \textit{sensitive} to disruptions there.
+However, smoothing aperiodic data is fundamentally more difficult than the periodic case at the edges of the domain, because in the periodic case we can smooth across the domain boundary, whereas with an aperiodic function we only get one-sided information about those regions. And unlike Fourier basis functions, which have uniform frequency throughout their domain, other bases are typically nonuniform. This may be desirable if the data or noise is known to fit a particular pattern, but in the naive case, where we don't know the noise shape or expect white noise, nonuniform basis functions' variable expressive power across the domain can mismatch the situation. Chebyshev polynomials exhibit this characteristic, getting steeper and therefore higher frequency near the boundaries, which makes them worse at filtering and better at \textit{fitting} high frequency noise in these regions, i.e.~more \textit{sensitive} to disruptions there.
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{chebnoise.png}
-	\caption*{An example of systematic edge blowup for Chebyshev derivatives in the presence of noise.}
+	\caption*{\small An example of systematic edge blowup for Chebyshev derivatives in the presence of noise.}
 \end{figure}
 
 This problem is perhaps best shown mathematically in the \hyperref[algo]{Chebyshev-via-Fourier method}, where we not only implicitly warp the function to be $y(\cos(\theta))$ by taking a DCT (thereby treating measurement noise as if it's evenly distributed in the $\theta$ domain), but we later also explicitly \textit{unwarp} to get back to the $x$ domain, involving \hyperref[pyramid]{division by powers of $\sqrt{1-x^2}$}\cite{brown, trefethen8}, which $ \rightarrow 0$ as $x \rightarrow \pm 1$. Numerically equivalent, in the \hyperref[seriesrule]{Chebyshev series-based method}, ``Tight coupling between coefficients enables propagation of errors from high frequency to low frequency modes."\cite{brown} We see that higher-order coefficients have an impact on \href{https://scicomp.stackexchange.com/q/44939/48402}{ever-other lower-order coefficient}\cite{dcoefs}, and this effect is cumulative, so a slight error in coefficient values, especially higher-order ones, compounds in a very nasty way when we differentiate. Thus ``while the representation of a function by a Chebyshev series may be most accurate near $x = \pm 1$, these results indicate that the derivatives computed from a Chebyshev series are \textit{least accurate} at the edges of the domain."\cite{brown}
