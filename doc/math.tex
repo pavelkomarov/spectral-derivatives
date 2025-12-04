@@ -402,7 +402,7 @@ If there are discontinuities or corners, we get what's called the Gibbs Phenomen
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.7\textwidth]{gibbs.png}
-	\caption*{An example of the Gibbs phenomenon, from \cite{kutz}}
+	\caption*{An example of the Gibbs phenomenon, from \cite{kutz}. Using more modes allows the solution to fit better in the middle of the domain but makes peaks at the edges more extreme.}
 \end{figure}
 
 This is a bigger problem than it may first appear, because when we do this on a computer, we're using the DFT, which implicitly periodically extends the function (\autoref{family}, \autoref{dft}). So we not only need the function to have no jumps or corners internal to its domain; we need it to match up smoothly \textit{at the edges} of its domain too!
