@@ -1102,7 +1102,7 @@ $$\frac{d^\nu y}{\big( dx \cdot \text{smoosh})^\nu} = \frac{d^\nu y}{dx^\nu} \cd
 
 \noindent So we can always correct the derivative by dividing by scale$^\nu$.
 
-To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub and especially confusing with the DCT-II), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter} and raise error messages with correct examples if the sampling is invalid.
+To enable calculation of the \texttt{scale}, and to double check the user sampled their function at a correct \texttt{t\char`_n} (especially in the Chebyshev case, since cosine-spacing is easy to flub), the functions take the sample locations \href{https://pavelkomarov.com/spectral-derivatives/specderiv.html}{as a parameter} and raise error messages with correct examples if the sampling is invalid.
 
 \section{Differentiating in the Presence of Noise}
 
